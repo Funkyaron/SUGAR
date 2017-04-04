@@ -9,7 +9,7 @@ import android.os.Bundle;
 import java.util.Date;
 
 /**
- * Created by Peter on 04.04.2017.
+ * Created by Funkyaron on 04.04.2017.
  */
 
 class AlarmInitializer {
@@ -22,11 +22,25 @@ class AlarmInitializer {
     private PendingIntent startPendingIntent;
     private PendingIntent endPendingIntent;
 
-    protected void initAlarms(Context cont, Profile[] profs)
+    /**
+     * Cancels every existing alarm associated with this app and sets new alarms for
+     * every profile. This method should be called initially when the app starts the first
+     * time and then every time a profile is added, removed or modified.
+     *
+     * @param cont The context in which the alarms should be set.
+     * @param profs An array that contains every profile the app is dealing with.
+     */
+    protected void updateAlarms(Context cont, Profile[] profs)
     {
+        if (mAlarmManager != null) {
+            mAlarmManager.cancel(startPendingIntent);
+            mAlarmManager.cancel(endPendingIntent);
+        } else {
+            mAlarmManager = (AlarmManager) cont.getSystemService(Context.ALARM_SERVICE);
+        }
+
         for (Profile prof : profs)
         {
-            mAlarmManager = (AlarmManager) cont.getSystemService(Context.ALARM_SERVICE);
             alarmIntent = new Intent(cont, UpdateProfileReceiver.class);
             Bundle mBundle = new Bundle();
             mBundle.putBoolean(ACTIVE_KEY, true);
@@ -46,18 +60,5 @@ class AlarmInitializer {
             mAlarmManager.setExact(AlarmManager.RTC_WAKEUP,
                     prof.getProfileEndPoint().getTime(), endPendingIntent);
         }
-
-    }
-
-    protected void updateAlarm(Context cont, Profile prof) {
-
-    }
-
-    protected void addAlarm(Context cont, Profile prof) {
-
-    }
-
-    protected void removeAlarm(Context cont, Profile prof) {
-
     }
 }
