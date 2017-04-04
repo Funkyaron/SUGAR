@@ -28,38 +28,44 @@ class Profile {
     }
 
     /* Returns the ID of the profile */
-    public int getProfileId()
+    int getProfileId()
     {
         return profileId;
     }
 
     /* Returns the name of the profile */
-    public String getProfileName()
+    String getProfileName()
     {
         return profileName;
     }
 
     /* Returns the starting point of the profile */
-    public Date getProfileStartPoint()
+    Date getProfileStartPoint()
     {
         return profileStartPoint;
     }
 
     /* Returns the end point of the profile */
-    public Date getProfileEndPoint()
+    Date getProfileEndPoint()
     {
         return profileEndPoint;
     }
 
     /* Returns an array with all contacts which are contained inside of the profile */
-    public String[] getContacts()
+    String[] getContacts()
     {
         return profileContacts;
     }
 
     /* Returns wether the profile is active or not */
-    public boolean getProfileActive()
+    boolean getProfileActive()
     {
         return profileIsActive;
+    }
+
+    /* Translate to SQL values */
+    String translateToSQL()
+    {
+        return "INSERT INTO PROFILE VALUES " + "(" + getProfileName() + ",";
     }
 }
