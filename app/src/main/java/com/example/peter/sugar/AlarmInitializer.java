@@ -21,18 +21,33 @@ class AlarmInitializer {
     private Intent alarmIntent;
     private PendingIntent alarmPendingIntent;
 
-    protected void initAlarms(Context cont, Profile prof)
+    protected void initAlarms(Context cont, Profile[] profs)
     {
-        mAlarmManager = (AlarmManager) cont.getSystemService(Context.ALARM_SERVICE);
-        alarmIntent = new Intent(cont, UpdateProfileReceiver.class);
-        Bundle startBundle = new Bundle();
-        startBundle.putBoolean(ACTIVE_KEY, true);
-        startBundle.putString(PROFILE_NAME_KEY, prof.getProfileName());
-        alarmIntent.putExtras(startBundle);
+        for (Profile prof : profs) {
+            mAlarmManager = (AlarmManager) cont.getSystemService(Context.ALARM_SERVICE);
+            alarmIntent = new Intent(cont, UpdateProfileReceiver.class);
+            Bundle startBundle = new Bundle();
+            startBundle.putBoolean(ACTIVE_KEY, true);
+            startBundle.putString(PROFILE_NAME_KEY, prof.getProfileName());
+            alarmIntent.putExtras(startBundle);
 
-        alarmPendingIntent = PendingIntent.getBroadcast(cont, 0,
-                alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-        mAlarmManager.setExact(AlarmManager.RTC_WAKEUP,
-                prof.getProfileStartPoint().getTime(), alarmPendingIntent);
+            alarmPendingIntent = PendingIntent.getBroadcast(cont, 0,
+                    alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            mAlarmManager.setExact(AlarmManager.RTC_WAKEUP,
+                    prof.getProfileStartPoint().getTime(), alarmPendingIntent);
+        }
+
+    }
+
+    protected void updateAlarm(Context cont, Profile prof) {
+
+    }
+
+    protected void addAlarm(Context cont, Profile prof) {
+
+    }
+
+    protected void removeAlarm(Context cont, Profile prof) {
+
     }
 }
