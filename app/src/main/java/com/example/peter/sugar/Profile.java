@@ -1,6 +1,6 @@
 package com.example.peter.sugar;
 
-import java.util.Date;
+import java.util.Calendar;
 
 /**
  * Created by Peter on 04.04.2017.
@@ -11,13 +11,14 @@ class Profile {
     /* Profile attributes */
     private int profileId;
     private String profileName;
-    private Date profileStartPoint;
-    private Date profileEndPoint;
+    private Calendar profileStartPoint;
+    private Calendar profileEndPoint;
     private String[] profileContacts;
     private boolean profileIsActive;
 
     /* Constructor which gets it's data from the SQL database */
-    public Profile(int c_id,String c_name,Date c_sdate,Date c_edate,String c_contacts, boolean c_active)
+    public Profile(int c_id,String c_name,Calendar c_sdate,Calendar c_edate,
+                   String c_contacts, boolean c_active)
     {
         this.profileId = c_id;
         this.profileName = c_name;
@@ -40,13 +41,13 @@ class Profile {
     }
 
     /* Returns the starting point of the profile */
-    Date getProfileStartPoint()
+    Calendar getProfileStartPoint()
     {
         return profileStartPoint;
     }
 
     /* Returns the end point of the profile */
-    Date getProfileEndPoint()
+    Calendar getProfileEndPoint()
     {
         return profileEndPoint;
     }
