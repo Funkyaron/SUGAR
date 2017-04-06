@@ -6,18 +6,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 /**
  * Created by Funkyaron on 04.04.2017.
  */
 
-class UpdateProfileReceiver extends BroadcastReceiver {
+public class UpdateProfileReceiver extends BroadcastReceiver {
 
     private static final int ID = 42;
 
     @Override
     public void onReceive(Context context, Intent intent) {
 
+        Log.d(MainActivity.LOG_TAG, "UpdateProfileReceiver: onReceive()");
 
         /* Temporarily coded to test the alarm functionality */
 

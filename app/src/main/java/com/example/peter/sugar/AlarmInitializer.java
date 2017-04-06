@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import java.util.Date;
 
@@ -32,6 +33,8 @@ class AlarmInitializer {
      */
     protected void updateAlarms(Context cont, Profile[] profs)
     {
+        Log.d(MainActivity.LOG_TAG, "AlarmInitializer: updateAlarms()");
+
         if (mAlarmManager != null) {
             mAlarmManager.cancel(startPendingIntent);
             mAlarmManager.cancel(endPendingIntent);
@@ -50,7 +53,7 @@ class AlarmInitializer {
             startPendingIntent = PendingIntent.getBroadcast(cont, 0,
                     alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             mAlarmManager.setExact(AlarmManager.RTC_WAKEUP,
-                    prof.getProfileStartPoint().getTime(), startPendingIntent);
+                    prof.getProfileStartPoint().getTimeInMillis(), startPendingIntent);
 
             mBundle.putBoolean(ACTIVE_KEY, false);
             alarmIntent.putExtras(mBundle);
@@ -58,7 +61,7 @@ class AlarmInitializer {
             endPendingIntent = PendingIntent.getBroadcast(cont, 0,
                     alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             mAlarmManager.setExact(AlarmManager.RTC_WAKEUP,
-                    prof.getProfileEndPoint().getTime(), endPendingIntent);
+                    prof.getProfileEndPoint().getTimeInMillis(), endPendingIntent);
         }
     }
 }
