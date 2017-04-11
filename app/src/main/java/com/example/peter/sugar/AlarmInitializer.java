@@ -13,7 +13,7 @@ import java.util.Date;
  * Created by Funkyaron on 04.04.2017.
  */
 
-class AlarmInitializer {
+public class AlarmInitializer {
 
     protected static final String ACTIVE_KEY = "is active";
     protected static final String PROFILE_NAME_KEY = "profile name";
