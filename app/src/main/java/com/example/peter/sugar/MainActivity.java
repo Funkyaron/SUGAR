@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(LOG_TAG, "MainActivity: preparing alarm init.");
 
+        /*
         Calendar startCal = Calendar.getInstance();
         startCal.setTimeInMillis(System.currentTimeMillis());
         startCal.set(Calendar.HOUR_OF_DAY, 12);
@@ -86,9 +87,10 @@ public class MainActivity extends AppCompatActivity {
 
         Profile testProf = new Profile(42, "Arbeit", startCal, endCal, "Moritz Müller", false);
         Profile[] testProfs = new Profile[] {testProf};
+        */
 
         AlarmInitializer ai = new AlarmInitializer();
-        ai.updateAlarms(this, testProfs);
+        ai.updateAlarms(this);
 
     }
 }
