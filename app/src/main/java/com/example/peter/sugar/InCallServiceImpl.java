@@ -14,9 +14,14 @@ public class InCallServiceImpl extends InCallService {
 
     @Override
     public void onCallAdded(Call call) {
+
+        //Ton aus
+
         if (getNumber(call).equals("+4917635183695")) {
             call.disconnect();
+            //Ton wieder an (für nächsten Anruf)
         } else {
+            //Ton wieder an
             super.onCallAdded(call);
         }
     }
