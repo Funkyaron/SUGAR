@@ -1,5 +1,7 @@
 package com.example.peter.sugar;
 
+import android.content.Context;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.telecom.Call;
 import android.telecom.InCallService;
@@ -12,16 +14,21 @@ import android.util.Log;
 
 public class InCallServiceImpl extends InCallService {
 
+    private int currentRingerMode;
+    private AudioManager mAudioManager;
+
     @Override
     public void onCallAdded(Call call) {
 
-        //Ton aus
+        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        currentRingerMode = mAudioManager.getRingerMode();
+        mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
 
         if (getNumber(call).equals("+4917635183695")) {
             call.disconnect();
-            //Ton wieder an (für nächsten Anruf)
+            mAudioManager.setRingerMode(currentRingerMode);
         } else {
-            //Ton wieder an
+            mAudioManager.setRingerMode(currentRingerMode);
             super.onCallAdded(call);
         }
     }
@@ -39,6 +46,7 @@ public class InCallServiceImpl extends InCallService {
         Uri handle = getHandle(call);
         return handle == null ? null : handle.getSchemeSpecificPart();
     }
+
     Uri getHandle(Call call) {
         return call == null ? null : call.getDetails().getHandle();
     }
