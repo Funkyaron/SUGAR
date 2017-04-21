@@ -24,8 +24,8 @@ public class UpdateProfileReceiver extends BroadcastReceiver {
         /* Temporarily coded to test the alarm functionality */
 
         Bundle extras = intent.getExtras();
-        String name = extras.getString(AlarmInitializer.EXTRA_PROFILE_NAME);
-        Boolean active = extras.getBoolean(AlarmInitializer.EXTRA_ACTIVE);
+        String name = extras.getString(ProfileUpdateUtil.EXTRA_PROFILE_NAME);
+        Boolean active = extras.getBoolean(ProfileUpdateUtil.EXTRA_ACTIVE);
 
         Notification.Builder builder = new Notification.Builder(context);
 

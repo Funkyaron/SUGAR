@@ -11,12 +11,18 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Created by Funkyaron on 04.04.2017.
+ * Created by Funkyaron on 04.04.2017. <p/>
+ * Helper class that provides static methods to handle time-dependent enabling
+ * or disabling of SUGAR-Profiles.
  */
 
-public class AlarmInitializer {
+public class ProfileUpdateUtil {
 
     protected static final String EXTRA_ACTIVE = "is active";
+
+    /**
+     * String extra that specifies the affected profile
+     */
     protected static final String EXTRA_PROFILE_NAME = "profile name";
 
     private AlarmManager mAlarmManager;
@@ -25,52 +31,9 @@ public class AlarmInitializer {
     private PendingIntent startPendingIntent;
     private PendingIntent endPendingIntent;
 
-    /**
-     * Cancels every existing alarm associated with this app and sets new alarms for
-     * every profile. This method should be called initially when the app starts the first
-     * time and then every time a profile is added, removed or modified.
-     *
-     * @param cont The context in which the alarms should be set.
-     * @param profs An array that contains every profile the app is dealing with.
-     */
-    protected void updateAlarms(Context cont, Profile[] profs)
-    {
-        /*
-        Log.d(MainActivity.LOG_TAG, "AlarmInitializer: updateAlarms()");
-
-        if (mAlarmManager != null) {
-            mAlarmManager.cancel(startPendingIntent);
-            mAlarmManager.cancel(endPendingIntent);
-        } else {
-            mAlarmManager = (AlarmManager) cont.getSystemService(Context.ALARM_SERVICE);
-        }
-
-        for (Profile prof : profs)
-        {
-            alarmIntent = new Intent(cont, UpdateProfileReceiver.class);
-            Bundle mBundle = new Bundle();
-            mBundle.putBoolean(ACTIVE_KEY, true);
-            mBundle.putString(PROFILE_NAME_KEY, prof.getProfileName());
-            alarmIntent.putExtras(mBundle);
-
-            startPendingIntent = PendingIntent.getBroadcast(cont, 0,
-                    alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-            mAlarmManager.setExact(AlarmManager.RTC_WAKEUP,
-                    prof.getProfileStartPoint().getTimeInMillis(), startPendingIntent);
-
-            mBundle.putBoolean(ACTIVE_KEY, false);
-            alarmIntent.putExtras(mBundle);
-
-            endPendingIntent = PendingIntent.getBroadcast(cont, 0,
-                    alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-            mAlarmManager.setExact(AlarmManager.RTC_WAKEUP,
-                    prof.getProfileEndPoint().getTimeInMillis(), endPendingIntent);
-        }
-        */
-    }
 
     /**
-     * Prototype method to test Alarm functionality.
+     * Prototype method to test alarm functionality.
      *
      * @param context
      */
@@ -116,5 +79,70 @@ public class AlarmInitializer {
                 endIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         mAlarmManager.setExact(AlarmManager.RTC_WAKEUP,
                 endCal.getTimeInMillis(), endPendingIntent);
+    }
+
+    /**
+     * Checks if the profile should currently be enabled or not and updates its status.
+     *
+     * @param prof The profile which should be initialized
+     */
+    public static void applyCurrentProfileStatus(XMLProfileParser.Profile prof) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(System.currentTimeMillis());
+        long currentTime = cal.getTimeInMillis();
+        int currentDay = cal.get(Calendar.DAY_OF_WEEK);
+
+        // cal.set(Calendar.HOUR_OF_DAY, prof...);
+        // cal.set(Calendar.MINUTE, prof...);
+        long startTime = cal.getTimeInMillis();
+
+        // cal.set(Calendar.HOUR_OF_DAY, prof...);
+        // cal.set(Calendar.MINUTE, prof...);
+        long endTime = cal.getTimeInMillis();
+
+        boolean[] days = prof.days;
+
+        if (days[toIndex(currentDay)] == false) {
+            disable(prof);
+        } else if (startTime <= currentTime && endTime >= currentTime) {
+            enable(prof);
+        } else {
+            disable(prof);
+        }
+    }
+
+    /**
+     * Enables the specified profile. If enabled, the profile's blocklist applies on
+     * incoming calls.
+     *
+     * @param prof The profile which should be enabled
+     */
+    public static void enable(XMLProfileParser.Profile prof) {
+        //TODO: enable profile
+    }
+
+    /**
+     * Disables the specified profile. If disabled, the profile's blocklist doesn't
+     * affect incoming calls.
+     *
+     * @param prof The profile which should be disabled
+     */
+    public static void disable(XMLProfileParser.Profile prof) {
+        //TODO: Disable profile
+    }
+
+    /**
+     * Converts constant field values from java.util.Calendar to array-index,
+     * beginning from monday. <p/><p/>
+     * Calendar.MONDAY = 2 -> 0 <p/>
+     * Calendar.TUESDAY = 3 -> 1 <p/>
+     * ... <p/>
+     * Calendar.SATURDAY = 7 -> 5 <p/>
+     * Calendar.SUNDAY = 1 -> 6 <p/>
+     * @param calendarDay Constant field value from java.util.Calendar
+     * @return Index that can be used for an array, beginning from monday
+     */
+    public static int toIndex(int calendarDay) {
+        return (calendarDay + 5) % 7;
     }
 }

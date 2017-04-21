@@ -1,26 +1,15 @@
 package com.example.peter.sugar;
 
-import java.io.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
-import com.example.peter.sugar.ProfileContractor.ProfileEntry;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.*;
-import com.example.peter.sugar.ProfileDBHelper.*;
 
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,19 +20,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        try {
-        /* NOTE : This block only gives you WRITE-ACCESS to the database */
+        /*try {
+        /* NOTE : This block only gives you WRITE-ACCESS to the database *//*
             ProfileDBHelper database_access = new ProfileDBHelper(getApplicationContext());
             SQLiteDatabase profile_database = database_access.getWritableDatabase();
 
-        /* Setup data for the key/value-pair */
+        /* Setup data for the key/value-pair *//*
             String profile_name = "Arbeit";
             Date y = Calendar.getInstance().getTime();
             Date z = Calendar.getInstance().getTime();
             String contacts = "015757901173,01639018985,016377723";
             boolean isActive = false;
 
-        /* Add a test tuple into the database */
+        /* Add a test tuple into the database *//*
             ContentValues example_row = new ContentValues();
             example_row.put(ProfileEntry.COLUMN_PROFILE_NAME, profile_name);
             example_row.put(ProfileEntry.COLUMN_PROFILE_START, y.getTime());
@@ -52,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
             example_row.put(ProfileEntry.COLUMN_PROFILE_ACTIVE, isActive);
             long rowId = profile_database.insert(ProfileEntry.TABLE_NAME, null, example_row);
 
-        /* Check wether the tuple is saved inside of the database */
+        /* Check wether the tuple is saved inside of the database *//*
             String buffer_tv = "";
             String[] projection = {ProfileEntry.COLUMN_PROFILE_NAME};
             String selection = ProfileEntry.COLUMN_PROFILE_NAME + " = ? ";
@@ -67,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (Exception e) {
 
-        }
+        }*/
 
 
         /* Testing the alarm initialization */
@@ -89,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         Profile[] testProfs = new Profile[] {testProf};
         */
 
-        AlarmInitializer ai = new AlarmInitializer();
+        ProfileUpdateUtil ai = new ProfileUpdateUtil();
         ai.updateAlarms(this);
 
     }
