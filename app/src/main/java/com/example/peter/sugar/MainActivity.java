@@ -59,27 +59,7 @@ public class MainActivity extends AppCompatActivity {
         }*/
 
 
-        /* Testing the alarm initialization */
 
-        Log.d(LOG_TAG, "MainActivity: preparing alarm init.");
-
-        /*
-        Calendar startCal = Calendar.getInstance();
-        startCal.setTimeInMillis(System.currentTimeMillis());
-        startCal.set(Calendar.HOUR_OF_DAY, 12);
-        startCal.set(Calendar.MINUTE, 25);
-
-        Calendar endCal = Calendar.getInstance();
-        endCal.setTimeInMillis(System.currentTimeMillis());
-        endCal.set(Calendar.HOUR_OF_DAY, 12);
-        endCal.set(Calendar.MINUTE, 30);
-
-        Profile testProf = new Profile(42, "Arbeit", startCal, endCal, "Moritz Müller", false);
-        Profile[] testProfs = new Profile[] {testProf};
-        */
-
-        ProfileUpdateUtil ai = new ProfileUpdateUtil();
-        ai.updateAlarms(this);
 
     }
 }

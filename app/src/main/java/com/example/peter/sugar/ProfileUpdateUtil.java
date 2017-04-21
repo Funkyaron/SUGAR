@@ -18,75 +18,76 @@ import java.util.Date;
 
 public class ProfileUpdateUtil {
 
-    protected static final String EXTRA_ACTIVE = "is active";
-
     /**
-     * String extra that specifies the affected profile
+     * String extra that specifies the affected profile. Need?
      */
-    protected static final String EXTRA_PROFILE_NAME = "profile name";
+    public static final String EXTRA_PROFILE_NAME = "profile name";
 
-    private AlarmManager mAlarmManager;
-    private Intent startIntent;
-    private Intent endIntent;
-    private PendingIntent startPendingIntent;
-    private PendingIntent endPendingIntent;
 
 
     /**
-     * Prototype method to test alarm functionality.
+     * Determines when the given profile should be enabled the next time and sets the
+     * correspondent "alarm".
      *
-     * @param context
+     * @param context Needed for Intent, AlarmManager etc.
+     * @param prof The profile for which the action should be performed
      */
-    protected void updateAlarms(Context context) {
+    public static void setNextEnable(Context context, XMLProfileParser.Profile prof) {
 
-        if(mAlarmManager != null) {
-            mAlarmManager.cancel(startPendingIntent);
-            mAlarmManager.cancel(endPendingIntent);
-        } else {
-            mAlarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        // First check if any day of week should apply
+        for (boolean day : prof.days) {
+            if (day) {
+                break;
+            }
+            return;
         }
 
-        Calendar startCal = Calendar.getInstance();
-        startCal.setTimeInMillis(System.currentTimeMillis());
-        startCal.set(Calendar.HOUR_OF_DAY, 11);
-        startCal.set(Calendar.MINUTE, 51);
+        AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
-        startIntent = new Intent(context, UpdateProfileReceiver.class);
-        Bundle mBundle = new Bundle();
-        mBundle.putBoolean(EXTRA_ACTIVE, true);
-        mBundle.putString(EXTRA_PROFILE_NAME, "Arbeit");
-        startIntent.putExtras(mBundle);
-        //Adding different categories, otherwise the two Intents are considered equal
-        //and will not both be executed.
-        startIntent.addCategory("start");
+        Intent intent = new Intent(context, EnableProfileReceiver.class);
+        intent.addCategory(prof.profile_name);
 
-        startPendingIntent = PendingIntent.getBroadcast(context, 0,
-                startIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-        mAlarmManager.setExact(AlarmManager.RTC_WAKEUP,
-                startCal.getTimeInMillis(), startPendingIntent);
+        PendingIntent pending = PendingIntent.getBroadcast(context, 0,
+                intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        Calendar endCal = Calendar.getInstance();
-        endCal.setTimeInMillis(System.currentTimeMillis());
-        endCal.set(Calendar.HOUR_OF_DAY, 11);
-        endCal.set(Calendar.MINUTE, 53);
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(System.currentTimeMillis());
+        long currentTime = cal.getTimeInMillis();
+        int currentDay = cal.get(Calendar.DAY_OF_WEEK);
 
-        endIntent = new Intent(context, UpdateProfileReceiver.class);
-        mBundle.putBoolean(EXTRA_ACTIVE, false);
-        endIntent.putExtras(mBundle);
-        endIntent.addCategory("end");
+        // cal.set(Calendar.HOUR_OF_DAY, prof...);
+        // cal.set(Calendar.MINUTE, prof...);
+        long targetTime = cal.getTimeInMillis();
 
-        endPendingIntent = PendingIntent.getBroadcast(context, 0,
-                endIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-        mAlarmManager.setExact(AlarmManager.RTC_WAKEUP,
-                endCal.getTimeInMillis(), endPendingIntent);
+        if (prof.days[toIndex(currentDay)] && currentTime < targetTime) {
+            // Don't change target time
+        } else {
+            int daysToAdd = 0;
+            int i = toIndex(currentDay);
+            int j = 0;
+            do {
+                daysToAdd++;
+                i = (i + 1) % 7;
+                j++;
+                if (prof.days[i])
+                    break;
+            } while (j <= 6);
+
+            cal.add(Calendar.DAY_OF_MONTH, daysToAdd);
+            targetTime = cal.getTimeInMillis();
+        }
+
+        alarmMgr.setExact(AlarmManager.RTC_WAKEUP, targetTime, pending);
     }
 
+
+
     /**
-     * Checks if the profile should currently be enabled or not and updates its status.
+     * Checks if the given profile should currently be enabled or not and updates its status.
      *
      * @param prof The profile which should be initialized
      */
-    public static void applyCurrentProfileStatus(XMLProfileParser.Profile prof) {
+    public static void updateProfileStatus(XMLProfileParser.Profile prof) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(System.currentTimeMillis());
         long currentTime = cal.getTimeInMillis();
@@ -111,25 +112,31 @@ public class ProfileUpdateUtil {
         }
     }
 
+
+
     /**
-     * Enables the specified profile. If enabled, the profile's blocklist applies on
+     * Enables the given profile. If enabled, the profile's blocklist applies on
      * incoming calls.
      *
      * @param prof The profile which should be enabled
      */
     public static void enable(XMLProfileParser.Profile prof) {
-        //TODO: enable profile
+        //TODO: enable profile -> XMLProfileUpdater?
     }
 
+
+
     /**
-     * Disables the specified profile. If disabled, the profile's blocklist doesn't
+     * Disables the given profile. If disabled, the profile's blocklist doesn't
      * affect incoming calls.
      *
      * @param prof The profile which should be disabled
      */
     public static void disable(XMLProfileParser.Profile prof) {
-        //TODO: Disable profile
+        //TODO: Disable profile -> XMLProfileUpdater?
     }
+
+
 
     /**
      * Converts constant field values from java.util.Calendar to array-index,
@@ -139,6 +146,7 @@ public class ProfileUpdateUtil {
      * ... <p/>
      * Calendar.SATURDAY = 7 -> 5 <p/>
      * Calendar.SUNDAY = 1 -> 6 <p/>
+     *
      * @param calendarDay Constant field value from java.util.Calendar
      * @return Index that can be used for an array, beginning from monday
      */

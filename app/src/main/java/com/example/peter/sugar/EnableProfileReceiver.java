@@ -12,14 +12,14 @@ import android.util.Log;
  * Created by Funkyaron on 04.04.2017.
  */
 
-public class UpdateProfileReceiver extends BroadcastReceiver {
+public class EnableProfileReceiver extends BroadcastReceiver {
 
     private static final int ID = 42;
 
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Log.d(MainActivity.LOG_TAG, "UpdateProfileReceiver: onReceive()");
+        Log.d(MainActivity.LOG_TAG, "EnableProfileReceiver: onReceive()");
 
         /* Temporarily coded to test the alarm functionality */
 

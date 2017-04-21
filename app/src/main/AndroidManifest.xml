@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".UpdateProfileReceiver" />
+        <receiver android:name=".EnableProfileReceiver" />
 
         <service
             android:name=".InCallServiceImpl"
