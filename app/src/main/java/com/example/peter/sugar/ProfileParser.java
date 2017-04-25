@@ -20,8 +20,8 @@ class ProfileParser {
      * to activate the profile which is associated to the file.
      * @param in represents the input stream which reads the contents of the file
      * @return a profile which will be later used by "ProfileUpdateUtil","EnableProfileReceiver"
-     * @throws XmlPullParserException is thrown if the xml file is invalid
-     * @throws IOException is thrown if the xml file isn't found at all
+     * @throws XmlPullParserException is thrown if the file has formatting issues
+     * @throws IOException is thrown if the file does not exist
      */
     public Profile parse (InputStream in) throws XmlPullParserException,IOException
     {
@@ -58,11 +58,24 @@ class ProfileParser {
                 continue;
             }
             String name = parser.getName();
-            if( name.equals("title"))
+            if( name.equals("name"))
             {
                 name = readProfileName(parser);
             }
+            else if ( name.equals("days"))
+            {
+                profileDays = readActivatedDays(parser);
+            }
+            else if ( name.equals("startTime"))
+            {
+                startTime = readStartTime(parser);
+            }
+            else if ( name.equals("endTime"))
+            {
+                endTime = readEndTime(parser);
+            }
         }
+        return null;
     }
 
     private String readProfileName(XmlPullParser parser) throws XmlPullParserException,IOException
@@ -79,6 +92,7 @@ class ProfileParser {
         boolean[] daysActivated = new boolean[7];
         parser.require(XmlPullParser.START_TAG,ns,"days");
         char[] days = readText(parser).toCharArray();
+        parser.require(XmlPullParser.END_TAG,ns,"days");
         for( int currentDay = 0; currentDay < days.length; currentDay++ )
         {
             if( days[currentDay] == '1' )
@@ -93,6 +107,28 @@ class ProfileParser {
         return daysActivated;
     }
 
+    private int[] readStartTime(XmlPullParser parser) throws XmlPullParserException,IOException
+    {
+        parser.require(XmlPullParser.START_TAG,ns,"startTime");
+        String startTime = readText(parser);
+        parser.require(XmlPullParser.END_TAG,ns,"startTime");
+        int hours = Integer.parseInt(startTime.substring(0,1));
+        int minutes = Integer.parseInt(startTime.substring(2,3));
+        int result[] = { hours,minutes };
+        return result;
+    }
+
+    private int[] readEndTime(XmlPullParser parser) throws XmlPullParserException,IOException
+    {
+        parser.require(XmlPullParser.START_TAG,ns,"endTime");
+        String startTime = readText(parser);
+        parser.require(XmlPullParser.END_TAG,ns,"endTime");
+        int hours = Integer.parseInt(startTime.substring(0,1));
+        int minutes = Integer.parseInt(startTime.substring(2,3));
+        int result[] = { hours,minutes };
+        return result;
+    }
+
     private String readText(XmlPullParser parser) throws XmlPullParserException,IOException
     {
         String result = "";
@@ -103,6 +139,5 @@ class ProfileParser {
         }
         return result;
     }
-
 
 }
