@@ -19,7 +19,7 @@ public class Profile
         this.endTime = endTime;
     }
 
-    public String getProfileName()
+    public String getName()
     {
         return name;
     }

@@ -19,23 +19,16 @@ import java.util.Date;
 public class ProfileUpdateUtil {
 
     /**
-     * String extra that specifies the affected profile. Need?
-     */
-    public static final String EXTRA_PROFILE_NAME = "profile name";
-
-
-
-    /**
      * Determines when the given profile should be enabled the next time and sets the
      * correspondent "alarm".
      *
      * @param context Needed for Intent, AlarmManager etc.
-     * @param prof The profile for which the action should be performed
+     * @param profile The profile for which the action should be performed
      */
-    public static void setNextEnable(Context context, XMLProfileParser.Profile prof) {
+    public static void setNextEnable(Context context, Profile profile) {
 
         // First check if any day of week should apply
-        for (boolean day : prof.days) {
+        for (boolean day : profile.getDays()) {
             if (day) {
                 break;
             }
@@ -45,7 +38,7 @@ public class ProfileUpdateUtil {
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(context, EnableProfileReceiver.class);
-        intent.addCategory(prof.profileName);
+        intent.addCategory(profile.getN);
 
         PendingIntent pending = PendingIntent.getBroadcast(context, 0,
                 intent, PendingIntent.FLAG_CANCEL_CURRENT);
