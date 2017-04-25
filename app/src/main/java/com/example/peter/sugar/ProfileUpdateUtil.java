@@ -4,11 +4,8 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
 
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Created by Funkyaron on 04.04.2017. <p/>
@@ -27,9 +24,15 @@ public class ProfileUpdateUtil {
      */
     public static void setNextEnable(Context context, Profile profile) {
 
+        String name = profile.getName();
+        boolean[] days = profile.getDays();
+        int[] start = profile.getStart();
+
         // First check if any day of week should apply
-        for (boolean day : profile.getDays()) {
-            if (day) {
+        for (boolean day : days)
+        {
+            if (day)
+            {
                 break;
             }
             return;
@@ -38,7 +41,7 @@ public class ProfileUpdateUtil {
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(context, EnableProfileReceiver.class);
-        intent.addCategory(profile.getN);
+        intent.addCategory(name);
 
         PendingIntent pending = PendingIntent.getBroadcast(context, 0,
                 intent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -48,23 +51,93 @@ public class ProfileUpdateUtil {
         long currentTime = cal.getTimeInMillis();
         int currentDay = cal.get(Calendar.DAY_OF_WEEK);
 
-        // cal.set(Calendar.HOUR_OF_DAY, prof...);
-        // cal.set(Calendar.MINUTE, prof...);
+        cal.set(Calendar.HOUR_OF_DAY, start[0]);
+        cal.set(Calendar.MINUTE, start[1]);
         long targetTime = cal.getTimeInMillis();
 
-        if (prof.days[toIndex(currentDay)] && currentTime < targetTime) {
+        if (days[toIndex(currentDay)] && currentTime < targetTime)
+        {
             // Don't change target time
-        } else {
+        }
+        else
+        {
             int daysToAdd = 0;
             int i = toIndex(currentDay);
             int j = 0;
-            do {
+            while (j <= 6)
+            {
                 daysToAdd++;
                 i = (i + 1) % 7;
                 j++;
-                if (prof.days[i])
+                if (days[i])
                     break;
-            } while (j <= 6);
+            }
+
+            cal.add(Calendar.DAY_OF_MONTH, daysToAdd);
+            targetTime = cal.getTimeInMillis();
+        }
+
+        alarmMgr.setExact(AlarmManager.RTC_WAKEUP, targetTime, pending);
+    }
+
+
+    /**
+     * Determines when the given profile sould be disabled the next time and sets the
+     * correspondent "alarm".
+     *
+     * @param context Needed for Intent, AlarmManager etc.
+     * @param profile The profile for which the action should be performed
+     */
+    public static void setNextDisable(Context context, Profile profile) {
+
+        String name = profile.getName();
+        boolean[] days = profile.getDays();
+        int[] end = profile.getEnd();
+
+        // First check if any day of week should apply
+        for (boolean day : days)
+        {
+            if (day)
+            {
+                break;
+            }
+            return;
+        }
+
+        AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(context, DisableProfileReceiver.class);
+        intent.addCategory(name);
+
+        PendingIntent pending = PendingIntent.getBroadcast(context, 0,
+                intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(System.currentTimeMillis());
+        long currentTime = cal.getTimeInMillis();
+        int currentDay = cal.get(Calendar.DAY_OF_WEEK);
+
+        cal.set(Calendar.HOUR_OF_DAY, end[0]);
+        cal.set(Calendar.MINUTE, end[1]);
+        long targetTime = cal.getTimeInMillis();
+
+        if (profile.getDays()[toIndex(currentDay)] && currentTime < targetTime)
+        {
+            // Don't change target time
+        }
+        else
+        {
+            int daysToAdd = 0;
+            int i = toIndex(currentDay);
+            int j = 0;
+            while (j <= 6)
+            {
+                daysToAdd++;
+                i = (i + 1) % 7;
+                j++;
+                if (days[i])
+                    break;
+            }
 
             cal.add(Calendar.DAY_OF_MONTH, daysToAdd);
             targetTime = cal.getTimeInMillis();
@@ -78,30 +151,30 @@ public class ProfileUpdateUtil {
     /**
      * Checks if the given profile should currently be enabled or not and updates its status.
      *
-     * @param prof The profile which should be initialized
+     * @param profile The profile which should be initialized
      */
-    public static void updateProfileStatus(ProfileParser.Profile prof) {
+    public static void updateProfileStatus(Profile profile) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(System.currentTimeMillis());
         long currentTime = cal.getTimeInMillis();
         int currentDay = cal.get(Calendar.DAY_OF_WEEK);
 
-        // cal.set(Calendar.HOUR_OF_DAY, prof...);
-        // cal.set(Calendar.MINUTE, prof...);
+        cal.set(Calendar.HOUR_OF_DAY, profile.getStart()[0]);
+        cal.set(Calendar.MINUTE, profile.getStart()[1]);
         long startTime = cal.getTimeInMillis();
 
-        // cal.set(Calendar.HOUR_OF_DAY, prof...);
-        // cal.set(Calendar.MINUTE, prof...);
+        cal.set(Calendar.HOUR_OF_DAY, profile.getEnd()[0]);
+        cal.set(Calendar.MINUTE, profile.getEnd()[1]);
         long endTime = cal.getTimeInMillis();
 
-        boolean[] days = prof.days;
+        boolean[] days = profile.getDays();
 
         if (days[toIndex(currentDay)] == false) {
-            disable(prof);
+            disable(profile);
         } else if (startTime <= currentTime && endTime >= currentTime) {
-            enable(prof);
+            enable(profile);
         } else {
-            disable(prof);
+            disable(profile);
         }
     }
 
@@ -111,9 +184,9 @@ public class ProfileUpdateUtil {
      * Enables the given profile. If enabled, the profile's blocklist applies on
      * incoming calls.
      *
-     * @param prof The profile which should be enabled
+     * @param profile The profile which should be enabled
      */
-    public static void enable(XMLProfileParser.Profile prof) {
+    public static void enable(Profile profile) {
         //TODO: enable profile -> XMLProfileUpdater?
     }
 
@@ -123,9 +196,9 @@ public class ProfileUpdateUtil {
      * Disables the given profile. If disabled, the profile's blocklist doesn't
      * affect incoming calls.
      *
-     * @param prof The profile which should be disabled
+     * @param profile The profile which should be disabled
      */
-    public static void disable(XMLProfileParser.Profile prof) {
+    public static void disable(Profile profile) {
         //TODO: Disable profile -> XMLProfileUpdater?
     }
 
