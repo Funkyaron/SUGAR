@@ -5,17 +5,58 @@ package com.example.peter.sugar;
  */
 public class Profile
 {
-    private String profileName;
+    private String name;
     private boolean days[];
     private int startTime[];
     private int endTime[];
 
 
-    public Profile(String conProfileName, boolean con_days[], int startTime[], int endTime[])
+    public Profile(String name, boolean days[], int startTime[], int endTime[])
     {
-        this.profileName = conProfileName;
-        this.days = con_days;
+        this.name = name;
+        this.days = days;
         this.startTime = startTime;
         this.endTime = endTime;
     }
+
+    public String getProfileName()
+    {
+        return name;
+    }
+
+    public boolean[] getDays()
+    {
+        return days;
+    }
+
+    public int[] getStart()
+    {
+        return startTime;
+    }
+
+    public int[] getEnd()
+    {
+        return endTime;
+    }
+
+    void setName(String updatedName)
+    {
+        name = updatedName;
+    }
+
+    void setDays(boolean[] updatedDays)
+    {
+        days = updatedDays;
+    }
+
+    void setStart( int[] updatedStart )
+    {
+        startTime = updatedStart;
+    }
+
+    void setEnd( int[] updatedEnd )
+    {
+        endTime = updatedEnd;
+    }
+
 }
