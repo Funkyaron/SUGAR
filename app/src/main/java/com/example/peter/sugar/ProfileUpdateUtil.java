@@ -45,7 +45,7 @@ public class ProfileUpdateUtil {
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(context, EnableProfileReceiver.class);
-        intent.addCategory(prof.profile_name);
+        intent.addCategory(prof.profileName);
 
         PendingIntent pending = PendingIntent.getBroadcast(context, 0,
                 intent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -87,7 +87,7 @@ public class ProfileUpdateUtil {
      *
      * @param prof The profile which should be initialized
      */
-    public static void updateProfileStatus(XMLProfileParser.Profile prof) {
+    public static void updateProfileStatus(ProfileParser.Profile prof) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(System.currentTimeMillis());
         long currentTime = cal.getTimeInMillis();
