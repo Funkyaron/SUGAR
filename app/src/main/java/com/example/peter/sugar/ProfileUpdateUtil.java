@@ -19,13 +19,6 @@ import java.util.Date;
 public class ProfileUpdateUtil {
 
     /**
-     * String extra that specifies the affected profile. Need?
-     */
-    public static final String EXTRA_PROFILE_NAME = "profile name";
-
-
-
-    /**
      * Determines when the given profile should be enabled the next time and sets the
      * correspondent "alarm".
      *
@@ -35,8 +28,10 @@ public class ProfileUpdateUtil {
     public static void setNextEnable(Context context, XMLProfileParser.Profile prof) {
 
         // First check if any day of week should apply
-        for (boolean day : prof.days) {
-            if (day) {
+        for (boolean day : prof.days)
+        {
+            if (day)
+            {
                 break;
             }
             return;
@@ -59,19 +54,85 @@ public class ProfileUpdateUtil {
         // cal.set(Calendar.MINUTE, prof...);
         long targetTime = cal.getTimeInMillis();
 
-        if (prof.days[toIndex(currentDay)] && currentTime < targetTime) {
+        if (prof.days[toIndex(currentDay)] && currentTime < targetTime)
+        {
             // Don't change target time
-        } else {
+        }
+        else
+        {
             int daysToAdd = 0;
             int i = toIndex(currentDay);
             int j = 0;
-            do {
+            while (j <= 6)
+            {
                 daysToAdd++;
                 i = (i + 1) % 7;
                 j++;
                 if (prof.days[i])
                     break;
-            } while (j <= 6);
+            }
+
+            cal.add(Calendar.DAY_OF_MONTH, daysToAdd);
+            targetTime = cal.getTimeInMillis();
+        }
+
+        alarmMgr.setExact(AlarmManager.RTC_WAKEUP, targetTime, pending);
+    }
+
+
+    /**
+     * Determines when the given profile should be disabled the next time and sets the
+     * correspondent "alarm".
+     *
+     * @param context Needed for Intent, AlarmManager etc.
+     * @param prof The profile for whih the action should be performed
+     */
+    public static void setNextDisable(Context context, XMLProfileParser.Profile prof) {
+
+        // First check if any day of week should apply
+        for (boolean day : prof.days)
+        {
+            if (day)
+            {
+                break;
+            }
+            return;
+        }
+
+        AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(context, DisableProfileReceiver.class);
+        intent.addCategory(prof.profile_name);
+
+        PendingIntent pending = PendingIntent.getBroadcast(context, 0,
+                intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(System.currentTimeMillis());
+        long currentTime = cal.getTimeInMillis();
+        int currentDay = cal.get(Calendar.DAY_OF_WEEK);
+
+        // cal.set(Calendar.HOUR_OF_DAY, prof...);
+        // cal.set(Calendar.MINUTE, prof...);
+        long targetTime = cal.getTimeInMillis();
+
+        if (prof.days[toIndex(currentDay)] && currentTime < targetTime)
+        {
+            // Don't change target time
+        }
+        else
+        {
+            int daysToAdd = 0;
+            int i = toIndex(currentDay);
+            int j = 0;
+            while (j <= 6)
+            {
+                daysToAdd++;
+                i = (i + 1) % 7;
+                j++;
+                if (prof.days[i])
+                    break;
+            }
 
             cal.add(Calendar.DAY_OF_MONTH, daysToAdd);
             targetTime = cal.getTimeInMillis();
@@ -103,11 +164,16 @@ public class ProfileUpdateUtil {
 
         boolean[] days = prof.days;
 
-        if (days[toIndex(currentDay)] == false) {
+        if (days[toIndex(currentDay)] == false)
+        {
             disable(prof);
-        } else if (startTime <= currentTime && endTime >= currentTime) {
+        }
+        else if (startTime <= currentTime && endTime >= currentTime)
+        {
             enable(prof);
-        } else {
+        }
+        else
+        {
             disable(prof);
         }
     }
