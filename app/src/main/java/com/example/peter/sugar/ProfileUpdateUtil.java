@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import java.util.Calendar;
 
@@ -23,6 +24,8 @@ public class ProfileUpdateUtil {
      * @param profile The profile for which the action should be performed
      */
     public static void setNextEnable(Context context, Profile profile) {
+
+        Log.d(MainActivity.LOG_TAG, "PUU: setNextEnable()");
 
         String name = profile.getName();
         boolean[] days = profile.getDays();
@@ -90,6 +93,8 @@ public class ProfileUpdateUtil {
      */
     public static void setNextDisable(Context context, Profile profile) {
 
+        Log.d(MainActivity.LOG_TAG, "PUU: setNextDisable()");
+
         String name = profile.getName();
         boolean[] days = profile.getDays();
         int[] end = profile.getEnd();
@@ -154,6 +159,9 @@ public class ProfileUpdateUtil {
      * @param profile The profile which should be initialized
      */
     public static void updateProfileStatus(Profile profile) {
+
+        Log.d(MainActivity.LOG_TAG, "PUU: UpdateProfileStatus");
+
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(System.currentTimeMillis());
         long currentTime = cal.getTimeInMillis();

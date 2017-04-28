@@ -23,15 +23,24 @@ public class EnableProfileReceiver extends BroadcastReceiver {
 
         /* Temporarily coded to test the alarm functionality */
 
-        Bundle extras = intent.getExtras();
-        String name = extras.getString(ProfileUpdateUtil.EXTRA_PROFILE_NAME);
-        Boolean active = extras.getBoolean(ProfileUpdateUtil.EXTRA_ACTIVE);
+        String[] categories = (String[]) intent.getCategories().toArray();
+        String name = categories[0];
+
+        Profile prof = null;
+        TestXmlWriter tester = new TestXmlWriter();
+
+        try {
+            prof = tester.readTestProfile(context);
+            ProfileUpdateUtil.setNextEnable(context, prof);
+        } catch (Exception e) {
+            Log.e(MainActivity.LOG_TAG, e.toString());
+        }
 
         Notification.Builder builder = new Notification.Builder(context);
 
         builder.setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(name)
-                .setContentText(active.toString())
+                .setContentText("Enabled")
                 .setWhen(System.currentTimeMillis());
 
         Notification noti = builder.build();
