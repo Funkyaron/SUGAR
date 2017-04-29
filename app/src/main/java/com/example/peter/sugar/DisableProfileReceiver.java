@@ -18,8 +18,10 @@ public class DisableProfileReceiver extends BroadcastReceiver {
 
         /* Temporarily coded to test the alarm functionality */
 
-        String[] categories = (String[]) intent.getCategories().toArray();
-        String name = categories[0];
+        String name = "";
+
+        Object[] categories = intent.getCategories().toArray();
+        name = (String) categories[0];
 
         Profile prof = null;
         TestXmlWriter tester = new TestXmlWriter();

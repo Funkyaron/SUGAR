@@ -27,7 +27,7 @@ public class TestXmlWriter {
         File testProFile = new File(context.getFilesDir() + "/" + FILENAME);
         if (testProFile.exists())
         {
-            return;
+            testProFile.delete();
         }
 
         FileOutputStream fos = context.openFileOutput(FILENAME, Context.MODE_PRIVATE);
@@ -43,28 +43,16 @@ public class TestXmlWriter {
         serializer.endTag(null, "name");
 
         serializer.startTag(null, "days");
-        serializer.text("0,0,0,0,1,1,1");
+        serializer.text("0000111");
         serializer.endTag(null, "days");
 
-        serializer.startTag(null, "start_time");
-            serializer.startTag(null, "hour");
-            serializer.text("14");
-            serializer.endTag(null, "hour");
+        serializer.startTag(null, "startTime");
+        serializer.text("1430");
+        serializer.endTag(null, "startTime");
 
-            serializer.startTag(null, "minute");
-            serializer.text("30");
-            serializer.endTag(null, "minute");
-        serializer.endTag(null, "start_time");
-
-        serializer.startTag(null, "end_time");
-            serializer.startTag(null, "hour");
-            serializer.text("18");
-            serializer.endTag(null, "hour");
-
-            serializer.startTag(null, "minute");
-            serializer.text("15");
-            serializer.endTag(null, "minute");
-        serializer.endTag(null, "end_time");
+        serializer.startTag(null, "endTime");
+        serializer.text("1830");
+        serializer.endTag(null, "endTime");
 
         serializer.startTag(null, "numbers");
         serializer.text("+4917635183695,1234");
@@ -80,17 +68,9 @@ public class TestXmlWriter {
 
         Log.d(MainActivity.LOG_TAG, "TestXmlWriter: readTestProfile()");
 
-        File testProFile = new File(context.getFilesDir() + "/" + FILENAME);
-        if (testProFile.exists())
-        {
-            FileInputStream fis = context.openFileInput(FILENAME);
-            ProfileParser pParser = new ProfileParser();
-            return pParser.parse(fis);
-        }
-        else
-        {
-            return null;
-        }
+        FileInputStream fis = context.openFileInput(FILENAME);
+        ProfileParser pParser = new ProfileParser();
+        return pParser.parse(fis);
 
     }
 }

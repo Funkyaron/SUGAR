@@ -1,5 +1,6 @@
 package com.example.peter.sugar;
 
+import android.util.Log;
 import android.util.Xml;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -25,6 +26,7 @@ class ProfileParser {
      */
     public Profile parse (InputStream in) throws XmlPullParserException,IOException
     {
+        Log.d(MainActivity.LOG_TAG, "ProfileParser: parse()");
         try {
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES,false);
@@ -46,6 +48,7 @@ class ProfileParser {
      */
     private Profile readProfile(XmlPullParser parser) throws XmlPullParserException,IOException
     {
+        Log.d(MainActivity.LOG_TAG, "ProfileParser: readProfile()");
         parser.require(XmlPullParser.START_TAG,ns,"profile");
         String profileName = null;
         boolean profileDays[] = new boolean[7];
@@ -53,14 +56,14 @@ class ProfileParser {
         int endTime[] = new int[2];
         while( parser.next() != XmlPullParser.END_TAG )
         {
-            if( parser.getEventType() != XmlPullParser.END_TAG )
+            if( parser.getEventType() != XmlPullParser.START_TAG )
             {
                 continue;
             }
             String name = parser.getName();
             if( name.equals("name"))
             {
-                name = readProfileName(parser);
+                profileName = readProfileName(parser);
             }
             else if ( name.equals("days"))
             {
@@ -75,11 +78,14 @@ class ProfileParser {
                 endTime = readEndTime(parser);
             }
         }
-        return null;
+        // return null; // Verarschen???
+
+        return new Profile(profileName, profileDays, startTime, endTime);
     }
 
     private String readProfileName(XmlPullParser parser) throws XmlPullParserException,IOException
     {
+        Log.d(MainActivity.LOG_TAG, "ProfileParser: readProfileName()");
         parser.require(XmlPullParser.START_TAG,ns,"name");
         String name = readText(parser);
         parser.require(XmlPullParser.END_TAG,ns,"name");
@@ -89,18 +95,24 @@ class ProfileParser {
 
     private boolean[] readActivatedDays(XmlPullParser parser) throws XmlPullParserException,IOException
     {
+        Log.d(MainActivity.LOG_TAG, "ProfileParser: readDays()");
         boolean[] daysActivated = new boolean[7];
         parser.require(XmlPullParser.START_TAG,ns,"days");
         char[] days = readText(parser).toCharArray();
         parser.require(XmlPullParser.END_TAG,ns,"days");
+
+        Log.d(MainActivity.LOG_TAG, "Next Line: for(int currentDay...");
         for( int currentDay = 0; currentDay < days.length; currentDay++ )
         {
+            Log.d(MainActivity.LOG_TAG, "current Day = " + currentDay);
             if( days[currentDay] == '1' )
             {
+                Log.d(MainActivity.LOG_TAG, "day active");
                 daysActivated[currentDay] = true;
             }
             else if ( days[currentDay] == '0')
             {
+                Log.d(MainActivity.LOG_TAG, "day inactive");
                 daysActivated[currentDay] = false;
             }
         }
@@ -109,22 +121,24 @@ class ProfileParser {
 
     private int[] readStartTime(XmlPullParser parser) throws XmlPullParserException,IOException
     {
+        Log.d(MainActivity.LOG_TAG, "ProfileParser: readStartTime()");
         parser.require(XmlPullParser.START_TAG,ns,"startTime");
         String startTime = readText(parser);
         parser.require(XmlPullParser.END_TAG,ns,"startTime");
-        int hours = Integer.parseInt(startTime.substring(0,1));
-        int minutes = Integer.parseInt(startTime.substring(2,3));
+        int hours = Integer.parseInt(startTime.substring(0,2));
+        int minutes = Integer.parseInt(startTime.substring(2,4));
         int result[] = { hours,minutes };
         return result;
     }
 
     private int[] readEndTime(XmlPullParser parser) throws XmlPullParserException,IOException
     {
+        Log.d(MainActivity.LOG_TAG, "ProfileParser: readEndTime()");
         parser.require(XmlPullParser.START_TAG,ns,"endTime");
         String startTime = readText(parser);
         parser.require(XmlPullParser.END_TAG,ns,"endTime");
-        int hours = Integer.parseInt(startTime.substring(0,1));
-        int minutes = Integer.parseInt(startTime.substring(2,3));
+        int hours = Integer.parseInt(startTime.substring(0,2));
+        int minutes = Integer.parseInt(startTime.substring(2,4));
         int result[] = { hours,minutes };
         return result;
     }

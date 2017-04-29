@@ -32,14 +32,17 @@ public class ProfileUpdateUtil {
         int[] start = profile.getStart();
 
         // First check if any day of week should apply
+        Log.d(MainActivity.LOG_TAG, "Checking days");
+        boolean shouldApply = false;
         for (boolean day : days)
         {
             if (day)
-            {
-                break;
-            }
-            return;
+                shouldApply = true;
         }
+        if (!shouldApply)
+            return;
+
+        Log.d(MainActivity.LOG_TAG, "Setting Alarm");
 
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
@@ -100,14 +103,14 @@ public class ProfileUpdateUtil {
         int[] end = profile.getEnd();
 
         // First check if any day of week should apply
+        boolean shouldApply = false;
         for (boolean day : days)
         {
             if (day)
-            {
-                break;
-            }
-            return;
+                shouldApply = true;
         }
+        if (!shouldApply)
+            return;
 
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
@@ -156,58 +159,56 @@ public class ProfileUpdateUtil {
     /**
      * Checks if the given profile should currently be enabled or not and updates its status.
      *
+     * @param context Needed for Intent
      * @param profile The profile which should be initialized
      */
-    public static void updateProfileStatus(Profile profile) {
+    public static void updateProfileStatus(Context context, Profile profile) {
 
         Log.d(MainActivity.LOG_TAG, "PUU: UpdateProfileStatus");
+
+        String name = profile.getName();
+        boolean[] days = profile.getDays();
+        int[] startTime = profile.getStart();
+        int[] endTime = profile.getEnd();
 
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(System.currentTimeMillis());
         long currentTime = cal.getTimeInMillis();
         int currentDay = cal.get(Calendar.DAY_OF_WEEK);
 
-        cal.set(Calendar.HOUR_OF_DAY, profile.getStart()[0]);
-        cal.set(Calendar.MINUTE, profile.getStart()[1]);
-        long startTime = cal.getTimeInMillis();
+        cal.set(Calendar.HOUR_OF_DAY, startTime[0]);
+        cal.set(Calendar.MINUTE, startTime[1]);
+        long startTimeInMillis = cal.getTimeInMillis();
 
-        cal.set(Calendar.HOUR_OF_DAY, profile.getEnd()[0]);
-        cal.set(Calendar.MINUTE, profile.getEnd()[1]);
-        long endTime = cal.getTimeInMillis();
+        cal.set(Calendar.HOUR_OF_DAY, endTime[0]);
+        cal.set(Calendar.MINUTE, endTime[1]);
+        long endTimeInMillis = cal.getTimeInMillis();
 
-        boolean[] days = profile.getDays();
+        Log.d(MainActivity.LOG_TAG, "currentDay Index = " + toIndex(currentDay)
+            + ", " + days[toIndex(currentDay)]);
+        Log.d(MainActivity.LOG_TAG, "startHour = " + startTime[0]);
+        Log.d(MainActivity.LOG_TAG, "startMinute = " + startTime[1]);
+        Log.d(MainActivity.LOG_TAG, "endHour = " + endTime[0]);
+        Log.d(MainActivity.LOG_TAG, "endMinute = " + endTime[1]);
 
-        if (days[toIndex(currentDay)] == false) {
-            disable(profile);
-        } else if (startTime <= currentTime && endTime >= currentTime) {
-            enable(profile);
-        } else {
-            disable(profile);
+        if (days[toIndex(currentDay)] == false
+                || startTimeInMillis >= currentTime
+                || endTimeInMillis <= currentTime)
+        {
+            Log.d(MainActivity.LOG_TAG, "Profile should be disabled");
+            Intent intent = new Intent(context, DisableProfileReceiver.class);
+            Log.d(MainActivity.LOG_TAG, "Next line: intent.addCategory...");
+            intent.addCategory(name);
+            Log.d(MainActivity.LOG_TAG, "Next line: sendBroadcast...");
+            context.sendBroadcast(intent);
         }
-    }
-
-
-
-    /**
-     * Enables the given profile. If enabled, the profile's blocklist applies on
-     * incoming calls.
-     *
-     * @param profile The profile which should be enabled
-     */
-    public static void enable(Profile profile) {
-        //TODO: enable profile -> XMLProfileUpdater?
-    }
-
-
-
-    /**
-     * Disables the given profile. If disabled, the profile's blocklist doesn't
-     * affect incoming calls.
-     *
-     * @param profile The profile which should be disabled
-     */
-    public static void disable(Profile profile) {
-        //TODO: Disable profile -> XMLProfileUpdater?
+        else
+        {
+            Log.d(MainActivity.LOG_TAG, "Profile should be enabled");
+            Intent intent = new Intent(context, EnableProfileReceiver.class);
+            intent.addCategory(name);
+            context.sendBroadcast(intent);
+        }
     }
 
 

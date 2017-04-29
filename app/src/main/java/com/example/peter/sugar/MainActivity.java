@@ -42,11 +42,12 @@ public class MainActivity extends AppCompatActivity {
             Log.e(LOG_TAG, e.toString());
         }
 
-        if (prof != null)
-        {
+        try {
             ProfileUpdateUtil.setNextEnable(this, prof);
             ProfileUpdateUtil.setNextDisable(this, prof);
-            ProfileUpdateUtil.updateProfileStatus(prof);
+            ProfileUpdateUtil.updateProfileStatus(this, prof);
+        } catch (NullPointerException e) {
+            Log.e(LOG_TAG, e.toString());
         }
 
     }

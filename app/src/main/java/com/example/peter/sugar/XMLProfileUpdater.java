@@ -1,5 +1,5 @@
 package com.example.peter.sugar;
-
+/*
  import org.apache.commons.net.ftp.*;
 import java.io.IOException;
 import java.io.FileOutputStream;
@@ -7,7 +7,7 @@ import java.io.FileInputStream;
 
 /**
  * Created by Peter on 19.04.2017.
- */
+ *//*
 
 public class XMLProfileUpdater{
 
@@ -41,5 +41,5 @@ public class XMLProfileUpdater{
         }
         return true;
     }
-}
+}*/
 
