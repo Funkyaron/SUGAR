@@ -83,7 +83,7 @@ public class ProfileUpdateUtil {
             targetTime = cal.getTimeInMillis();
         }
 
-        alarmMgr.setExact(AlarmManager.RTC_WAKEUP, targetTime, pending);
+        alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, targetTime, pending);
     }
 
 
@@ -151,7 +151,7 @@ public class ProfileUpdateUtil {
             targetTime = cal.getTimeInMillis();
         }
 
-        alarmMgr.setExact(AlarmManager.RTC_WAKEUP, targetTime, pending);
+        alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, targetTime, pending);
     }
 
 
