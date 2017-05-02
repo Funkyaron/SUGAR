@@ -6,15 +6,13 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import com.thoughtworks.xstream.XStream;
 
 class ProfileParser {
 
+    /**  */
     private static final String ns = null;
+    private XStream serializer;
 
     /**
      * This function processes the given XML file and returns a profile which can be later used
@@ -54,6 +52,7 @@ class ProfileParser {
         boolean profileDays[] = new boolean[7];
         int startTime[] = new int[2];
         int endTime[] = new int[2];
+        String[] numbers = null;
         while( parser.next() != XmlPullParser.END_TAG )
         {
             if( parser.getEventType() != XmlPullParser.START_TAG )
@@ -77,10 +76,12 @@ class ProfileParser {
             {
                 endTime = readEndTime(parser);
             }
+            else if ( name.equals("numbers"))
+            {
+                numbers = readPhoneNumbers(parser);
+            }
         }
-        // return null; // Verarschen???
-
-        return new Profile(profileName, profileDays, startTime, endTime);
+        return new Profile(profileName, profileDays, startTime, endTime,numbers);
     }
 
     private String readProfileName(XmlPullParser parser) throws XmlPullParserException,IOException
@@ -141,6 +142,15 @@ class ProfileParser {
         int minutes = Integer.parseInt(startTime.substring(2,4));
         int result[] = { hours,minutes };
         return result;
+    }
+
+    private String[] readPhoneNumbers(XmlPullParser parser) throws XmlPullParserException,IOException
+    {
+        Log.d(MainActivity.LOG_TAG," ProfileParser: readPhoneNumbers() ");
+        parser.require(XmlPullParser.START_TAG,ns,"numbers");
+        String[] phoneNumbers = readText(parser).toString().split(",");
+        parser.require(XmlPullParser.END_TAG,ns,"numbers");
+        return phoneNumbers;
     }
 
     private String readText(XmlPullParser parser) throws XmlPullParserException,IOException

@@ -10,8 +10,8 @@ import java.io.*;
  * Created by Peter on 19.04.2017.
  */
 
-class XMLProfileUpdater{
-
+class XMLProfileUpdater
+{
     Context context;
     private FTPClient androidClient;
     private int reply;
@@ -40,7 +40,7 @@ class XMLProfileUpdater{
             String remoteFilePath = "/gnu/GNUinfo/README";
             String fileName = "README";
             InputStream source = androidClient.retrieveFileStream(remoteFilePath);
-            FileOutputStream target = new FileOutputStream(context.getFilesDir() + fileName);
+            FileOutputStream target = new FileOutputStream(context.getFilesDir() + "/" + fileName);
             byte buffer[] = new byte[4096];
             long count = 0L;
             int n = 0;
@@ -50,7 +50,6 @@ class XMLProfileUpdater{
                 count = count + n;
             }
         }
-
     }
 }
 

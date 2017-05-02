@@ -9,14 +9,16 @@ public class Profile
     private boolean days[];
     private int startTime[];
     private int endTime[];
+    private String[] numbers;
 
 
-    public Profile(String name, boolean days[], int startTime[], int endTime[])
+    public Profile(String name, boolean days[], int startTime[], int endTime[], String[] numbers)
     {
         this.name = name;
         this.days = days;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.numbers = numbers;
     }
 
     public String getName()
@@ -37,6 +39,11 @@ public class Profile
     public int[] getEnd()
     {
         return endTime;
+    }
+
+    public String[] getPhoneNumbers()
+    {
+        return numbers;
     }
 
     void setName(String updatedName)
