@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.peter.sugar">
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -8,6 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -15,6 +17,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".PseudoDialer">
             <intent-filter>
                 <action android:name="android.intent.action.DIAL" />
@@ -26,7 +29,10 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".EnableProfileReceiver" />
+        <receiver
+            android:name=".EnableProfileReceiver"
+            android:enabled="true"
+            android:exported="false"/>
 
         <service
             android:name=".InCallServiceImpl"
@@ -45,7 +51,9 @@
         <receiver
             android:name=".DisableProfileReceiver"
             android:enabled="true"
-            android:exported="false"></receiver>
+            android:exported="false" />
+
+        <activity android:name=".ContactsActivity"></activity>
     </application>
 
 </manifest>
