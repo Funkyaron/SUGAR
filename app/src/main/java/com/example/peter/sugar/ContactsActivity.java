@@ -11,8 +11,10 @@ import android.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
 
 public class ContactsActivity extends AppCompatActivity
@@ -34,17 +36,23 @@ public class ContactsActivity extends AppCompatActivity
      * These are the contacts database columns that we will retrieve.
      */
     private final String[] PROJECTION = {ContactsContract.Data._ID,
-        ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup.NORMALIZED_NUMBER};
+        ContactsContract.Data.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER};
+
+    /**
+     * We will order the query result by display name.
+     */
+    private final String SORT_ORDER = ContactsContract.Data.DISPLAY_NAME;
 
     /**
      * We query for every contact that contains a NORMALIZED_NUMBER
      */
     private final String SELECTION = "((" +
-            ContactsContract.PhoneLookup.NORMALIZED_NUMBER + " NOTNULL) AND (" +
-            ContactsContract.PhoneLookup.NORMALIZED_NUMBER + " != '' ))";
+            ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER + " NOTNULL) AND (" +
+            ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER + " != '' ))";
 
     SimpleCursorAdapter mAdapter;
     private Button finishButton;
+    private ListView contactsView;
 
 
 
@@ -53,6 +61,10 @@ public class ContactsActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
 
+        // Initializing Views
+        finishButton = (Button) findViewById(R.id.finish_button_id);
+        contactsView = (ListView) findViewById(R.id.contacts_view_id);
+        Log.d(MainActivity.LOG_TAG, "Views initialized");
 
         // Concerning runtime permissions
         if (ActivityCompat.checkSelfPermission(this,
@@ -60,29 +72,23 @@ public class ContactsActivity extends AppCompatActivity
                 || ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_CONTACTS) != PackageManager.PERMISSION_GRANTED)
         {
+            Log.d(MainActivity.LOG_TAG, "ConAct: Permissions not granted, sending request.");
             ActivityCompat.requestPermissions(this, PERMISSION_CONTACTS, REQUEST_CONTACTS);
-            // Activity will be finished automatically if the permission will not be granted.
+        } else {
+
+            Log.d(MainActivity.LOG_TAG, "ConAct: Proceeding with database query");
+
+            // Concerning contacts database
+            String[] fromColumns = {ContactsContract.Data.DISPLAY_NAME,
+                    ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER};
+            int[] toViews = {R.id.name_view, R.id.number_view};
+
+            mAdapter = new SimpleCursorAdapter(this, R.layout.list_item_contacts,
+                    null, fromColumns, toViews, 0);
+            contactsView.setAdapter(mAdapter);
+
+            getLoaderManager().initLoader(0, null, this);
         }
-
-
-        // Concerning contacts database
-        String[] fromColumns = {ContactsContract.PhoneLookup.DISPLAY_NAME,
-            ContactsContract.PhoneLookup.NORMALIZED_NUMBER};
-        int[] toViews = {R.id.name_view, R.id.number_view};
-
-        mAdapter = new SimpleCursorAdapter(this, R.layout.list_item_contacts,
-                null, fromColumns, toViews, 0);
-
-        getLoaderManager().initLoader(0, null, this);
-
-
-        finishButton = (Button) findViewById(R.id.finish_button_id);
-        finishButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick (View v) {
-                finish();
-            }
-        });
     }
 
 
@@ -92,6 +98,7 @@ public class ContactsActivity extends AppCompatActivity
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
                                            int[] grantResults)
     {
+        Log.d(MainActivity.LOG_TAG, "ConAct: onRequestPermissionsResult()");
         if (requestCode == REQUEST_CONTACTS)
         {
             if(verifyPermissions(grantResults))
@@ -99,7 +106,6 @@ public class ContactsActivity extends AppCompatActivity
             else
             {
                 Toast.makeText(this, "Berechtigungen nicht genehmigt", Toast.LENGTH_LONG).show();
-                finish();
             }
         }
         else
@@ -124,15 +130,27 @@ public class ContactsActivity extends AppCompatActivity
 
     // Implementing LoaderCallbacks. See https://developer.android.com/guide/topics/ui/layout/listview.html
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Log.d(MainActivity.LOG_TAG, "ConAct: onCreateLoader()");
         return new CursorLoader(this, ContactsContract.Data.CONTENT_URI,
-                PROJECTION, SELECTION, null, null);
+                PROJECTION, SELECTION, null, SORT_ORDER);
     }
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.d(MainActivity.LOG_TAG, "ConAct: onLoadFinished()");
         mAdapter.swapCursor(data);
     }
 
     public void onLoaderReset(Loader<Cursor> loader) {
+        Log.d(MainActivity.LOG_TAG, "ConAct: onLoaderReset()");
         mAdapter.swapCursor(null);
+    }
+
+
+    /**
+     * Called when the finishButton is clicked.
+     * @param v
+     */
+    public void onFinishButtonClick (View v) {
+        finish();
     }
 }

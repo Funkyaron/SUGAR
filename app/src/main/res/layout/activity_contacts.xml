@@ -15,13 +15,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:text="@string/finish_button_text"/>
+        android:text="@string/finish_button_text"
+        android:onClick="onFinishButtonClick"/>
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <!-- Make sure that the Button and the ListView don't overlay -->
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_above="@id/finish_button_id">
 
-    </ListView>
+        <ListView
+            android:id="@+id/contacts_view_id"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </ListView>
+
+    </FrameLayout>
 
 </RelativeLayout>
 
