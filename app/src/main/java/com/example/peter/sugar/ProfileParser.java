@@ -7,11 +7,13 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.io.InputStream;
 import com.thoughtworks.xstream.XStream;
+import org.apache.commons.net.*;
 
 class ProfileParser {
 
-    /**  */
+    /** Defines the namespace of our xml files ( which is non-existent ) */
     private static final String ns = null;
+    /** Serializes the profiles into a readable xml file */
     private XStream serializer;
 
     /**

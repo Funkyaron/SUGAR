@@ -1,19 +1,10 @@
 package com.example.peter.sugar;
 
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
-
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.*;
-
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
-
 import org.xmlpull.v1.XmlPullParserException;
 
 public class MainActivity extends AppCompatActivity {

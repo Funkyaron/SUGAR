@@ -1,27 +1,25 @@
 package com.example.peter.sugar;
 
-
 import android.content.Context;
 import org.apache.commons.net.ftp.*;
-import com.thoughtworks.xstream.io.xml.DomDriver;
-import com.thoughtworks.xstream.*;
+import org.xmlpull.v1.XmlSerializer;
+import android.util.Xml;
 import java.util.*;
 import java.io.*;
 
 /**
  * @author Peter
- * @version 0.001
  */
 class Profile implements Comparator<Profile>,Serializable
 {
     private Context context;
     /** Connection to the FTP server which builds upon ApacheCommonsNet*/
-    private static FTPClient androidPhone;
-    /** Serializer which builds upon the XStream API */
-    private static XStream xmlSerializer = new XStream(new DomDriver());
+    private static FTPClient androidPhone = new FTPClient();
+    /** Writes xml files to the device */
+    private static FileWriter xmlWriter = null;
     /** Name of the profile */
     private String name;
-    /** Boolean array which stores wether a weekday */
+    /** Boolean array which stores whether a weekday */
     private boolean days[];
     /** Integer array which stores the beginning hour and beginning minute of the profile*/
     private int startTime[];
@@ -45,15 +43,19 @@ class Profile implements Comparator<Profile>,Serializable
         this.startTime = startTime;
         this.endTime = endTime;
         this.numbers = numbers;
-        saveProfile();
+        try {
+            saveProfile();
+        } catch( IOException e ) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * Compares both profiles by starting date and sorts an collection of profiles by the specified
-     * criteria. In general you use profile "A" as your comparision base.
+     * criteria. In general you use profile "a" as your comparision base.
      * @param a first profile
      * @param b second profile
-     * @return FLAG which indicates wether a or b is greater,less or equal ( the FLAG is an integer
+     * @return FLAG which indicates whether a or b is greater,less or equal ( the FLAG is an integer
      */
     public int compare( Profile a, Profile b )
     {
@@ -89,39 +91,49 @@ class Profile implements Comparator<Profile>,Serializable
      * Saves the current profile to a local storage point
      * @return whether file was saved successfully ( true ) or not ( false )
      */
-    private boolean saveProfile()
+    private boolean saveProfile() throws IOException
     {
         try {
-            File xmlProfile = new File(context.getFilesDir() + "/" + getName() + ".xml");
-            xmlSerializer.toXML(this,new FileWriter(xmlProfile));
-        } catch ( IOException exceptionIo ) {
-            exceptionIo.printStackTrace();
-            return false;
-        } catch ( XStreamException exceptionXml ) {
-            exceptionXml.printStackTrace();
+            FileOutputStream fos = new FileOutputStream(context.getFilesDir() + "/" + getName() + ".profile");
+        } catch  ( IOException exceptionIo) {
+            throw exceptionIo;
+        } finally {
+            xmlWriter.close();
         }
         return true;
     }
 
     /**
-     * Downloads a file from a FTP server. If the file is succesfully retrieved to the apps file directory,
-     * this function returns true. All other cases will return false.
-     * @param profilePath is th epath to the profile which we want to download
+     * Downloads a file from a FTP server and saves it onto the data directory of the app.
+     * @param profilePath is the path to the profile which we want to download
      * @param serverLogin is the login information which the server requires ( in case it requires it ). It is based on
      *                    two strings. The first one is the username while the second one represents the password
      * @param serverPort is the port on which the server is accessible
-     * @return whether the download process was successfully or not
+     * @return true IF the download is successful
+     *         false IF an error occurred during the download
      */
-    boolean downloadProfile(String serverAdress, String profilePath, String[] serverLogin, int serverPort )
+    boolean downloadProfile(String serverAddress, String profilePath, String[] serverLogin, int serverPort ) throws IOException
     {
+        InputStream xmlInput = null;
+        OutputStream xmlOutput = null;
         try {
-            androidPhone.connect(serverAdress,serverPort);
-            androidPhone.login(serverLogin[0],serverLogin[1]);
+            // Connect to the server
+            androidPhone.connect(serverAddress, serverPort);
+            androidPhone.login(serverLogin[0], serverLogin[1]);
             androidPhone.setFileType(FTP.BINARY_FILE_TYPE);
             androidPhone.changeWorkingDirectory(profilePath);
-            FileInputStream source = new FileInputStream(profilePath + "/" + getName() + ".xml");
-        } catch ( IOException exception ) {
-            exception.printStackTrace();
+            // Transfer the profile on the phone
+            xmlInput = androidPhone.retrieveFileStream(profilePath);
+            xmlOutput = new FileOutputStream(new File(context.getFilesDir() + "/" + getName() + ".xml"));
+            int readMonitor = 0;
+            byte[] bytes = new byte[1024];
+            while ((readMonitor = xmlInput.read(bytes)) != -1) {
+                xmlOutput.write(bytes, 0, readMonitor);
+            }
+        } finally {
+            // Close streams when finished
+            xmlInput.close();
+            xmlOutput.close();
         }
         return true;
     }
