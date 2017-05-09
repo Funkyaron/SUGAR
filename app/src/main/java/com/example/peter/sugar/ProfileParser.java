@@ -6,16 +6,11 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.io.InputStream;
-import com.thoughtworks.xstream.XStream;
-import org.apache.commons.net.*;
 
 class ProfileParser {
 
     /** Defines the namespace of our xml files ( which is non-existent ) */
     private static final String ns = null;
-    /** Serializes the profiles into a readable xml file */
-    private XStream serializer;
-
     /**
      * This function processes the given XML file and returns a profile which can be later used
      * to activate the profile which is associated to the file.

@@ -1,9 +1,6 @@
 package com.example.peter.sugar;
 
 import android.content.Context;
-import org.apache.commons.net.ftp.*;
-import org.xmlpull.v1.XmlSerializer;
-import android.util.Xml;
 import java.util.*;
 import java.io.*;
 
@@ -13,8 +10,6 @@ import java.io.*;
 class Profile implements Comparator<Profile>,Serializable
 {
     private Context context;
-    /** Connection to the FTP server which builds upon ApacheCommonsNet*/
-    private static FTPClient androidPhone = new FTPClient();
     /** Writes xml files to the device */
     private static FileWriter xmlWriter = null;
     /** Name of the profile */
@@ -99,41 +94,6 @@ class Profile implements Comparator<Profile>,Serializable
             throw exceptionIo;
         } finally {
             xmlWriter.close();
-        }
-        return true;
-    }
-
-    /**
-     * Downloads a file from a FTP server and saves it onto the data directory of the app.
-     * @param profilePath is the path to the profile which we want to download
-     * @param serverLogin is the login information which the server requires ( in case it requires it ). It is based on
-     *                    two strings. The first one is the username while the second one represents the password
-     * @param serverPort is the port on which the server is accessible
-     * @return true IF the download is successful
-     *         false IF an error occurred during the download
-     */
-    boolean downloadProfile(String serverAddress, String profilePath, String[] serverLogin, int serverPort ) throws IOException
-    {
-        InputStream xmlInput = null;
-        OutputStream xmlOutput = null;
-        try {
-            // Connect to the server
-            androidPhone.connect(serverAddress, serverPort);
-            androidPhone.login(serverLogin[0], serverLogin[1]);
-            androidPhone.setFileType(FTP.BINARY_FILE_TYPE);
-            androidPhone.changeWorkingDirectory(profilePath);
-            // Transfer the profile on the phone
-            xmlInput = androidPhone.retrieveFileStream(profilePath);
-            xmlOutput = new FileOutputStream(new File(context.getFilesDir() + "/" + getName() + ".xml"));
-            int readMonitor = 0;
-            byte[] bytes = new byte[1024];
-            while ((readMonitor = xmlInput.read(bytes)) != -1) {
-                xmlOutput.write(bytes, 0, readMonitor);
-            }
-        } finally {
-            // Close streams when finished
-            xmlInput.close();
-            xmlOutput.close();
         }
         return true;
     }
