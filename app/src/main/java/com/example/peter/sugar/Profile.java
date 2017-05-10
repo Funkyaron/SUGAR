@@ -1,38 +1,39 @@
 package com.example.peter.sugar;
 
 import android.content.Context;
+import android.util.Xml;
+
+import org.xmlpull.v1.XmlSerializer;
+
 import java.util.*;
 import java.io.*;
 
 /**
  * @author Peter
  */
-class Profile implements Comparator<Profile>,Serializable
+class Profile implements Serializable
 {
-    private Context context;
-    /** Writes xml files to the device */
-    private static FileWriter xmlWriter = null;
-    /** Name of the profile */
+    private static Context context;
     private String name;
-    /** Boolean array which stores whether a weekday */
     private boolean days[];
-    /** Integer array which stores the beginning hour and beginning minute of the profile*/
     private int startTime[];
-    /** Integer array which stores the ending hour and  ending minute of the profile*/
     private int endTime[];
-    /** String array which stores each number of the profile */
-    private String[] numbers;
+    private ArrayList<String> numbers;
 
-    /**
-     * Constructor of the Profile
-     * @param name represents the name of the profile
-     * @param days represents the days of the profile
-     * @param startTime represents the start time of the profile
-     * @param endTime represents the end time of the profile
-     * @param numbers represents the numbers which are associated to the profile
-     */
-    Profile(String name, boolean days[], int startTime[], int endTime[], String[] numbers)
+    Profile(Context context )
     {
+        this.context = context;
+        name = "";
+        days = new boolean[7];
+        startTime = new int[2];
+        endTime = new int[2];
+        numbers = new ArrayList<String>(0);
+
+    }
+
+    Profile(String name, boolean days[], int startTime[], int endTime[], ArrayList<String> numbers,Context context)
+    {
+        this.context = context;
         this.name = name;
         this.days = days;
         this.startTime = startTime;
@@ -45,57 +46,65 @@ class Profile implements Comparator<Profile>,Serializable
         }
     }
 
-    /**
-     * Compares both profiles by starting date and sorts an collection of profiles by the specified
-     * criteria. In general you use profile "a" as your comparision base.
-     * @param a first profile
-     * @param b second profile
-     * @return FLAG which indicates whether a or b is greater,less or equal ( the FLAG is an integer
-     */
-    public int compare( Profile a, Profile b )
+    public Profile readProfileFromData(Profile referenceObject) throws Exception
     {
-        // Get starting hour and starting minute of profile "A"
-        int profileHoursA = a.getStart()[0];
-        int profileMinutesA = a.getStart()[1];
-        // Get starting hour and starting minute of profile "B"
-        int profileHoursB = b.getStart()[0];
-        int profileMinutesB = b.getStart()[1];
-        // Define possible cases for the relation of profile "A" and "B"
-        boolean aIsGreaterThanb = (( profileHoursA > profileMinutesB ) || ( ( profileHoursA == profileHoursB ) && ( profileMinutesA < profileMinutesB )));
-        boolean aIsEqualTob = ( ( profileHoursA == profileHoursB ) && ( profileMinutesA == profileMinutesB ));
-        boolean aIsInferiorTob = ( ( profileHoursA < profileHoursB ) || ( ( profileHoursA == profileHoursB ) && ( profileMinutesA < profileMinutesB )));
-        // Checks wether the startDate from a is greater than the start date from b
-        if(aIsGreaterThanb)
-        {
-            return 1;
-        }
-        // Checks whether the startDate form a is equal to the start date of b
-        else if (aIsEqualTob)
-        {
-            return 0;
-        }
-        // Check wether the startDate from a is smaller to the start date from b
-        else if (aIsInferiorTob)
-        {
-            return -1;
-        }
-        return 0;
+        return new ProfileParser().parse(new FileInputStream(context.getFilesDir() + "/" + referenceObject.getName() + ".xml"),context);
     }
 
-    /**
-     * Saves the current profile to a local storage point
-     * @return whether file was saved successfully ( true ) or not ( false )
-     */
-    private boolean saveProfile() throws IOException
+    private void saveProfile() throws IOException
     {
+        FileOutputStream fileOutput = null;
         try {
-            FileOutputStream fos = new FileOutputStream(context.getFilesDir() + "/" + getName() + ".profile");
-        } catch  ( IOException exceptionIo) {
-            throw exceptionIo;
-        } finally {
-            xmlWriter.close();
+            XmlSerializer serializer = Xml.newSerializer();
+            fileOutput = new FileOutputStream(context.getFilesDir() + "/" + getName() + ".xml");
+            serializer.setOutput(fileOutput,"UTF-8");
+            serializer.startDocument(null,true);
+            serializer.startTag(null,"profile");
+                serializer.startTag(null,"name");
+                serializer.text(getName());
+                serializer.endTag(null,"name");
+                serializer.startTag(null,"startTime");
+                serializer.text(getStart()[0] + ":" + getStart()[1]);
+                serializer.endTag(null,"startTime");
+                serializer.startTag(null,"endTime");
+                serializer.text(getEnd()[0] + ":" + getEnd()[1]);
+                serializer.endTag(null,"endTime");
+                serializer.startTag(null,"numbers");
+                for(ListIterator<String> iterator = numbers.listIterator();iterator.hasNext();)
+                {
+                    if( iterator.hasNext() == false )
+                        serializer.text(numbers.get(numbers.size()));
+                    else
+                        serializer.text(iterator.next());
+                }
+                serializer.endTag(null,"numbers");
+            serializer.endTag(null,"profile");
+            fileOutput.close();
+        } catch ( IOException exception ) {
+            throw new IOException();
         }
-        return true;
+    }
+
+    public String toString()
+    {
+        String result = "";
+        result = result + "Name : " + getName() + " \n";
+        for( int currentDay = 0; currentDay < getDays().length; currentDay++ )
+        {
+            if( getDays()[currentDay] == true )
+                result = result + "{True}";
+            else if ( getDays()[currentDay] == false )
+                result = result + "{False}";
+        }
+        result = result + " \n";
+        result = result + "StartTime : " + getStart()[0] + ":" + getStart()[1] + " \n";
+        result = result + "EndTime : " + getEnd()[0] + ":" + getEnd()[1] + " \n";
+        result = result + "Numbers : ";
+        for(ListIterator<String> iterator = getPhoneNumbers().listIterator();iterator.hasNext();)
+        {
+            result = result + iterator.next() + " \n";
+        }
+        return result;
     }
 
     public String getName()
@@ -118,7 +127,7 @@ class Profile implements Comparator<Profile>,Serializable
         return endTime;
     }
 
-    String[] getPhoneNumbers()
+    ArrayList<String> getPhoneNumbers()
     {
         return numbers;
     }
