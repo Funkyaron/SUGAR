@@ -21,7 +21,7 @@ class ProfileParser {
      * @throws XmlPullParserException is thrown if the file has formatting issues
      * @throws IOException is thrown if the file does not exist
      */
-    public Profile parse (InputStream in) throws IOException,XmlPullParserException
+    public Profile parse (InputStream in,Context context) throws IOException,XmlPullParserException
     {
         try {
             Log.d(MainActivity.LOG_TAG, "ProfileParser: parse()");
@@ -30,7 +30,7 @@ class ProfileParser {
             parser.setInput(in, null);
             parser.nextTag();
             in.close();
-            return readProfile(parser);
+            return readProfile(parser,context);
         } catch ( Exception e ) {
             e.printStackTrace();
         }
@@ -45,7 +45,7 @@ class ProfileParser {
      * @throws XmlPullParserException
      * @throws IOException
      */
-    private Profile readProfile(XmlPullParser parser) throws XmlPullParserException,IOException
+    private Profile readProfile(XmlPullParser parser,Context context) throws XmlPullParserException,IOException
     {
         Log.d(MainActivity.LOG_TAG, "ProfileParser: readProfile()");
         parser.require(XmlPullParser.START_TAG,ns,"profile");
@@ -53,7 +53,7 @@ class ProfileParser {
         boolean profileDays[] = new boolean[7];
         int startTime[] = new int[2];
         int endTime[] = new int[2];
-        ArrayList<String> numbers = null;
+        ArrayList<String> numbers = new ArrayList<String>(0);
         while( parser.next() != XmlPullParser.END_TAG )
         {
             if( parser.getEventType() != XmlPullParser.START_TAG )
@@ -82,7 +82,7 @@ class ProfileParser {
                 numbers = readPhoneNumbers(parser);
             }
         }
-        return new Profile(profileName, profileDays, startTime, endTime,numbers);
+        return new Profile(profileName, profileDays, startTime, endTime,numbers,context);
     }
 
     private String readProfileName(XmlPullParser parser) throws XmlPullParserException,IOException
