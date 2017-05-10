@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Created by Funkyaron on 28.04.2017.
@@ -47,11 +48,11 @@ public class TestXmlWriter {
         serializer.endTag(null, "days");
 
         serializer.startTag(null, "startTime");
-        serializer.text("1430");
+        serializer.text("14:30");
         serializer.endTag(null, "startTime");
 
         serializer.startTag(null, "endTime");
-        serializer.text("1830");
+        serializer.text("18:30");
         serializer.endTag(null, "endTime");
 
         serializer.startTag(null, "numbers");
@@ -68,9 +69,9 @@ public class TestXmlWriter {
 
         Log.d(MainActivity.LOG_TAG, "TestXmlWriter: readTestProfile()");
 
-        FileInputStream fis = context.openFileInput(FILENAME);
+        InputStream fis = context.openFileInput(FILENAME);
         ProfileParser pParser = new ProfileParser();
-        return pParser.parse(fis);
+        return pParser.parse(fis, context);
 
     }
 }

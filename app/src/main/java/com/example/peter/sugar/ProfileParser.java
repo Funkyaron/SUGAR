@@ -23,18 +23,20 @@ class ProfileParser {
      */
     public Profile parse (InputStream in,Context context) throws IOException,XmlPullParserException
     {
+        Profile result = null;
         try {
             Log.d(MainActivity.LOG_TAG, "ProfileParser: parse()");
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(in, null);
             parser.nextTag();
-            in.close();
-            return readProfile(parser,context);
+            result = readProfile(parser,context);
         } catch ( Exception e ) {
             e.printStackTrace();
+        } finally {
+            in.close();
         }
-        return null;
+        return result;
     }
 
     /**
@@ -47,13 +49,13 @@ class ProfileParser {
      */
     private Profile readProfile(XmlPullParser parser,Context context) throws XmlPullParserException,IOException
     {
-        Log.d(MainActivity.LOG_TAG, "ProfileParser: readProfile()");
-        parser.require(XmlPullParser.START_TAG,ns,"profile");
         String profileName = null;
         boolean profileDays[] = new boolean[7];
         int startTime[] = new int[2];
         int endTime[] = new int[2];
         ArrayList<String> numbers = new ArrayList<String>(0);
+
+        parser.require(XmlPullParser.START_TAG,ns,"profile");
         while( parser.next() != XmlPullParser.END_TAG )
         {
             if( parser.getEventType() != XmlPullParser.START_TAG )
@@ -87,7 +89,6 @@ class ProfileParser {
 
     private String readProfileName(XmlPullParser parser) throws XmlPullParserException,IOException
     {
-        Log.d(MainActivity.LOG_TAG, "ProfileParser: readProfileName()");
         parser.require(XmlPullParser.START_TAG,ns,"name");
         String name = readText(parser);
         parser.require(XmlPullParser.END_TAG,ns,"name");
@@ -97,24 +98,19 @@ class ProfileParser {
 
     private boolean[] readActivatedDays(XmlPullParser parser) throws XmlPullParserException,IOException
     {
-        Log.d(MainActivity.LOG_TAG, "ProfileParser: readDays()");
         boolean[] daysActivated = new boolean[7];
         parser.require(XmlPullParser.START_TAG,ns,"days");
         char[] days = readText(parser).toCharArray();
         parser.require(XmlPullParser.END_TAG,ns,"days");
 
-        Log.d(MainActivity.LOG_TAG, "Next Line: for(int currentDay...");
         for( int currentDay = 0; currentDay < days.length; currentDay++ )
         {
-            Log.d(MainActivity.LOG_TAG, "current Day = " + currentDay);
             if( days[currentDay] == '1' )
             {
-                Log.d(MainActivity.LOG_TAG, "day active");
                 daysActivated[currentDay] = true;
             }
             else if ( days[currentDay] == '0')
             {
-                Log.d(MainActivity.LOG_TAG, "day inactive");
                 daysActivated[currentDay] = false;
             }
         }
@@ -123,7 +119,6 @@ class ProfileParser {
 
     private int[] readStartTime(XmlPullParser parser) throws XmlPullParserException,IOException
     {
-        Log.d(MainActivity.LOG_TAG, "ProfileParser: readStartTime()");
         parser.require(XmlPullParser.START_TAG,ns,"startTime");
         String startTime = readText(parser);
         parser.require(XmlPullParser.END_TAG,ns,"startTime");
@@ -136,7 +131,6 @@ class ProfileParser {
 
     private int[] readEndTime(XmlPullParser parser) throws XmlPullParserException,IOException
     {
-        Log.d(MainActivity.LOG_TAG, "ProfileParser: readEndTime()");
         parser.require(XmlPullParser.START_TAG,ns,"endTime");
         String endTime = readText(parser);
         parser.require(XmlPullParser.END_TAG,ns,"endTime");
@@ -149,10 +143,9 @@ class ProfileParser {
 
     private ArrayList<String> readPhoneNumbers(XmlPullParser parser) throws XmlPullParserException,IOException
     {
-        Log.d(MainActivity.LOG_TAG," ProfileParser: readPhoneNumbers() ");
         ArrayList<String> resultList = new ArrayList<String>(0);
         parser.require(XmlPullParser.START_TAG,ns,"numbers");
-        String[] phoneNumbers = readText(parser).toString().split(",");
+        String[] phoneNumbers = readText(parser).split(",");
         parser.require(XmlPullParser.END_TAG,ns,"numbers");
         for( int currentPhoneNumber = 0; currentPhoneNumber < phoneNumbers.length; currentPhoneNumber++ )
         {
