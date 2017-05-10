@@ -21,7 +21,7 @@ class ProfileParser {
      * @throws XmlPullParserException is thrown if the file has formatting issues
      * @throws IOException is thrown if the file does not exist
      */
-    public Profile parse (InputStream in,Context context) throws Exception
+    public Profile parse (InputStream in) throws IOException,XmlPullParserException
     {
         try {
             Log.d(MainActivity.LOG_TAG, "ProfileParser: parse()");
@@ -30,7 +30,7 @@ class ProfileParser {
             parser.setInput(in, null);
             parser.nextTag();
             in.close();
-            return readProfile(parser, context);
+            return readProfile(parser);
         } catch ( Exception e ) {
             e.printStackTrace();
         }
@@ -45,7 +45,7 @@ class ProfileParser {
      * @throws XmlPullParserException
      * @throws IOException
      */
-    private Profile readProfile(XmlPullParser parser,Context context) throws XmlPullParserException,IOException
+    private Profile readProfile(XmlPullParser parser) throws XmlPullParserException,IOException
     {
         Log.d(MainActivity.LOG_TAG, "ProfileParser: readProfile()");
         parser.require(XmlPullParser.START_TAG,ns,"profile");
@@ -82,7 +82,7 @@ class ProfileParser {
                 numbers = readPhoneNumbers(parser);
             }
         }
-        return new Profile(profileName, profileDays, startTime, endTime,numbers,context);
+        return new Profile(profileName, profileDays, startTime, endTime,numbers);
     }
 
     private String readProfileName(XmlPullParser parser) throws XmlPullParserException,IOException
