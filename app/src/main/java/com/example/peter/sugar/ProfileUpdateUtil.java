@@ -32,7 +32,6 @@ public class ProfileUpdateUtil {
         int[] start = profile.getStart();
 
         // First check if any day of week should apply
-        Log.d(MainActivity.LOG_TAG, "Checking days");
         boolean shouldApply = false;
         for (boolean day : days)
         {
@@ -41,8 +40,6 @@ public class ProfileUpdateUtil {
         }
         if (!shouldApply)
             return;
-
-        Log.d(MainActivity.LOG_TAG, "Setting Alarm");
 
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
@@ -184,27 +181,17 @@ public class ProfileUpdateUtil {
         cal.set(Calendar.MINUTE, endTime[1]);
         long endTimeInMillis = cal.getTimeInMillis();
 
-        Log.d(MainActivity.LOG_TAG, "currentDay Index = " + toIndex(currentDay)
-            + ", " + days[toIndex(currentDay)]);
-        Log.d(MainActivity.LOG_TAG, "startHour = " + startTime[0]);
-        Log.d(MainActivity.LOG_TAG, "startMinute = " + startTime[1]);
-        Log.d(MainActivity.LOG_TAG, "endHour = " + endTime[0]);
-        Log.d(MainActivity.LOG_TAG, "endMinute = " + endTime[1]);
 
         if (days[toIndex(currentDay)] == false
                 || startTimeInMillis >= currentTime
                 || endTimeInMillis <= currentTime)
         {
-            Log.d(MainActivity.LOG_TAG, "Profile should be disabled");
             Intent intent = new Intent(context, DisableProfileReceiver.class);
-            Log.d(MainActivity.LOG_TAG, "Next line: intent.addCategory...");
             intent.addCategory(name);
-            Log.d(MainActivity.LOG_TAG, "Next line: sendBroadcast...");
             context.sendBroadcast(intent);
         }
         else
         {
-            Log.d(MainActivity.LOG_TAG, "Profile should be enabled");
             Intent intent = new Intent(context, EnableProfileReceiver.class);
             intent.addCategory(name);
             context.sendBroadcast(intent);

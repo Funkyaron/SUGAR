@@ -31,6 +31,8 @@ class ProfileParser {
             parser.setInput(in, null);
             parser.nextTag();
             result = readProfile(parser,context);
+            if (result == null)
+                Log.d(MainActivity.LOG_TAG, "Parsing result is null");
         } catch ( Exception e ) {
             e.printStackTrace();
         } finally {
@@ -84,6 +86,9 @@ class ProfileParser {
                 numbers = readPhoneNumbers(parser);
             }
         }
+        Log.d(MainActivity.LOG_TAG, "Parsing results:\n" +
+            profileName + "\n" + profileDays + "\n" + startTime + "\n" + endTime + "\n" +
+            numbers);
         return new Profile(profileName, profileDays, startTime, endTime,numbers,context);
     }
 

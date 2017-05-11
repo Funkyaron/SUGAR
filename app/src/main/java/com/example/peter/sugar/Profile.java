@@ -1,6 +1,7 @@
 package com.example.peter.sugar;
 
 import android.content.Context;
+import android.util.Log;
 import android.util.Xml;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -58,20 +59,23 @@ class Profile implements Serializable
      * @param
      * @return null if no profile is found
      */
-    public Profile readProfileFromXmlFile(Profile a )
+    public static Profile readProfileFromXmlFile(String name, Context context)
     {
+        Log.d(MainActivity.LOG_TAG, "Profile: readProfileFromXmlFile()");
+        Profile result = null;
         try {
-            FileInputStream fileInput = a.getContext().openFileInput(a.getName() + ".xml");
+            FileInputStream fileInput = context.openFileInput(name + ".xml");
             ProfileParser parser = new ProfileParser();
-            Profile result = parser.parse(fileInput, context);
-            return result;
+            result = parser.parse(fileInput, context);
+            if (result == null)
+                Log.d(MainActivity.LOG_TAG, "Parsing result did not return");
+            fileInput.close();
         } catch ( IOException e ) {
             e.printStackTrace();
         } catch ( XmlPullParserException e ) {
             e.printStackTrace();
-        } finally {
-            return null;
         }
+        return result;
     }
     /**
      * Saves the given Profile to the default filepath of Android
@@ -79,52 +83,67 @@ class Profile implements Serializable
      * @throws IOException if problems occured during the function execution
      */
     public boolean saveProfile() throws IOException {
+        Log.d(MainActivity.LOG_TAG, "Profile: saveProfile()");
         FileOutputStream fileOutput = null;
         XmlSerializer xmlWriter;
         try {
-            fileOutput = context.openFileOutput(getName() + ".xml",Context.MODE_PRIVATE);
+            fileOutput = context.openFileOutput(name + ".xml",Context.MODE_PRIVATE);
+
             xmlWriter = Xml.newSerializer();
             xmlWriter.setOutput(fileOutput, "UTF-8");
             xmlWriter.startDocument(null, true);
-            xmlWriter.startTag("","profile");
-            xmlWriter.startTag("", "name");
-            xmlWriter.text(getName());
-            xmlWriter.endTag("", "name");
-            xmlWriter.startTag("", "days");
+
+            xmlWriter.startTag(null,"profile");
+
+            xmlWriter.startTag(null, "name");
+            xmlWriter.text(name);
+            xmlWriter.endTag(null, "name");
+
+            xmlWriter.startTag(null, "days");
+            StringBuilder builder = new StringBuilder();
             for ( int currentDay = 0; currentDay < days.length; currentDay++ )
             {
                 if( days[currentDay] == true )
-                    xmlWriter.text("1");
+                    builder.append("1");
                 else
-                    xmlWriter.text("0");
+                    builder.append("0");
             }
-            xmlWriter.endTag("","days");
-            xmlWriter.startTag("","startTime");
+            xmlWriter.text(builder.toString());
+            xmlWriter.endTag(null,"days");
+
+            xmlWriter.startTag(null,"startTime");
             xmlWriter.text(startTime[0] + ":" + startTime[1]);
-            xmlWriter.endTag("","startTime");
-            xmlWriter.startTag("","endTime");
+            xmlWriter.endTag(null,"startTime");
+
+            xmlWriter.startTag(null,"endTime");
             xmlWriter.text(endTime[0] + ":" + endTime[1]);
-            xmlWriter.endTag("","endTime");
-            xmlWriter.startTag("","numbers");
-            for(ListIterator<String> iterator = numbers.listIterator();iterator.hasNext();)
+            xmlWriter.endTag(null,"endTime");
+
+            xmlWriter.startTag(null,"numbers");
+            ListIterator<String> iterator = numbers.listIterator();
+            builder.delete(0, builder.length());
+            while (iterator.hasNext())
             {
-                if( iterator.hasNext() == false )
-                    xmlWriter.text(numbers.get(numbers.size()));
-                else
-                    xmlWriter.text(iterator.next());
+                if(iterator.hasPrevious())
+                {
+                    builder.append(",");
+                }
+                builder.append(iterator.next());
             }
-            xmlWriter.endTag("","numbers");
-            xmlWriter.endTag("","profile");
+            xmlWriter.text(builder.toString());
+            xmlWriter.endTag(null,"numbers");
+
+            xmlWriter.endTag(null,"profile");
+
             xmlWriter.endDocument();
             xmlWriter.flush();
             return true;
-        } catch ( IOException exception ) {
-          return false;
         } finally {
             fileOutput.close();
         }
     }
 
+    @Override
     public String toString()
     {
         String result = "";

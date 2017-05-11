@@ -1,6 +1,8 @@
 package com.example.peter.sugar;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -22,27 +24,41 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(LOG_TAG, "getFilesDir(): " + getFilesDir());
 
-        TestXmlWriter tester = new TestXmlWriter();
+        String name = "Test";
+        boolean[] days = {true, true, true, true, true, false, false};
+        int[] startTime = {14, 30};
+        int[] endTime = {18, 15};
+        ArrayList<String> numbers = new ArrayList<String>();
+        numbers.add("+4917635183695");
+        numbers.add("+49177222222");
+        Profile prof = new Profile(
+                name,
+                days,
+                startTime,
+                endTime,
+                numbers,
+                this
+        );
 
         try {
-            tester.writeTestProfile(this);
+            prof.saveProfile();
+            Log.d(LOG_TAG, "Profile saved");
         } catch (IOException e) {
-            Log.e(LOG_TAG, e.toString());
+            e.printStackTrace();
         }
 
-        Profile prof = null;
-        try {
-            prof = tester.readTestProfile(this);
-        } catch (IOException e) {
-            Log.e(LOG_TAG, e.toString());
-        } catch (XmlPullParserException e) {
-            Log.e(LOG_TAG, e.toString());
+        File testProFile = new File(this.getFilesDir() + "/" + name + ".xml");
+        if (testProFile.exists()) {
+            Log.d(LOG_TAG, testProFile.getAbsolutePath() + " exists");
         }
 
+        Profile prof2 = Profile.readProfileFromXmlFile(prof.getName(), this);
+
+
         try {
-            ProfileUpdateUtil.setNextEnable(this, prof);
-            ProfileUpdateUtil.setNextDisable(this, prof);
-            ProfileUpdateUtil.updateProfileStatus(this, prof);
+            ProfileUpdateUtil.setNextEnable(this, prof2);
+            ProfileUpdateUtil.setNextDisable(this, prof2);
+            ProfileUpdateUtil.updateProfileStatus(this, prof2);
         } catch (NullPointerException e) {
             Log.e(LOG_TAG, e.toString());
         }
