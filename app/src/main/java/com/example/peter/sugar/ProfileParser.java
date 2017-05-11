@@ -17,7 +17,7 @@ class ProfileParser {
      * This function processes the given XML file and returns a profile which can be later used
      * to activate the profile which is associated to the file.
      * @param in represents the input stream which reads the contents of the file
-     * @return a profile which will be later used by "ProfileUpdateUtil","EnableProfileReceiver"
+     * @return a profile which will be later used by "TimeManager","EnableProfileReceiver"
      * @throws XmlPullParserException is thrown if the file has formatting issues
      * @throws IOException is thrown if the file does not exist
      */

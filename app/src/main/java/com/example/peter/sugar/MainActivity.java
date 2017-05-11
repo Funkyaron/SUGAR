@@ -10,8 +10,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
-import org.xmlpull.v1.XmlPullParserException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -56,9 +54,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         try {
-            ProfileUpdateUtil.setNextEnable(this, prof2);
-            ProfileUpdateUtil.setNextDisable(this, prof2);
-            ProfileUpdateUtil.updateProfileStatus(this, prof2);
+            TimeManager.setNextEnable(this, prof2);
+            TimeManager.setNextDisable(this, prof2);
+            TimeManager.updateProfileStatus(this, prof2);
         } catch (NullPointerException e) {
             Log.e(LOG_TAG, e.toString());
         }

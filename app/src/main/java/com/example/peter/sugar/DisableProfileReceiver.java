@@ -28,7 +28,7 @@ public class DisableProfileReceiver extends BroadcastReceiver {
 
         try {
             prof = tester.readTestProfile(context);
-            ProfileUpdateUtil.setNextDisable(context, prof);
+            TimeManager.setNextDisable(context, prof);
         } catch (Exception e) {
             Log.e(MainActivity.LOG_TAG, e.toString());
         }

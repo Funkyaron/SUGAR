@@ -14,7 +14,7 @@ import java.util.Calendar;
  * or disabling of SUGAR-Profiles.
  */
 
-public class ProfileUpdateUtil {
+public class TimeManager {
 
     /**
      * Determines when the given profile should be enabled the next time and sets the

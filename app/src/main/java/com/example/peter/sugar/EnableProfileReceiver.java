@@ -5,7 +5,6 @@ import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 
 /**
@@ -31,7 +30,7 @@ public class EnableProfileReceiver extends BroadcastReceiver {
 
         try {
             prof = tester.readTestProfile(context);
-            ProfileUpdateUtil.setNextEnable(context, prof);
+            TimeManager.setNextEnable(context, prof);
         } catch (Exception e) {
             Log.e(MainActivity.LOG_TAG, e.toString());
         }
