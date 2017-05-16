@@ -18,11 +18,12 @@ class Profile implements Serializable
     private Context context;
     private String name;
     private boolean days[];
-    private int startTime[];
-    private int endTime[];
+    private TimeObject startTime[];
+    private TimeObject endTime[];
     private ArrayList<String> numbers;
+    private static final String[] weekDays = { "monday","tuesday","wednesday","thursday","friday","saturday","sunday"};
 
-    Profile(String name, boolean days[], int startTime[], int endTime[], ArrayList<String> numbers,Context context)
+    Profile(String name, boolean days[], TimeObject startTime[], TimeObject endTime[], ArrayList<String> numbers,Context context)
     {
         this.context = context;
         this.name = name;
@@ -40,15 +41,15 @@ class Profile implements Serializable
         {
             days[i] = false;
         }
-        startTime = new int[2];
+        startTime = new TimeObject[7];
         for( int i = 0; i < 2; i++ )
         {
-            startTime[i] = 0;
+            startTime[i] = new TimeObject(0,0);
         }
-        endTime = new int[2];
+        endTime = new TimeObject[7];
         for( int i = 0; i < 2; i++ )
         {
-            endTime[i] = 0;
+            endTime[i] = new TimeObject(0,0);
         }
         numbers = new ArrayList<String>(0);
         numbers.add("Pseudonumber");
@@ -112,11 +113,21 @@ class Profile implements Serializable
             xmlWriter.endTag(null,"days");
 
             xmlWriter.startTag(null,"startTime");
-            xmlWriter.text(startTime[0] + ":" + startTime[1]);
+            for(int currentDay = 0; currentDay < startTime.length; currentDay++ )
+            {
+                xmlWriter.startTag(null,weekDays[currentDay]);
+                xmlWriter.text(startTime[currentDay].getHour() + ":" + startTime[currentDay].getMinute() );
+                xmlWriter.endTag(null,weekDays[currentDay]);
+            }
             xmlWriter.endTag(null,"startTime");
 
             xmlWriter.startTag(null,"endTime");
-            xmlWriter.text(endTime[0] + ":" + endTime[1]);
+            for(int currentDay = 0; currentDay < endTime.length; currentDay++ )
+            {
+                xmlWriter.startTag(null,weekDays[currentDay]);
+                xmlWriter.text(endTime[currentDay].getHour() + ":" + endTime[currentDay].getMinute());
+                xmlWriter.endTag(null,weekDays[currentDay]);
+            }
             xmlWriter.endTag(null,"endTime");
 
             xmlWriter.startTag(null,"numbers");
@@ -181,12 +192,12 @@ class Profile implements Serializable
         return days;
     }
 
-    int[] getStart()
+    TimeObject[] getStart()
     {
         return startTime;
     }
 
-    int[] getEnd()
+    TimeObject[] getEnd()
     {
         return endTime;
     }
@@ -206,12 +217,12 @@ class Profile implements Serializable
         days = updatedDays;
     }
 
-    void setStart( int[] updatedStart )
+    void setStart( TimeObject[] updatedStart )
     {
         startTime = updatedStart;
     }
 
-    void setEnd( int[] updatedEnd )
+    void setEnd( TimeObject[] updatedEnd )
     {
         endTime = updatedEnd;
     }
