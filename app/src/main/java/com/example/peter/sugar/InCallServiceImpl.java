@@ -20,11 +20,14 @@ public class InCallServiceImpl extends InCallService {
     @Override
     public void onCallAdded(Call call) {
 
+        String number = getNumber(call);
+        Log.d(MainActivity.LOG_TAG, "Number: " + number);
+
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         currentRingerMode = mAudioManager.getRingerMode();
         mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
 
-        if (getNumber(call).equals("+4917635183695")) {
+        if (number.equals("+4917635183695") || number.equals("017635183695")) {
             call.disconnect();
             mAudioManager.setRingerMode(currentRingerMode);
         } else {
