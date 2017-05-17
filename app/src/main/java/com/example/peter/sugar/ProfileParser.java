@@ -13,7 +13,7 @@ import java.util.ArrayList;
 class ProfileParser {
 
     private static final String ns = null;
-    private static final String[] weekDays = { "monday","tuesday","wednesday","thursday","friday","saturday","sunday"};
+    private final String[] weekDays = { "monday","tuesday","wednesday","thursday","friday","saturday","sunday"};
     /**
      * This function processes the given XML file and returns a profile which can be later used
      * to activate the profile which is associated to the file.
@@ -54,8 +54,8 @@ class ProfileParser {
     {
         String profileName = null;
         boolean profileDays[] = new boolean[7];
-        TimeObject startTime[] = new TimeObject[2];
-        TimeObject endTime[] = new TimeObject[2];
+        TimeObject startTime[] = new TimeObject[7];
+        TimeObject endTime[] = new TimeObject[7];
         ArrayList<String> numbers = new ArrayList<String>(0);
 
         parser.require(XmlPullParser.START_TAG,ns,"profile");
@@ -128,10 +128,10 @@ class ProfileParser {
         TimeObject result;
         parser.require(XmlPullParser.START_TAG,ns,weekDay);
         String[] content = readText(parser).split(":");
+        parser.require(XmlPullParser.END_TAG,ns,weekDay);
         int parameterHours = Integer.parseInt(content[0]);
         int parameterMinutes = Integer.parseInt(content[1]);
         result = new TimeObject(parameterHours,parameterMinutes);
-        parser.require(XmlPullParser.END_TAG,ns,weekDay);
         return result;
     }
 
@@ -139,9 +139,13 @@ class ProfileParser {
     {
         TimeObject result[] = new TimeObject[7];
         parser.require(XmlPullParser.START_TAG, ns, "startTime");
-        for (int currentDay = 0; currentDay < 7; currentDay++)
+        String resultText[] = readText(parser).split(",");
+        for(int currentDay = 0; currentDay < resultText.length; currentDay++ )
         {
-            result[currentDay] = readSelectedDay(parser, weekDays[currentDay]);
+            String timeObjectDescription[] = resultText[currentDay].split(":");
+            int hours = Integer.parseInt(timeObjectDescription[0]);
+            int minutes = Integer.parseInt(timeObjectDescription[1]);
+            result[currentDay] = new TimeObject(hours,minutes);
         }
         parser.require(XmlPullParser.END_TAG, ns, "startTime");
         return result;
@@ -151,9 +155,13 @@ class ProfileParser {
     {
         TimeObject result[] = new TimeObject[7];
         parser.require(XmlPullParser.START_TAG,ns,"endTime");
-        for( int currentDay = 0; currentDay < 7; currentDay++ )
+        String resultText[] = readText(parser).split(",");
+        for(int currentDay = 0; currentDay < resultText.length; currentDay++ )
         {
-            result[currentDay] = readSelectedDay(parser,weekDays[currentDay]);
+            String timeObjectDescription[] = resultText[currentDay].split(":");
+            int hours = Integer.parseInt(timeObjectDescription[0]);
+            int minutes = Integer.parseInt(timeObjectDescription[1]);
+            result[currentDay] = new TimeObject(hours,minutes);
         }
         parser.require(XmlPullParser.END_TAG,ns,"endTime");
         return result;

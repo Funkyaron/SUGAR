@@ -21,7 +21,7 @@ class Profile implements Serializable
     private TimeObject startTime[];
     private TimeObject endTime[];
     private ArrayList<String> numbers;
-    private static final String[] weekDays = { "monday","tuesday","wednesday","thursday","friday","saturday","sunday"};
+    private final String[] weekDays = { "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
 
     Profile(String name, boolean days[], TimeObject startTime[], TimeObject endTime[], ArrayList<String> numbers,Context context)
     {
@@ -115,18 +115,20 @@ class Profile implements Serializable
             xmlWriter.startTag(null,"startTime");
             for(int currentDay = 0; currentDay < startTime.length; currentDay++ )
             {
-                xmlWriter.startTag(null,weekDays[currentDay]);
-                xmlWriter.text(startTime[currentDay].getHour() + ":" + startTime[currentDay].getMinute() );
-                xmlWriter.endTag(null,weekDays[currentDay]);
+                if( currentDay == startTime.length)
+                    xmlWriter.text(startTime[currentDay].getHour() + ":" + startTime[currentDay].getMinute());
+                else
+                    xmlWriter.text(startTime[currentDay].getHour() + ":" + startTime[currentDay].getMinute() + "," );
             }
             xmlWriter.endTag(null,"startTime");
 
             xmlWriter.startTag(null,"endTime");
             for(int currentDay = 0; currentDay < endTime.length; currentDay++ )
             {
-                xmlWriter.startTag(null,weekDays[currentDay]);
-                xmlWriter.text(endTime[currentDay].getHour() + ":" + endTime[currentDay].getMinute());
-                xmlWriter.endTag(null,weekDays[currentDay]);
+                if( currentDay == endTime.length )
+                    xmlWriter.text(endTime[currentDay].getHour() + ":" + endTime[currentDay].getMinute());
+                else
+                    xmlWriter.text(endTime[currentDay].getHour() + ":" + endTime[currentDay].getMinute() + ",");
             }
             xmlWriter.endTag(null,"endTime");
 
@@ -167,8 +169,16 @@ class Profile implements Serializable
                 result = result + "{False}";
         }
         result = result + " \n";
-        result = result + "StartTime : " + getStart()[0] + ":" + getStart()[1] + " \n";
-        result = result + "EndTime : " + getEnd()[0] + ":" + getEnd()[1] + " \n";
+        result = result + "StartTime : " + " \n";
+        for( int currentDay = 0; currentDay < weekDays.length; currentDay++ )
+        {
+            result = result + weekDays[currentDay] + ":" + startTime[currentDay].getHour() + ":" +  startTime[currentDay].getMinute() + "\n";
+        }
+        result = result + "EndTime : " +" \n";
+        for( int currentDay = 0; currentDay < weekDays.length; currentDay++ )
+        {
+            result = result + weekDays[currentDay] + ":" + endTime[currentDay].getHour() + ":" + endTime[currentDay].getMinute() + " \n";
+        }
         result = result + "Numbers : ";
         for(ListIterator<String> iterator = getPhoneNumbers().listIterator();iterator.hasNext();)
         {
