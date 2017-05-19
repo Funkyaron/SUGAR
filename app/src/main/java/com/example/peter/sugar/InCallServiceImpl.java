@@ -27,6 +27,12 @@ public class InCallServiceImpl extends InCallService {
         currentRingerMode = mAudioManager.getRingerMode();
         mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
 
+        /* Set ringer mode silent only does'nt work when the ringer is currently
+         * in vibration mode.
+         * Suggestion: Use Vibrator class via getSystemService(Context.VIBRATION_SERVICE);
+         * Needs android.permission.VIBRATE -> runtime permission -.-
+         */
+
         if (number.equals("+4917635183695") || number.equals("017635183695")) {
             call.disconnect();
             mAudioManager.setRingerMode(currentRingerMode);
