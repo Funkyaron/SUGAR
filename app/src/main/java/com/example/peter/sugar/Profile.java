@@ -10,6 +10,11 @@ import org.xmlpull.v1.XmlSerializer;
 import java.util.*;
 import java.io.*;
 
+// XML-Datei einlesen -> ArrayList<String> -> ArrayList bearbeiten
+// -> alte XML-Datei löschen -> neue XML-Datei anlegen
+// -> ArrayList in neue XML-Datei schreiben.
+// <blocklist>1234,6543</blocklist>
+
 /**
  * @author Peter
  */
