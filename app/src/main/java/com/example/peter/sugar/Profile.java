@@ -22,19 +22,24 @@ class Profile implements Serializable
     private TimeObject endTime[];
     private ArrayList<String> numbers;
     private final String[] weekDays = { "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
+    private static int runtimeId = 0;
+    private int id;
 
     Profile(String name, boolean days[], TimeObject startTime[], TimeObject endTime[], ArrayList<String> numbers,Context context)
     {
+        id = runtimeId;
         this.context = context;
         this.name = name;
         this.days = days;
         this.startTime = startTime;
         this.endTime = endTime;
         this.numbers = numbers;
+        runtimeId++;
     }
 
     Profile(Context context)
     {
+        id = runtimeId;
         name = "GenericProfile";
         days = new boolean[7];
         for(int i = 0; i < 7; i++)
@@ -53,6 +58,7 @@ class Profile implements Serializable
         }
         numbers = new ArrayList<String>(0);
         numbers.add("Pseudonumber");
+        runtimeId++;
     }
 
     /**
@@ -91,6 +97,7 @@ class Profile implements Serializable
             fileOutput = context.openFileOutput(name + ".xml",Context.MODE_PRIVATE);
 
             xmlWriter = Xml.newSerializer();
+            xmlWriter.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output",true);
             xmlWriter.setOutput(fileOutput, "UTF-8");
             xmlWriter.startDocument(null, true);
 
@@ -125,7 +132,7 @@ class Profile implements Serializable
             xmlWriter.startTag(null,"endTime");
             for(int currentDay = 0; currentDay < endTime.length; currentDay++ )
             {
-                if( currentDay == endTime.length )
+                if( currentDay == endTime.length)
                     xmlWriter.text(endTime[currentDay].getHour() + ":" + endTime[currentDay].getMinute());
                 else
                     xmlWriter.text(endTime[currentDay].getHour() + ":" + endTime[currentDay].getMinute() + ",");
@@ -161,6 +168,7 @@ class Profile implements Serializable
     {
         String result = "";
         result = result + "Name : " + getName() + " \n";
+        result = result + "Days : ";
         for( int currentDay = 0; currentDay < getDays().length; currentDay++ )
         {
             if( getDays()[currentDay] == true )
@@ -185,6 +193,11 @@ class Profile implements Serializable
             result = result + iterator.next() + " \n";
         }
         return result;
+    }
+
+    public int getId()
+    {
+        return id;
     }
 
     public Context getContext()
