@@ -18,6 +18,7 @@ public class DisableProfileReceiver extends BroadcastReceiver {
 
         /* Temporarily coded to test the alarm functionality */
 
+        /*
         String name = "";
 
         Object[] categories = intent.getCategories().toArray();
@@ -45,6 +46,6 @@ public class DisableProfileReceiver extends BroadcastReceiver {
         NotificationManager notiMgr = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
         notiMgr.notify(ID, noti);
-
+        */
     }
 }
