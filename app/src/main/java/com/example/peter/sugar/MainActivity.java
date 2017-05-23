@@ -1,19 +1,23 @@
 package com.example.peter.sugar;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+    implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     public static final String LOG_TAG = "SUGAR";
+
+    private int REQUEST_VIBRATE = 1;
+
+    private String[] PERMISSION_VIBRATE = {Manifest.permission.VIBRATE};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,44 +26,13 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(LOG_TAG, "getFilesDir(): " + getFilesDir());
 
-        String name = "Test";
-        boolean[] days = {true, true, true, true, true, false, false};
-        int[] startTime = {14, 30};
-        int[] endTime = {18, 15};
-        ArrayList<String> numbers = new ArrayList<String>();
-        numbers.add("+4917635183695");
-        numbers.add("+49177222222");
-        Profile prof = new Profile(
-                name,
-                days,
-                startTime,
-                endTime,
-                numbers,
-                this
-        );
 
-        try {
-            prof.saveProfile();
-            Log.d(LOG_TAG, "Profile saved");
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(ActivityCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.VIBRATE) != PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(this, PERMISSION_VIBRATE, REQUEST_VIBRATE);
         }
 
-        File testProFile = new File(this.getFilesDir() + "/" + name + ".xml");
-        if (testProFile.exists()) {
-            Log.d(LOG_TAG, testProFile.getAbsolutePath() + " exists");
-        }
-
-        Profile prof2 = Profile.readProfileFromXmlFile(prof.getName(), this);
-
-
-        try {
-            TimeManager.setNextEnable(this, prof2);
-            TimeManager.setNextDisable(this, prof2);
-            TimeManager.updateProfileStatus(this, prof2);
-        } catch (NullPointerException e) {
-            Log.e(LOG_TAG, e.toString());
-        }
 
         Button contactsButton = (Button) findViewById(R.id.contacts_button_id);
         contactsButton.setOnClickListener(new View.OnClickListener() {
@@ -71,4 +44,21 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults)
+    {
+        if(requestCode == REQUEST_VIBRATE)
+        {
+            // Do something?
+        }
+        else
+        {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
 }

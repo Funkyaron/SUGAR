@@ -25,11 +25,13 @@ public class TimeManager {
      */
     public static void setNextEnable(Context context, Profile profile) {
 
-        Log.d(MainActivity.LOG_TAG, "PUU: setNextEnable()");
+        Log.d(MainActivity.LOG_TAG, "TimeManager: setNextEnable()");
 
         String name = profile.getName();
         boolean[] days = profile.getDays();
-        int[] start = profile.getStart();
+        TimeObject[] start = profile.getStart();
+
+
 
         // First check if any day of week should apply
         boolean shouldApply = false;
@@ -41,6 +43,9 @@ public class TimeManager {
         if (!shouldApply)
             return;
 
+
+
+        // Prepare the alarm
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(context, EnableProfileReceiver.class);
@@ -49,26 +54,35 @@ public class TimeManager {
         PendingIntent pending = PendingIntent.getBroadcast(context, 0,
                 intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
+
+
+        // Figure out when to execute the alarm
+
+        // First we get the current time
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(System.currentTimeMillis());
         long currentTime = cal.getTimeInMillis();
         int currentDay = cal.get(Calendar.DAY_OF_WEEK);
 
-        cal.set(Calendar.HOUR_OF_DAY, start[0]);
-        cal.set(Calendar.MINUTE, start[1]);
+        // Just in case, we check the start time from "today".
+        cal.set(Calendar.HOUR_OF_DAY, start[toIndex(currentDay)].getHour());
+        cal.set(Calendar.MINUTE, start[toIndex(currentDay)].getMinute());
         long targetTime = cal.getTimeInMillis();
-
-        if (days[toIndex(currentDay)] && currentTime < targetTime)
+        if (days[toIndex(currentDay)] && (currentTime < targetTime))
         {
-            // Don't change target time
+            // Don't change target time.
         }
         else
         {
+
+            // Now we have to match the next day to apply with the corresponding start time,
+            // so we have to find out the appropriate Array index.
+            // First we find out how many days we have to add to the current day.
+
             int daysToAdd = 0;
             int i = toIndex(currentDay);
             int j = 0;
-            while (j <= 6)
-            {
+            while (j <= 6) {
                 daysToAdd++;
                 i = (i + 1) % 7;
                 j++;
@@ -76,10 +90,19 @@ public class TimeManager {
                     break;
             }
 
+            // Now we determine the target time by adding the days to the Calendar instance
+            // and extracting the right start time from the TimeObject Array.
+
             cal.add(Calendar.DAY_OF_MONTH, daysToAdd);
+
+            int targetIndex = (toIndex(currentDay) + daysToAdd) % 7;
+            cal.set(Calendar.HOUR_OF_DAY, start[targetIndex].getHour());
+            cal.set(Calendar.MINUTE, start[targetIndex].getMinute());
+
             targetTime = cal.getTimeInMillis();
         }
 
+        // Finally we actually set the alarm.
         alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, targetTime, pending);
     }
 
@@ -93,13 +116,16 @@ public class TimeManager {
      */
     public static void setNextDisable(Context context, Profile profile) {
 
-        Log.d(MainActivity.LOG_TAG, "PUU: setNextDisable()");
+        Log.d(MainActivity.LOG_TAG, "TimeManager: setNextDisable()");
+
+        // Thins method is very similar to setNextEnable(). For comments see there.
 
         String name = profile.getName();
         boolean[] days = profile.getDays();
-        int[] end = profile.getEnd();
+        TimeObject[] end = profile.getEnd();
 
-        // First check if any day of week should apply
+
+
         boolean shouldApply = false;
         for (boolean day : days)
         {
@@ -109,6 +135,8 @@ public class TimeManager {
         if (!shouldApply)
             return;
 
+
+
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(context, DisableProfileReceiver.class);
@@ -117,16 +145,18 @@ public class TimeManager {
         PendingIntent pending = PendingIntent.getBroadcast(context, 0,
                 intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
+
+
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(System.currentTimeMillis());
         long currentTime = cal.getTimeInMillis();
         int currentDay = cal.get(Calendar.DAY_OF_WEEK);
 
-        cal.set(Calendar.HOUR_OF_DAY, end[0]);
-        cal.set(Calendar.MINUTE, end[1]);
-        long targetTime = cal.getTimeInMillis();
 
-        if (profile.getDays()[toIndex(currentDay)] && currentTime < targetTime)
+        cal.set(Calendar.HOUR_OF_DAY, end[toIndex(currentDay)].getHour());
+        cal.set(Calendar.MINUTE, end[toIndex(currentDay)].getMinute());
+        long targetTime = cal.getTimeInMillis();
+        if (profile.getDays()[toIndex(currentDay)] && (currentTime < targetTime))
         {
             // Don't change target time
         }
@@ -145,6 +175,11 @@ public class TimeManager {
             }
 
             cal.add(Calendar.DAY_OF_MONTH, daysToAdd);
+
+            int targetIndex = (toIndex(currentDay) + daysToAdd) % 7;
+            cal.set(Calendar.HOUR_OF_DAY, end[targetIndex].getHour());
+            cal.set(Calendar.MINUTE, end[targetIndex].getMinute());
+
             targetTime = cal.getTimeInMillis();
         }
 
@@ -161,30 +196,39 @@ public class TimeManager {
      */
     public static void updateProfileStatus(Context context, Profile profile) {
 
-        Log.d(MainActivity.LOG_TAG, "PUU: UpdateProfileStatus");
+        Log.d(MainActivity.LOG_TAG, "TimeManager: UpdateProfileStatus");
 
         String name = profile.getName();
         boolean[] days = profile.getDays();
-        int[] startTime = profile.getStart();
-        int[] endTime = profile.getEnd();
+        TimeObject[] startTimes = profile.getStart();
+        TimeObject[] endTimes = profile.getEnd();
 
+
+
+        // At first, get the current time.
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(System.currentTimeMillis());
         long currentTime = cal.getTimeInMillis();
         int currentDay = cal.get(Calendar.DAY_OF_WEEK);
 
-        cal.set(Calendar.HOUR_OF_DAY, startTime[0]);
-        cal.set(Calendar.MINUTE, startTime[1]);
+
+
+        // Now set the start and end time for the current day.
+        // Later on we will check if we need it at all.
+        cal.set(Calendar.HOUR_OF_DAY, startTimes[toIndex(currentDay)].getHour());
+        cal.set(Calendar.MINUTE, startTimes[toIndex(currentDay)].getMinute());
         long startTimeInMillis = cal.getTimeInMillis();
 
-        cal.set(Calendar.HOUR_OF_DAY, endTime[0]);
-        cal.set(Calendar.MINUTE, endTime[1]);
+        cal.set(Calendar.HOUR_OF_DAY, endTimes[toIndex(currentDay)].getHour());
+        cal.set(Calendar.MINUTE, endTimes[toIndex(currentDay)].getMinute());
         long endTimeInMillis = cal.getTimeInMillis();
 
 
+
+        // Now we check for the current day and time.
         if (days[toIndex(currentDay)] == false
-                || startTimeInMillis >= currentTime
-                || endTimeInMillis <= currentTime)
+                || currentTime < startTimeInMillis
+                || currentTime > endTimeInMillis)
         {
             Intent intent = new Intent(context, DisableProfileReceiver.class);
             intent.addCategory(name);
@@ -196,6 +240,14 @@ public class TimeManager {
             intent.addCategory(name);
             context.sendBroadcast(intent);
         }
+    }
+
+
+
+    private long getTargetTime(boolean[] days, TimeObject[] time)
+    {
+        //TODO: Fill in this method.
+        return 0;
     }
 
 
