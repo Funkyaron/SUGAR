@@ -22,6 +22,7 @@ public class EnableProfileReceiver extends BroadcastReceiver {
 
         /* Temporarily coded to test the alarm functionality */
 
+        /*
         Object[] categories = intent.getCategories().toArray();
         String name = (String) categories[0];
 
@@ -47,5 +48,6 @@ public class EnableProfileReceiver extends BroadcastReceiver {
         NotificationManager notiMgr = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
         notiMgr.notify(ID, noti);
+        */
     }
 }
