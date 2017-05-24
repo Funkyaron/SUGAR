@@ -28,31 +28,39 @@ public class BlackList {
     public void addProfile(Profile addProfile,Context context) throws Exception
     {
         activatedProfiles.add(addProfile);
+        for(ListIterator<String> currentProfileIterator = addProfile.getPhoneNumbers().listIterator(); currentProfileIterator.hasNext();)
+        {
+            blockedNumbers.add(currentProfileIterator.next());
+        }
         saveBlockList(context);
     }
 
     public boolean removeProfile( Profile removeProfile , Context context ) throws Exception
     {
-        /*
         int currentArrayListId = 0;
-        for(Profile currentProfile: activatedProfiles )
+        for(ListIterator<Profile> iterator = activatedProfiles.listIterator();iterator.hasNext();)
         {
+            Profile currentProfile = iterator.next();
             if( currentProfile.getId() == removeProfile.getId() )
             {
+                ArrayList<String> buffer = currentProfile.getPhoneNumbers();
+                for(ListIterator<String> iteratorNumbers = buffer.listIterator(); iteratorNumbers.hasNext();)
+                {
+                    blockedNumbers.remove(iteratorNumbers.next());
+                }
                 activatedProfiles.remove(currentArrayListId);
                 saveBlockList(context);
                 return true;
             }
-        } */
+        }
         return false;
     }
 
-    public boolean readBlockList(Context context) throws IOException,XmlPullParserException
+    public boolean readBlackList(Context context) throws IOException,XmlPullParserException
     {
         try {
             BlockListParser parser = new BlockListParser();
-            FileInputStream blockListInputStream = new FileInputStream(context.getApplicationContext() + "");
-            ArrayList<String> result = parser.parse(context.openFileInput("blocklist.xml"), context);
+            ArrayList<String> result = parser.parse(context.openFileInput("blacklist.xml"), context);
             blockedNumbers = result;
             return true;
         } catch ( IOException e ) {
@@ -66,25 +74,24 @@ public class BlackList {
 
     public boolean saveBlockList(Context context) throws Exception
     {
-        File currentBlockList = new File(context.getFilesDir() + "blacklist.xml");
-        if( currentBlockList.exists() )
-        {
-            currentBlockList.delete();
-        }
+        File currentBlacklistFile = new File(context.getFilesDir() + "blacklist.xml");
+        if( currentBlacklistFile.exists() )
+            currentBlacklistFile.delete();
+        FileOutputStream fileOutput = null;
         try {
+            fileOutput = context.openFileOutput("blacklist.xml",Context.MODE_PRIVATE);
             xmlWriter = Xml.newSerializer();
-            xmlWriter.setOutput(context.openFileOutput("blacklist.xml",Context.MODE_PRIVATE),"UTF-8");
+            xmlWriter.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output",true);
+            xmlWriter.setOutput(fileOutput,"UTF-8");
             xmlWriter.startDocument("UTF-8",true);
             xmlWriter.startTag(null,"blacklist");
             xmlWriter.startTag(null,"numbers");
-            for(ListIterator<Profile> iterator = activatedProfiles.listIterator();iterator.hasNext();)
-            {
-                String toAddNumbers[] = new String[iterator.next().getPhoneNumbers().size()];
-                toAddNumbers = iterator.next().getPhoneNumbers().toArray(toAddNumbers);
-                for( int currentPhoneNumber = 0; currentPhoneNumber < toAddNumbers.length; currentPhoneNumber++ )
-                {
-                    xmlWriter.text(toAddNumbers[currentPhoneNumber]);
+            if(!(getBlockedNumbers().size() == 0) ) {
+                for (ListIterator<String> phoneNumberIterator = blockedNumbers.listIterator(); phoneNumberIterator.hasNext(); ) {
+                    xmlWriter.text(phoneNumberIterator.next() + ",");
                 }
+            } else if ( getBlockedNumbers().size() == 0 ) {
+                xmlWriter.text("");
             }
             xmlWriter.endTag(null,"numbers");
             xmlWriter.endTag(null,"blacklist");
@@ -93,6 +100,7 @@ public class BlackList {
             return true;
         } catch ( Exception e ) {
             Log.d("WRITE BLACKLIST :","Unfortunately your blacklist could not be written : " + e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }
