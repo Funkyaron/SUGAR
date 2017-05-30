@@ -1,8 +1,12 @@
 package com.example.peter.sugar;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.AudioManager;
+import android.net.Uri;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,9 +19,11 @@ public class MainActivity extends AppCompatActivity
 
     public static final String LOG_TAG = "SUGAR";
 
-    private int REQUEST_VIBRATE = 1;
+    private final int REQUEST_VIBRATE = 1;
+    private final int REQUEST_WRITE_SETTINGS = 2;
 
-    private String[] PERMISSION_VIBRATE = {Manifest.permission.VIBRATE};
+    private final String[] PERMISSION_VIBRATE = {Manifest.permission.VIBRATE};
+    private final String[] PERMISSION_WRITE_SETTINGS = {Manifest.permission.WRITE_SETTINGS};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,12 +32,6 @@ public class MainActivity extends AppCompatActivity
 
         Log.d(LOG_TAG, "getFilesDir(): " + getFilesDir());
 
-
-        if(ActivityCompat.checkSelfPermission(MainActivity.this,
-                Manifest.permission.VIBRATE) != PackageManager.PERMISSION_GRANTED)
-        {
-            ActivityCompat.requestPermissions(this, PERMISSION_VIBRATE, REQUEST_VIBRATE);
-        }
 
 
         Button contactsButton = (Button) findViewById(R.id.contacts_button_id);
