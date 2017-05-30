@@ -14,16 +14,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-public class MainActivity extends AppCompatActivity
-    implements ActivityCompat.OnRequestPermissionsResultCallback {
+public class MainActivity extends AppCompatActivity {
 
     public static final String LOG_TAG = "SUGAR";
-
-    private final int REQUEST_VIBRATE = 1;
-    private final int REQUEST_WRITE_SETTINGS = 2;
-
-    private final String[] PERMISSION_VIBRATE = {Manifest.permission.VIBRATE};
-    private final String[] PERMISSION_WRITE_SETTINGS = {Manifest.permission.WRITE_SETTINGS};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,22 +36,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-    }
-
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                           int[] grantResults)
-    {
-        if(requestCode == REQUEST_VIBRATE)
-        {
-            // Do something?
-        }
-        else
-        {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
     }
 
 }
