@@ -255,4 +255,10 @@ class Profile implements Serializable
         endTime = updatedEnd;
     }
 
+    void addNumbers(String[] numbers) {
+        for(String number : numbers) {
+            this.numbers.add(number);
+        }
+    }
+
 }
