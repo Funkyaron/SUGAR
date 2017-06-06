@@ -17,6 +17,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class ContactsActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -28,9 +30,7 @@ public class ContactsActivity extends AppCompatActivity
     private final String[] PROJECTION = {
             ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY,
             ContactsContract.RawContacts._ID,
-            ContactsContract.RawContacts.CONTACT_ID,
-            ContactsContract.RawContacts.ACCOUNT_NAME,
-            ContactsContract.RawContacts.ACCOUNT_TYPE
+            ContactsContract.RawContacts.ACCOUNT_NAME
     };
 
     /**
@@ -39,18 +39,22 @@ public class ContactsActivity extends AppCompatActivity
     private final String SORT_ORDER = ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY;
 
     /**
-     * We query for every contact that contains a NORMALIZED_NUMBER
+     * We don't want to display some contacts twice, so we get off all contact entries
+     * created by WhatsApp or whatever. See SELECTION_ARGS
      */
     private final String SELECTION = "((" +
             ContactsContract.RawContacts.ACCOUNT_NAME + " =?) OR (" +
             ContactsContract.RawContacts.ACCOUNT_NAME + " =?) OR (" +
             ContactsContract.RawContacts.ACCOUNT_NAME + " =?))";
 
+    /**
+     *
+     */
     private final String[] SELECTION_ARGS = {
             "SIM1", "SIM2", "Phone"
     };
 
-    SimpleCursorAdapter mAdapter;
+    ContactsAdapter mAdapter;
     private Button finishButton;
     private ListView contactsView;
 
@@ -71,18 +75,19 @@ public class ContactsActivity extends AppCompatActivity
         Log.d(MainActivity.LOG_TAG, "ConAct: Proceeding with database query");
 
         // Concerning contacts database
-        String[] fromColumns = {ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY,
-                ContactsContract.RawContacts.ACCOUNT_NAME};
-        int[] toViews = {R.id.name_view, R.id.number_view};
+        String[] fromColumns = {ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY};
+        int[] toViews = {R.id.name_view};
 
-        mAdapter = new SimpleCursorAdapter(this, R.layout.list_item_contacts,
-                null, fromColumns, toViews, 0);
+        mAdapter = new ContactsAdapter(this, null, fromColumns, toViews);
         contactsView.setAdapter(mAdapter);
 
         getLoaderManager().initLoader(0, null, this);
+    }
 
-
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(MainActivity.LOG_TAG, "ContactsAcitivty: onDestroy()");
     }
 
 
@@ -114,6 +119,75 @@ public class ContactsActivity extends AppCompatActivity
      * @param v
      */
     public void onFinishButtonClick (View v) {
+        Log.d(MainActivity.LOG_TAG, "Finish Button is clicked");
+        ArrayList<String> selectedContacts = mAdapter.getSelectedContacts();
+        ArrayList<Long> selectedContactIds = mAdapter.getSelectedContactIds();
+        ArrayList<String> selectedContactNumbers = getNumbersByIds(selectedContactIds);
+
+        logStrings(selectedContacts);
+        logLongs(selectedContactIds);
+        logStrings(selectedContactNumbers);
+
         finish();
+    }
+
+    private void logStrings(ArrayList<String> list) {
+        for(String element : list) {
+            Log.d(MainActivity.LOG_TAG, element);
+        }
+    }
+
+    private void logLongs(ArrayList<Long> list) {
+        for(Long element : list) {
+            Log.d(MainActivity.LOG_TAG, element.toString());
+        }
+    }
+
+
+
+
+    private ArrayList<String> getNumbersByIds(ArrayList<Long> ids) {
+        ArrayList<String> result = new ArrayList<String>(0);
+
+        String[] projection = new String[] {
+                ContactsContract.Data.RAW_CONTACT_ID,
+                ContactsContract.CommonDataKinds.Phone.NUMBER,
+                ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER,
+                ContactsContract.Data.MIMETYPE
+        };
+
+        String selection = "(" + ContactsContract.Data.MIMETYPE + " =?)";
+
+        String[] selectionArgs = new String[] {ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE};
+
+        Cursor cursor = getContentResolver().query(
+                ContactsContract.Data.CONTENT_URI,
+                projection,
+                selection,
+                selectionArgs,
+                null
+        );
+
+        while(cursor.moveToNext()) {
+            Long cursorId = cursor.getLong(cursor.getColumnIndex(
+                    ContactsContract.Data.RAW_CONTACT_ID));
+            for(Long listId : ids) {
+                if(listId.equals(cursorId)) {
+                    String number = cursor.getString(cursor.getColumnIndex(
+                            ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    String normNumber = cursor.getString(cursor.getColumnIndex(
+                            ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER));
+                    if(number != null)
+                        result.add(number);
+                    if(normNumber != null)
+                        result.add(normNumber);
+                    break;
+                }
+            }
+        }
+
+        cursor.close();
+
+        return result;
     }
 }
