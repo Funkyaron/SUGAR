@@ -18,61 +18,36 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 public class ContactsActivity extends AppCompatActivity
-    implements ActivityCompat.OnRequestPermissionsResultCallback,
-        LoaderManager.LoaderCallbacks<Cursor> {
+        implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    /**
-     * Request code to identify the request for contacts permissions.
-     */
-    private final int REQUEST_CONTACTS = 1;
 
-    /**
-     * Permissions we need to read and write contacts.
-     */
-    private final String[] PERMISSION_CONTACTS = {Manifest.permission.READ_CONTACTS,
-        Manifest.permission.WRITE_CONTACTS};
 
     /**
      * These are the contacts database columns that we will retrieve.
      */
     private final String[] PROJECTION = {
-            ContactsContract.Data.DISPLAY_NAME,
-            ContactsContract.Data.MIMETYPE,
-            ContactsContract.Data._ID,
-            ContactsContract.Data.DATA1,
-            ContactsContract.Data.DATA2,
-            ContactsContract.Data.DATA3,
-            ContactsContract.Data.DATA4,
-            ContactsContract.Data.DATA5,
-            ContactsContract.Data.DATA6,
-            ContactsContract.Data.DATA7,
-            ContactsContract.Data.DATA8,
-            ContactsContract.Data.DATA9,
-            ContactsContract.Data.DATA10,
-            ContactsContract.Data.DATA11,
-            ContactsContract.Data.DATA12,
-            ContactsContract.Data.DATA13,
-            ContactsContract.Data.DATA14,
-            ContactsContract.Data.DATA15,
-            ContactsContract.Data.RAW_CONTACT_ID,
-            ContactsContract.Data.IS_PRIMARY
+            ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY,
+            ContactsContract.RawContacts._ID,
+            ContactsContract.RawContacts.CONTACT_ID,
+            ContactsContract.RawContacts.ACCOUNT_NAME,
+            ContactsContract.RawContacts.ACCOUNT_TYPE
     };
 
     /**
      * We will order the query result by display name.
      */
-    private final String SORT_ORDER = ContactsContract.Data.DISPLAY_NAME;
+    private final String SORT_ORDER = ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY;
 
     /**
      * We query for every contact that contains a NORMALIZED_NUMBER
      */
     private final String SELECTION = "((" +
-            ContactsContract.Data.DISPLAY_NAME + " NOTNULL) AND (" +
-            ContactsContract.Data.DISPLAY_NAME + " != '' ) AND (" +
-            ContactsContract.Data.MIMETYPE + " =? ))";
+            ContactsContract.RawContacts.ACCOUNT_NAME + " =?) OR (" +
+            ContactsContract.RawContacts.ACCOUNT_NAME + " =?) OR (" +
+            ContactsContract.RawContacts.ACCOUNT_NAME + " =?))";
 
     private final String[] SELECTION_ARGS = {
-            ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
+            "SIM1", "SIM2", "Phone"
     };
 
     SimpleCursorAdapter mAdapter;
@@ -91,72 +66,35 @@ public class ContactsActivity extends AppCompatActivity
         contactsView = (ListView) findViewById(R.id.contacts_view_id);
         Log.d(MainActivity.LOG_TAG, "Views initialized");
 
-        // Concerning runtime permissions
-        if (ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_CONTACTS) != PackageManager.PERMISSION_GRANTED)
-        {
-            Log.d(MainActivity.LOG_TAG, "ConAct: Permissions not granted, sending request.");
-            ActivityCompat.requestPermissions(this, PERMISSION_CONTACTS, REQUEST_CONTACTS);
-        } else {
 
-            Log.d(MainActivity.LOG_TAG, "ConAct: Proceeding with database query");
 
-            // Concerning contacts database
-            String[] fromColumns = {ContactsContract.Data.DISPLAY_NAME,
-                    ContactsContract.Data.IS_PRIMARY};
-            int[] toViews = {R.id.name_view, R.id.number_view};
+        Log.d(MainActivity.LOG_TAG, "ConAct: Proceeding with database query");
 
-            mAdapter = new SimpleCursorAdapter(this, R.layout.list_item_contacts,
-                    null, fromColumns, toViews, 0);
-            contactsView.setAdapter(mAdapter);
+        // Concerning contacts database
+        String[] fromColumns = {ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY,
+                ContactsContract.RawContacts.ACCOUNT_NAME};
+        int[] toViews = {R.id.name_view, R.id.number_view};
 
-            getLoaderManager().initLoader(0, null, this);
-        }
+        mAdapter = new SimpleCursorAdapter(this, R.layout.list_item_contacts,
+                null, fromColumns, toViews, 0);
+        contactsView.setAdapter(mAdapter);
+
+        getLoaderManager().initLoader(0, null, this);
+
+
+
     }
 
 
 
-    // Handling runtime permissions
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                           int[] grantResults)
-    {
-        Log.d(MainActivity.LOG_TAG, "ConAct: onRequestPermissionsResult()");
-        if (requestCode == REQUEST_CONTACTS)
-        {
-            if(verifyPermissions(grantResults))
-                Toast.makeText(this, "Berechtigungen genehmigt", Toast.LENGTH_LONG).show();
-            else
-            {
-                Toast.makeText(this, "Berechtigungen nicht genehmigt", Toast.LENGTH_LONG).show();
-            }
-        }
-        else
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
 
-    private boolean verifyPermissions(int[] grantResults)
-    {
-        if (grantResults.length < 1)
-            return false;
-
-        for (int result : grantResults)
-        {
-            if (result != PackageManager.PERMISSION_GRANTED)
-                return false;
-        }
-
-        return true;
-    }
 
 
 
     // Implementing LoaderCallbacks. See https://developer.android.com/guide/topics/ui/layout/listview.html
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.d(MainActivity.LOG_TAG, "ConAct: onCreateLoader()");
-        return new CursorLoader(this, ContactsContract.Data.CONTENT_URI,
+        return new CursorLoader(this, ContactsContract.RawContacts.CONTENT_URI,
                 PROJECTION, SELECTION, SELECTION_ARGS, SORT_ORDER);
     }
 

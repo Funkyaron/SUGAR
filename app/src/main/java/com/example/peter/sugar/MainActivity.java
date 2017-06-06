@@ -13,53 +13,45 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     public static final String LOG_TAG = "SUGAR";
+
+    /**
+     * Request code to identify the request for contacts permissions.
+     */
+    private final int REQUEST_CONTACTS = 1;
+
+    /**
+     * Permissions we need to read and write contacts.
+     */
+    private final String[] PERMISSION_CONTACTS = {Manifest.permission.READ_CONTACTS,
+            Manifest.permission.WRITE_CONTACTS};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Concerning runtime permissions
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_CONTACTS) != PackageManager.PERMISSION_GRANTED)
+        {
+            Log.d(MainActivity.LOG_TAG, "ConAct: Permissions not granted, sending request.");
+            ActivityCompat.requestPermissions(this, PERMISSION_CONTACTS, REQUEST_CONTACTS);
+        }
+
         Log.d(LOG_TAG, "getFilesDir(): " + getFilesDir());
 
 
-        TestXmlWriter writer = new TestXmlWriter();
-        try {
-            writer.writeTestBlockList(this);
-        } catch (Exception e) {
-            Log.e(LOG_TAG, "MainActivity: " + e.toString());
-        }
 
-        BlockList testBlockList = new BlockList(this);
-        Log.d(LOG_TAG, "Created BlockList.");
-        logBlockList(testBlockList);
-
-        String[] numbers = {"+4917635183695", "017635183695"};
-        Profile testProfile = new Profile(this);
-        testProfile.addNumbers(numbers);
-        try {
-            testBlockList.addProfile(testProfile, this);
-            testBlockList.addProfile(testProfile, this);
-        } catch (Exception e) {
-            Log.e(LOG_TAG, "addProfile(): " + e.toString());
-        }
-
-        Log.d(LOG_TAG, "Added test profile to blocklist.");
-        logBlockList(testBlockList);
-
-        try {
-            testBlockList.removeProfile(testProfile, this);
-        } catch (Exception e) {
-            Log.e(LOG_TAG, "removeProfile(): " + e.toString());
-        }
-
-        Log.d(LOG_TAG, "Removed test profile from blocklist");
-        logBlockList(testBlockList);
 
 
 
@@ -73,6 +65,39 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    // Handling runtime permissions
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults)
+    {
+        Log.d(MainActivity.LOG_TAG, "ConAct: onRequestPermissionsResult()");
+        if (requestCode == REQUEST_CONTACTS)
+        {
+            if(verifyPermissions(grantResults))
+                Toast.makeText(this, "Berechtigungen genehmigt", Toast.LENGTH_LONG).show();
+            else
+            {
+                Toast.makeText(this, "Berechtigungen nicht genehmigt", Toast.LENGTH_LONG).show();
+            }
+        }
+        else
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    private boolean verifyPermissions(int[] grantResults)
+    {
+        if (grantResults.length < 1)
+            return false;
+
+        for (int result : grantResults)
+        {
+            if (result != PackageManager.PERMISSION_GRANTED)
+                return false;
+        }
+
+        return true;
     }
 
     private void logBlockList(BlockList blockList) {
