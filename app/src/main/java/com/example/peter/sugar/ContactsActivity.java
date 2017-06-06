@@ -35,8 +35,28 @@ public class ContactsActivity extends AppCompatActivity
     /**
      * These are the contacts database columns that we will retrieve.
      */
-    private final String[] PROJECTION = {ContactsContract.Data._ID,
-        ContactsContract.Data.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER};
+    private final String[] PROJECTION = {
+            ContactsContract.Data.DISPLAY_NAME,
+            ContactsContract.Data.MIMETYPE,
+            ContactsContract.Data._ID,
+            ContactsContract.Data.DATA1,
+            ContactsContract.Data.DATA2,
+            ContactsContract.Data.DATA3,
+            ContactsContract.Data.DATA4,
+            ContactsContract.Data.DATA5,
+            ContactsContract.Data.DATA6,
+            ContactsContract.Data.DATA7,
+            ContactsContract.Data.DATA8,
+            ContactsContract.Data.DATA9,
+            ContactsContract.Data.DATA10,
+            ContactsContract.Data.DATA11,
+            ContactsContract.Data.DATA12,
+            ContactsContract.Data.DATA13,
+            ContactsContract.Data.DATA14,
+            ContactsContract.Data.DATA15,
+            ContactsContract.Data.RAW_CONTACT_ID,
+            ContactsContract.Data.IS_PRIMARY
+    };
 
     /**
      * We will order the query result by display name.
@@ -47,8 +67,13 @@ public class ContactsActivity extends AppCompatActivity
      * We query for every contact that contains a NORMALIZED_NUMBER
      */
     private final String SELECTION = "((" +
-            ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER + " NOTNULL) AND (" +
-            ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER + " != '' ))";
+            ContactsContract.Data.DISPLAY_NAME + " NOTNULL) AND (" +
+            ContactsContract.Data.DISPLAY_NAME + " != '' ) AND (" +
+            ContactsContract.Data.MIMETYPE + " =? ))";
+
+    private final String[] SELECTION_ARGS = {
+            ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
+    };
 
     SimpleCursorAdapter mAdapter;
     private Button finishButton;
@@ -80,7 +105,7 @@ public class ContactsActivity extends AppCompatActivity
 
             // Concerning contacts database
             String[] fromColumns = {ContactsContract.Data.DISPLAY_NAME,
-                    ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER};
+                    ContactsContract.Data.IS_PRIMARY};
             int[] toViews = {R.id.name_view, R.id.number_view};
 
             mAdapter = new SimpleCursorAdapter(this, R.layout.list_item_contacts,
@@ -132,7 +157,7 @@ public class ContactsActivity extends AppCompatActivity
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.d(MainActivity.LOG_TAG, "ConAct: onCreateLoader()");
         return new CursorLoader(this, ContactsContract.Data.CONTENT_URI,
-                PROJECTION, SELECTION, null, SORT_ORDER);
+                PROJECTION, SELECTION, SELECTION_ARGS, SORT_ORDER);
     }
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {

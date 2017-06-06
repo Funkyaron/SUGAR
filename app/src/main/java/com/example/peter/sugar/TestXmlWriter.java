@@ -9,6 +9,7 @@ import org.xmlpull.v1.XmlSerializer;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -73,5 +74,27 @@ public class TestXmlWriter {
         ProfileParser pParser = new ProfileParser();
         return pParser.parse(fis, context);
 
+    }
+
+    public void writeTestBlockList(Context context) throws IOException, XmlPullParserException {
+        Log.d(MainActivity.LOG_TAG, "TestXmlWriter: writeTestBlocklist");
+
+        File testBlockListFile = new File(context.getFilesDir() + "/blocklist.xml");
+        if(testBlockListFile.exists())
+            testBlockListFile.delete();
+
+        FileOutputStream fos = context.openFileOutput("blocklist.xml", Context.MODE_PRIVATE);
+
+        XmlSerializer serializer = Xml.newSerializer();
+        serializer.setOutput(fos, "UTF-8");
+        serializer.startDocument("UTF-8", true);
+
+        serializer.startTag(null, "numbers");
+        serializer.endTag(null, "numbers");
+
+        serializer.endDocument();
+        serializer.flush();
+
+        fos.close();
     }
 }

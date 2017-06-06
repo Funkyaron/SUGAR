@@ -10,6 +10,8 @@ import android.telecom.InCallService;
 import android.telecom.TelecomManager;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 /**
  * Created by Funkyaron on 11.04.2017.
  */
@@ -27,20 +29,14 @@ public class InCallServiceImpl extends InCallService {
         Call.Details det = call.getDetails();
         Log.d(MainActivity.LOG_TAG, "CallerDisplayName: " + det.getCallerDisplayName());
 
-
-
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         currentRingerMode = mAudioManager.getRingerMode();
         mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
 
-
-        if (number.equals("+4917635183695") || number.equals("017635183695")) {
-            // Do nothing
-        } else {
+        if(!shouldBlock(number)) {
             mAudioManager.setRingerMode(currentRingerMode);
-            super.onCallAdded(call);
         }
-
+        super.onCallAdded(call);
     }
 
     @Override
@@ -66,5 +62,28 @@ public class InCallServiceImpl extends InCallService {
 
     Uri getHandle(Call call) {
         return call == null ? null : call.getDetails().getHandle();
+    }
+
+
+
+    private boolean shouldBlock(String number) {
+        boolean result = false;
+
+        BlockList blockList = new BlockList(this);
+        ArrayList<String> blockedNumbers = blockList.getBlockedNumbers();
+        for(String blockedNumber : blockedNumbers) {
+            if(number.equals(blockedNumber)) {
+                result = true;
+                break;
+            }
+        }
+
+        if(result) {
+            Log.d(MainActivity.LOG_TAG, "Call should be blocked");
+        } else {
+            Log.d(MainActivity.LOG_TAG, "Call is allowed");
+        }
+
+        return result;
     }
 }

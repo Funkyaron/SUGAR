@@ -9,58 +9,38 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class BlockListParser {
 
     private static final String ns = null;
 
-    public ArrayList<String> parse (InputStream in,Context context) throws IOException,XmlPullParserException
+    public ArrayList<String> parse (InputStream in) throws IOException,XmlPullParserException
     {
-        ArrayList<String> result = null;
+        Log.d(MainActivity.LOG_TAG, "BlockListParser : Parsing blocklist ... ");
+
         try {
-            Log.d(MainActivity.LOG_TAG, "BlockListParser : Parsing blocklist ... ");
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(in, null);
             parser.nextTag();
-            result = readBlockList(parser,context);
-            if (result == null)
-                Log.d(MainActivity.LOG_TAG, "Parsing result is null");
-        } catch ( Exception e ) {
-            e.printStackTrace();
+            return readBlockList(parser);
         } finally {
             in.close();
         }
-        return result;
     }
 
-    public ArrayList<String> readBlockList(XmlPullParser parser,Context context) throws XmlPullParserException,IOException
+    private ArrayList<String> readBlockList(XmlPullParser parser) throws XmlPullParserException,IOException
     {
+        parser.require(XmlPullParser.START_TAG, ns, "numbers");
+        String[] allNumbers = readText(parser).split(",");
+        parser.require(XmlPullParser.END_TAG, ns, "numbers");
+
         ArrayList<String> blockedNumbers = new ArrayList<String>(0);
-        parser.require(XmlPullParser.START_TAG,ns,"blacklist");
-        while( parser.next() != XmlPullParser.END_TAG )
-        {
-            String name = parser.getName();
-            if( parser.getEventType() != XmlPullParser.START_TAG )
-                continue;
-            else if ( name.equals("numbers")) {
-                blockedNumbers = readPhoneNumbers(parser);
-            }
+        for(String number : allNumbers) {
+            blockedNumbers.add(number);
         }
-        return new ArrayList<String>(0);
-    }
-
-    private ArrayList<String> readPhoneNumbers(XmlPullParser parser) throws XmlPullParserException,IOException
-    {
-        ArrayList<String> result = new ArrayList<String>(0);
-        parser.require(XmlPullParser.START_TAG,ns,"numbers");
-        String allNumbers[] = readText(parser).split(",");
-        parser.require(XmlPullParser.END_TAG,ns,"numbers");
-        for( int currentPhoneNumber = 0; currentPhoneNumber < allNumbers.length; currentPhoneNumber++ )
-        {
-            result.add(allNumbers[currentPhoneNumber]);
-        }
-        return result;
+        return blockedNumbers;
     }
 
     private String readText(XmlPullParser parser) throws XmlPullParserException,IOException
