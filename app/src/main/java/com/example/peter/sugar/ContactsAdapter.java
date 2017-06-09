@@ -18,6 +18,8 @@ import java.util.ArrayList;
 
 /**
  * Created by Funkyaron on 06.06.2017.
+ *
+ * Not needed anymore.
  */
 
 public class ContactsAdapter extends SimpleCursorAdapter {
@@ -27,7 +29,6 @@ public class ContactsAdapter extends SimpleCursorAdapter {
 
     public ContactsAdapter(Activity context, Cursor cursor, String[] from, int[] to) {
         super(context, R.layout.list_item_contacts, cursor, from, to, 0);
-        Log.d(MainActivity.LOG_TAG, "ContactsAdapter Constructor");
         this.context = context;
         list = new ArrayList<Model>(0);
         if (cursor != null) {
@@ -60,9 +61,7 @@ public class ContactsAdapter extends SimpleCursorAdapter {
                 list.add(new Model(name, id));
             }
         } else {
-            Log.d(MainActivity.LOG_TAG, "Cursor is null");
         }
-        Log.d(MainActivity.LOG_TAG, "Cursor ok");
         return cursor;
     }
 

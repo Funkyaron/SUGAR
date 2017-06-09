@@ -1,6 +1,7 @@
 package com.example.peter.sugar;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.provider.ContactsContract;
@@ -18,6 +19,10 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+
+/**
+ * Not needed anymore.
+ */
 
 public class ContactsActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -57,6 +62,7 @@ public class ContactsActivity extends AppCompatActivity
     ContactsAdapter mAdapter;
     private Button finishButton;
     private ListView contactsView;
+    private ContactsDialogFragment.ContactsSelectedListener listener;
 
 
 
@@ -68,11 +74,6 @@ public class ContactsActivity extends AppCompatActivity
         // Initializing Views
         finishButton = (Button) findViewById(R.id.finish_button_id);
         contactsView = (ListView) findViewById(R.id.contacts_view_id);
-        Log.d(MainActivity.LOG_TAG, "Views initialized");
-
-
-
-        Log.d(MainActivity.LOG_TAG, "ConAct: Proceeding with database query");
 
         // Concerning contacts database
         String[] fromColumns = {ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY};
@@ -88,6 +89,16 @@ public class ContactsActivity extends AppCompatActivity
     public void onDestroy() {
         super.onDestroy();
         Log.d(MainActivity.LOG_TAG, "ContactsAcitivty: onDestroy()");
+    }
+
+    // Useless for now
+    public void onReact(Context context) {
+        Log.d(MainActivity.LOG_TAG, "ContactsActivity: onReact()");
+        if(context instanceof ContactsDialogFragment.ContactsSelectedListener) {
+            Log.d(MainActivity.LOG_TAG, "MainActivity is instanceof " +
+                    "ContactsDialogFragment.ContactsSelectedListener");
+            listener = (ContactsDialogFragment.ContactsSelectedListener) context;
+        }
     }
 
 
@@ -120,13 +131,14 @@ public class ContactsActivity extends AppCompatActivity
      */
     public void onFinishButtonClick (View v) {
         Log.d(MainActivity.LOG_TAG, "Finish Button is clicked");
-        ArrayList<String> selectedContacts = mAdapter.getSelectedContacts();
         ArrayList<Long> selectedContactIds = mAdapter.getSelectedContactIds();
         ArrayList<String> selectedContactNumbers = getNumbersByIds(selectedContactIds);
 
-        logStrings(selectedContacts);
-        logLongs(selectedContactIds);
-        logStrings(selectedContactNumbers);
+        try {
+            listener.onContactsSelected(selectedContactNumbers);
+        } catch (Exception e) {
+            Log.e(MainActivity.LOG_TAG, e.toString());
+        }
 
         finish();
     }

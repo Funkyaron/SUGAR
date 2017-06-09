@@ -13,4 +13,10 @@
         android:layout_width="wrap_content"
         android:text="@string/start_contacts_activity_button_text" />
 
+    <TextView
+        android:id="@+id/numbers_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/contacts_button_id"/>
+
 </RelativeLayout>

@@ -1,6 +1,7 @@
 package com.example.peter.sugar;
 
 import android.Manifest;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,14 +14,17 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
-        implements ActivityCompat.OnRequestPermissionsResultCallback {
+        implements ActivityCompat.OnRequestPermissionsResultCallback,
+        ContactsDialogFragment.ContactsSelectedListener {
 
     public static final String LOG_TAG = "SUGAR";
+    public static final String KEY_PROFILE_NAME = "profile name";
 
     /**
      * Request code to identify the request for contacts permissions.
@@ -33,10 +37,14 @@ public class MainActivity extends AppCompatActivity
     private final String[] PERMISSION_CONTACTS = {Manifest.permission.READ_CONTACTS,
             Manifest.permission.WRITE_CONTACTS};
 
+    private TextView numbersView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        numbersView = (TextView) findViewById(R.id.numbers_view);
 
         // Concerning runtime permissions
         if (ActivityCompat.checkSelfPermission(this,
@@ -46,6 +54,8 @@ public class MainActivity extends AppCompatActivity
         {
             Log.d(MainActivity.LOG_TAG, "ConAct: Permissions not granted, sending request.");
             ActivityCompat.requestPermissions(this, PERMISSION_CONTACTS, REQUEST_CONTACTS);
+        } else {
+            Log.d(LOG_TAG, "Permissions granted");
         }
 
         Log.d(LOG_TAG, "getFilesDir(): " + getFilesDir());
@@ -60,11 +70,26 @@ public class MainActivity extends AppCompatActivity
         contactsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, ContactsActivity.class);
-                startActivity(i);
+                DialogFragment newFragment = new ContactsDialogFragment();
+                try {
+                    newFragment.show(getFragmentManager(), "contacts");
+                } catch (Exception e) {
+                    Log.e(LOG_TAG, "MainActivity: " + e.toString());
+                }
             }
         });
 
+    }
+
+    @Override
+    public void onContactsSelected(ArrayList<String> numbers) {
+        StringBuilder builder = new StringBuilder();
+        for(String number : numbers) {
+            builder.append(number);
+            builder.append("\n");
+        }
+        String allNumbers = builder.toString();
+        numbersView.setText(allNumbers);
     }
 
     // Handling runtime permissions
