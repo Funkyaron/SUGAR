@@ -15,6 +15,8 @@ import java.util.ArrayList;
 
 /**
  * Created by Funkyaron on 09.06.2017.
+ *
+ * Test
  */
 
 public class ContactsDialogFragment extends DialogFragment {
