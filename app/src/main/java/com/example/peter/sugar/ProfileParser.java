@@ -90,7 +90,7 @@ class ProfileParser {
         Log.d(MainActivity.LOG_TAG, "Parsing results:\n" +
             profileName + "\n" + profileDays + "\n" + startTime + "\n" + endTime + "\n" +
             numbers);
-        return new Profile(profileName, profileDays, startTime, endTime,numbers,context);
+        return new Profile(profileName, profileDays, startTime, endTime,numbers);
     }
 
     private String readProfileName(XmlPullParser parser) throws XmlPullParserException,IOException
@@ -121,18 +121,6 @@ class ProfileParser {
             }
         }
         return daysActivated;
-    }
-
-    private TimeObject readSelectedDay(XmlPullParser parser,String weekDay) throws XmlPullParserException,IOException
-    {
-        TimeObject result;
-        parser.require(XmlPullParser.START_TAG,ns,weekDay);
-        String[] content = readText(parser).split(":");
-        parser.require(XmlPullParser.END_TAG,ns,weekDay);
-        int parameterHours = Integer.parseInt(content[0]);
-        int parameterMinutes = Integer.parseInt(content[1]);
-        result = new TimeObject(parameterHours,parameterMinutes);
-        return result;
     }
 
     private TimeObject[] readStartTimes(XmlPullParser parser) throws XmlPullParserException,IOException
