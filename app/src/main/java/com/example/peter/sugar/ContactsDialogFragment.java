@@ -90,16 +90,12 @@ public class ContactsDialogFragment extends DialogFragment {
                    @Override
                    public void onClick(DialogInterface dialogInterface, int i) {
                        mNumbers = getNumbersByIds(mRawContactIds, mDataCursor);
-                       mDataCursor.close();
-                       mRawCursor.close();
                        mListener.onContactsSelected(mNumbers);
                    }
                })
                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                    @Override
                    public void onClick(DialogInterface dialogInterface, int i) {
-                       mDataCursor.close();
-                       mRawCursor.close();
                        getDialog().cancel();
                    }
                });
@@ -107,8 +103,17 @@ public class ContactsDialogFragment extends DialogFragment {
     }
 
     @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        Log.d(MainActivity.LOG_TAG, "CDF: onDismiss()");
+        mDataCursor.close();
+        mRawCursor.close();
+    }
+
+    @Override
     public void onCancel(DialogInterface dialog) {
         super.onCancel(dialog);
+        Log.d(MainActivity.LOG_TAG, "CDF: onCancel()");
         Toast.makeText(getActivity(), R.string.on_cancel, Toast.LENGTH_LONG).show();
     }
 
