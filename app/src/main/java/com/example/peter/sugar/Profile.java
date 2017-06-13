@@ -10,41 +10,29 @@ import org.xmlpull.v1.XmlSerializer;
 import java.util.*;
 import java.io.*;
 
-// XML-Datei einlesen -> ArrayList<String> -> ArrayList bearbeiten
-// -> alte XML-Datei löschen -> neue XML-Datei anlegen
-// -> ArrayList in neue XML-Datei schreiben.
-// <blocklist>1234,6543</blocklist>
-
 /**
  * @author Peter
  */
 class Profile implements Serializable
 {
-    private Context context;
     private String name;
     private boolean days[];
     private TimeObject startTime[];
     private TimeObject endTime[];
     private ArrayList<String> numbers;
     private final String[] weekDays = { "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
-    private static int runtimeId = 0;
-    private int id;
 
-    Profile(String name, boolean days[], TimeObject startTime[], TimeObject endTime[], ArrayList<String> numbers,Context context)
+    Profile(String name, boolean days[], TimeObject startTime[], TimeObject endTime[], ArrayList<String> numbers)
     {
-        id = runtimeId;
-        this.context = context;
         this.name = name;
         this.days = days;
         this.startTime = startTime;
         this.endTime = endTime;
         this.numbers = numbers;
-        runtimeId++;
     }
 
-    Profile(Context context)
+    Profile()
     {
-        id = runtimeId;
         name = "GenericProfile";
         days = new boolean[7];
         for(int i = 0; i < 7; i++)
@@ -52,18 +40,17 @@ class Profile implements Serializable
             days[i] = false;
         }
         startTime = new TimeObject[7];
-        for( int i = 0; i < 2; i++ )
+        for( int i = 0; i < 7; i++ )
         {
             startTime[i] = new TimeObject(0,0);
         }
         endTime = new TimeObject[7];
-        for( int i = 0; i < 2; i++ )
+        for( int i = 0; i < 7; i++ )
         {
             endTime[i] = new TimeObject(0,0);
         }
         numbers = new ArrayList<String>(0);
         numbers.add("Pseudonumber");
-        runtimeId++;
     }
 
     /**
@@ -71,22 +58,16 @@ class Profile implements Serializable
      * @param
      * @return null if no profile is found
      */
-    public static Profile readProfileFromXmlFile(String name, Context context)
+    public static Profile readProfileFromXmlFile(String name, Context context) throws IOException,XmlPullParserException
     {
         Log.d(MainActivity.LOG_TAG, "Profile: readProfileFromXmlFile()");
         Profile result = null;
-        try {
-            FileInputStream fileInput = context.openFileInput(name + ".xml");
-            ProfileParser parser = new ProfileParser();
-            result = parser.parse(fileInput, context);
-            if (result == null)
-                Log.d(MainActivity.LOG_TAG, "Parsing result did not return");
-            fileInput.close();
-        } catch ( IOException e ) {
-            e.printStackTrace();
-        } catch ( XmlPullParserException e ) {
-            e.printStackTrace();
-        }
+        FileInputStream fileInput = context.openFileInput(name + ".xml");
+        ProfileParser parser = new ProfileParser();
+        result = parser.parse(fileInput, context);
+        if (result == null)
+            Log.d(MainActivity.LOG_TAG, "Parsing result did not return");
+        fileInput.close();
         return result;
     }
     /**
@@ -94,7 +75,7 @@ class Profile implements Serializable
      * @return boolean whether the file was saved properly or not
      * @throws IOException if problems occured during the function execution
      */
-    public boolean saveProfile() throws IOException {
+    public boolean saveProfile(Context context) throws IOException {
         Log.d(MainActivity.LOG_TAG, "Profile: saveProfile()");
         FileOutputStream fileOutput = null;
         XmlSerializer xmlWriter;
@@ -198,16 +179,6 @@ class Profile implements Serializable
             result = result + iterator.next() + " \n";
         }
         return result;
-    }
-
-    public int getId()
-    {
-        return id;
-    }
-
-    public Context getContext()
-    {
-        return context;
     }
 
     public String getName()
