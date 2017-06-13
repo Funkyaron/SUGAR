@@ -66,7 +66,6 @@ public class ContactsDialogFragment extends DialogFragment {
 
         mRawContactIds = getIdsByCheckedItems(checkedItems, mRawCursor);
 
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.prompt_select_contacts)
                .setMultiChoiceItems(names,
@@ -77,11 +76,13 @@ public class ContactsDialogFragment extends DialogFragment {
                                                boolean isChecked) {
                                mRawCursor.moveToPosition(which);
                                if(isChecked) {
-                                   mRawContactIds.add(mRawCursor.getLong(
-                                           mRawCursor.getColumnIndex(ContactsContract.RawContacts._ID)));
+                                   Long addedId = mRawCursor.getLong(
+                                           mRawCursor.getColumnIndex(ContactsContract.RawContacts._ID));
+                                   mRawContactIds.add(addedId);
                                } else {
-                                   mRawContactIds.remove(mRawCursor.getLong(
-                                           mRawCursor.getColumnIndex(ContactsContract.RawContacts._ID)));
+                                   Long removedId = mRawCursor.getLong(
+                                           mRawCursor.getColumnIndex(ContactsContract.RawContacts._ID));
+                                   mRawContactIds.remove(removedId);
                                }
                            }
                        })
@@ -142,13 +143,15 @@ public class ContactsDialogFragment extends DialogFragment {
         String[] rawProjection = {
                 ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY,
                 ContactsContract.RawContacts._ID,
-                ContactsContract.RawContacts.ACCOUNT_NAME};
-        String rawSelection = "((" +
+                ContactsContract.RawContacts.ACCOUNT_NAME,
+                ContactsContract.RawContacts.DELETED};
+        String rawSelection = "(((" +
                 ContactsContract.RawContacts.ACCOUNT_NAME + " =?) OR (" +
                 ContactsContract.RawContacts.ACCOUNT_NAME + " =?) OR (" +
-                ContactsContract.RawContacts.ACCOUNT_NAME + " =?))";
+                ContactsContract.RawContacts.ACCOUNT_NAME + " =?)) AND (" +
+                ContactsContract.RawContacts.DELETED + " =?))";
         String[] rawSelectionArgs = {
-                "SIM1", "SIM2", "Phone"};
+                "SIM1", "SIM2", "Phone", "0"};
         String rawSortOrder =
                 ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY;
 
@@ -251,5 +254,12 @@ public class ContactsDialogFragment extends DialogFragment {
             }
         }
         return ids;
+    }
+
+    private void logIds(ArrayList<Long> ids) {
+        Log.d(MainActivity.LOG_TAG, "Selected Ids:");
+        for(Long id : ids) {
+            Log.d(MainActivity.LOG_TAG, id.toString());
+        }
     }
 }
