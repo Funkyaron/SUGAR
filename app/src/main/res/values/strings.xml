@@ -5,4 +5,5 @@
     <string name="on_cancel">Vorgang abgebrochen</string>
     <string name="start_contacts_activity_button_text">Kontakte</string>
     <string name="prompt_select_contacts">Kontakte auswählen</string>
+    <string name="read_contacts_failed">Kontakte konnten nicht gelesen werden</string>
 </resources>

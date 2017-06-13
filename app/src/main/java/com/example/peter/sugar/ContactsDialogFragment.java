@@ -25,8 +25,6 @@ public class ContactsDialogFragment extends DialogFragment {
         void onContactsSelected(ArrayList<String> numbers);
     }
 
-    private Profile mProfile;
-    private String mProfileName;
     private ArrayList<String> mNumbers;
     private ArrayList<Long> mRawContactIds;
     private ContactsSelectedListener mListener;
@@ -50,12 +48,11 @@ public class ContactsDialogFragment extends DialogFragment {
         Log.d(MainActivity.LOG_TAG, "CDF: onCreateDialog()");
         try {
             Bundle args = getArguments();
-            mProfileName = (String) args.get(MainActivity.KEY_PROFILE_NAME);
-            mProfile = Profile.readProfileFromXmlFile(mProfileName, getActivity());
-            mNumbers = mProfile.getPhoneNumbers();
+            String profileName = (String) args.get(MainActivity.KEY_PROFILE_NAME);
+            Profile profile = Profile.readProfileFromXmlFile(profileName, getActivity());
+            mNumbers = profile.getPhoneNumbers();
         } catch (Exception e) {
-            Log.d(MainActivity.LOG_TAG, "No Profile name delivered");
-            mProfile = new Profile(getActivity());
+            Toast.makeText(getActivity(), R.string.read_contacts_failed, Toast.LENGTH_LONG).show();
             mNumbers = new ArrayList<>(0);
         }
 
@@ -67,7 +64,8 @@ public class ContactsDialogFragment extends DialogFragment {
         boolean[] checkedItems = getCheckedItemsByIds(mRawContactIds, mRawCursor);
         CharSequence[] names = getNames(mRawCursor);
 
-        Log.d(MainActivity.LOG_TAG, "Initialization finished, building dialog");
+        mRawContactIds = getIdsByCheckedItems(checkedItems, mRawCursor);
+
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.prompt_select_contacts)
@@ -104,7 +102,6 @@ public class ContactsDialogFragment extends DialogFragment {
                        getDialog().cancel();
                    }
                });
-        Log.d(MainActivity.LOG_TAG, "Dialog configuration done");
         return builder.create();
     }
 
@@ -243,5 +240,16 @@ public class ContactsDialogFragment extends DialogFragment {
                     ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY));
         }
         return names;
+    }
+
+    private ArrayList<Long> getIdsByCheckedItems(boolean[] checkedItems, Cursor rawCursor) {
+        ArrayList<Long> ids = new ArrayList<>(0);
+        for(int i = 0; i < checkedItems.length; i++) {
+            if(checkedItems[i]) {
+                rawCursor.moveToPosition(i);
+                ids.add(rawCursor.getLong(rawCursor.getColumnIndex(ContactsContract.RawContacts._ID)));
+            }
+        }
+        return ids;
     }
 }
