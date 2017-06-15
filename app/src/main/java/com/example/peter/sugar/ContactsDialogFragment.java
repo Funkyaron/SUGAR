@@ -16,7 +16,20 @@ import java.util.ArrayList;
 /**
  * Created by Funkyaron on 09.06.2017.
  *
- * Test
+ * The aim of this dialog is to select the contacts / phone numbers the user wants to
+ * associate with a profile.
+ *
+ * The activity that opens this dialog has to do 2 things:
+ * 1. Implement the ContactsDialogFragment.ContactsSelectedListener interface.
+ *    Otherwise it will throw an exception.
+ *    The onContactsSelected()-method is invoked when the user clicks the positive
+ *    button and receives the phone numbers of the selected contacts as parameter.
+ * 2. Pass the profile name via the setArguments()-method. The dialog will read the
+ *    numbers that are already associated with this profile and marks the correspondent
+ *    contacts as checked when opening the dialog.
+ *
+ * The parent activity can use the onContactsSelected()-method to do whatever it wants
+ * to do with the numbers.
  */
 
 public class ContactsDialogFragment extends DialogFragment {
@@ -35,6 +48,8 @@ public class ContactsDialogFragment extends DialogFragment {
     public void onAttach(Context context) {
         Log.d(MainActivity.LOG_TAG, "CDF: onAttach()");
         super.onAttach(context);
+
+        // Instanciate the parent activity as listener.
         try {
             mListener = (ContactsSelectedListener) context;
         } catch (ClassCastException e) {
@@ -46,6 +61,9 @@ public class ContactsDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Log.d(MainActivity.LOG_TAG, "CDF: onCreateDialog()");
+
+        // Read the numbers already  associated with the profile. If an error occurs,
+        // it will be an empty list.
         try {
             Bundle args = getArguments();
             String profileName = (String) args.get(MainActivity.KEY_PROFILE_NAME);
@@ -56,16 +74,29 @@ public class ContactsDialogFragment extends DialogFragment {
             mNumbers = new ArrayList<>(0);
         }
 
+        // For information about the cursors see below.
+        // The RawContacts query is the one that is displayed to the user.
         mDataCursor = getDataCursor();
         mRawCursor = getRawCursor();
 
+        // Now we have to reverse-engine the checked items, so we extract the RawContact IDs
+        // from the data table using the list of numbers. Then we go through the RawContacts
+        // query to identify the checked items using the IDs.
         mRawContactIds = getIdsByNumbers(mNumbers, mDataCursor);
-
         boolean[] checkedItems = getCheckedItemsByIds(mRawContactIds, mRawCursor);
+
+        // Here we get the contact names which are displayed in the list out of the
+        // RawContacts table.
         CharSequence[] names = getNames(mRawCursor);
 
+        // The contacts appear twice in the Data table but once in the RawContacts table,
+        // so we need to fetch the selected IDs again, this time from the RawContacts table.
         mRawContactIds = getIdsByCheckedItems(checkedItems, mRawCursor);
 
+        // Finally, we can actually build the dialog.
+        // Every time a contact is checked or unchecked we modify the list of RawContact IDs.
+        // When the user is finished, we look up the phone numbers in the Data table and pass
+        // them back to the parent activity by invoking the onContactsSelected()-method.
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.prompt_select_contacts)
                .setMultiChoiceItems(names,
@@ -121,6 +152,30 @@ public class ContactsDialogFragment extends DialogFragment {
 
 
 
+
+    /* Read the Android contacts database developer guide.
+     *
+     * We need to query two tables: the RawContacts table (see getRawCursor())
+     * and the Data table (see getDataCursor()).
+     *
+     * It may be that multiple rows for the same contact appear even in the RawContacts table.
+     * That is because the entries are created by different accounts. This information exists
+     * only in this table, so we need the RawContacts table to differ these multiple
+     * appearances of the same contact by ContactsContract.RawContacts.ACCOUNT_NAME. We
+     * query for SIM1, SIM2 and Phone to get off everything that's created by WhatsApp et al.
+     * Additionally, when a contact is deleted, it is NOT removed from the RawContacts table,
+     * Android only sets the DELETED-Flag. So we also filter for all contacts that are not
+     * marked for deletion.
+     * The RawContacts query result has to be sorted by name because it is presented to the user.
+     *
+     * Unfortunately the phone numbers are not saved in the RawContacts table, so we need to
+     * do a 2nd query for the Data table. We can use the RawContact-IDs as a bridge between
+     * these two tables - they are saved in both of them.
+     * We look for both the NUMBER and the NORMALIZED_NUMBER to make the blocklist more
+     * secure when reading the phone number from an incoming call.
+     * We look for only those rows where actually a phone number is saved (MIMETYPE).
+     */
+
     private Cursor getDataCursor() {
         Log.d(MainActivity.LOG_TAG, "CDF: getDataCursor()");
 
@@ -167,6 +222,12 @@ public class ContactsDialogFragment extends DialogFragment {
                 rawSelectionArgs,
                 rawSortOrder);
     }
+
+
+
+
+
+
 
     private ArrayList<Long> getIdsByNumbers(ArrayList<String> numbers, Cursor dataCursor) {
         Log.d(MainActivity.LOG_TAG, "CDF: getIdsByNumbers()");
@@ -261,6 +322,7 @@ public class ContactsDialogFragment extends DialogFragment {
         return ids;
     }
 
+    @Deprecated
     private void logIds(ArrayList<Long> ids) {
         Log.d(MainActivity.LOG_TAG, "Selected Ids:");
         for(Long id : ids) {

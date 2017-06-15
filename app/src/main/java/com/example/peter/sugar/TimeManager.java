@@ -12,13 +12,21 @@ import java.util.Calendar;
  * Created by Funkyaron on 04.04.2017. <p/>
  * Helper class that provides static methods to handle time-dependent enabling
  * or disabling of SUGAR-Profiles.
+ *
+ * The general idea is to jump from one alarm to another because we can set only one alarm
+ * at a time. Every time an alarm is performed, the next alarm is set.
+ *
+ * Note that every Intent associated with an alarm has to be unique, otherwise one alarm
+ * will replace another. Extras are ignored! So we add the profile name as a category
+ * and use different Receivers for enabling and disabling.
  */
 
 public class TimeManager {
 
     /**
      * Determines when the given profile should be enabled the next time and sets the
-     * correspondent "alarm".
+     * correspondent alarm. When a profile is enabled, calls from the associated
+     * contacts are allowed.
      *
      * @param context Needed for Intent, AlarmManager etc.
      * @param profile The profile for which the action should be performed
@@ -31,8 +39,6 @@ public class TimeManager {
         boolean[] days = profile.getDays();
         TimeObject[] start = profile.getStart();
 
-
-
         // First check if any day of week should apply
         boolean shouldApply = false;
         for (boolean day : days)
@@ -43,8 +49,6 @@ public class TimeManager {
         if (!shouldApply)
             return;
 
-
-
         // Prepare the alarm
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
@@ -54,62 +58,16 @@ public class TimeManager {
         PendingIntent pending = PendingIntent.getBroadcast(context, 0,
                 intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
+        long targetTime = getTargetTime(days, start);
 
-
-        // Figure out when to execute the alarm
-
-        // First we get the current time
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(System.currentTimeMillis());
-        long currentTime = cal.getTimeInMillis();
-        int currentDay = cal.get(Calendar.DAY_OF_WEEK);
-
-        // Just in case, we check the start time from "today".
-        cal.set(Calendar.HOUR_OF_DAY, start[toIndex(currentDay)].getHour());
-        cal.set(Calendar.MINUTE, start[toIndex(currentDay)].getMinute());
-        long targetTime = cal.getTimeInMillis();
-        if (days[toIndex(currentDay)] && (currentTime < targetTime))
-        {
-            // Don't change target time.
-        }
-        else
-        {
-
-            // Now we have to match the next day to apply with the corresponding start time,
-            // so we have to find out the appropriate Array index.
-            // First we find out how many days we have to add to the current day.
-
-            int daysToAdd = 0;
-            int i = toIndex(currentDay);
-            int j = 0;
-            while (j <= 6) {
-                daysToAdd++;
-                i = (i + 1) % 7;
-                j++;
-                if (days[i])
-                    break;
-            }
-
-            // Now we determine the target time by adding the days to the Calendar instance
-            // and extracting the right start time from the TimeObject Array.
-
-            cal.add(Calendar.DAY_OF_MONTH, daysToAdd);
-
-            int targetIndex = (toIndex(currentDay) + daysToAdd) % 7;
-            cal.set(Calendar.HOUR_OF_DAY, start[targetIndex].getHour());
-            cal.set(Calendar.MINUTE, start[targetIndex].getMinute());
-
-            targetTime = cal.getTimeInMillis();
-        }
-
-        // Finally we actually set the alarm.
         alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, targetTime, pending);
     }
 
 
     /**
      * Determines when the given profile sould be disabled the next time and sets the
-     * correspondent "alarm".
+     * correspondent alarm. When a profile is disabled, calls from the associated
+     * contacts are blocked.
      *
      * @param context Needed for Intent, AlarmManager etc.
      * @param profile The profile for which the action should be performed
@@ -145,43 +103,7 @@ public class TimeManager {
         PendingIntent pending = PendingIntent.getBroadcast(context, 0,
                 intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-
-
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(System.currentTimeMillis());
-        long currentTime = cal.getTimeInMillis();
-        int currentDay = cal.get(Calendar.DAY_OF_WEEK);
-
-
-        cal.set(Calendar.HOUR_OF_DAY, end[toIndex(currentDay)].getHour());
-        cal.set(Calendar.MINUTE, end[toIndex(currentDay)].getMinute());
-        long targetTime = cal.getTimeInMillis();
-        if (profile.getDays()[toIndex(currentDay)] && (currentTime < targetTime))
-        {
-            // Don't change target time
-        }
-        else
-        {
-            int daysToAdd = 0;
-            int i = toIndex(currentDay);
-            int j = 0;
-            while (j <= 6)
-            {
-                daysToAdd++;
-                i = (i + 1) % 7;
-                j++;
-                if (days[i])
-                    break;
-            }
-
-            cal.add(Calendar.DAY_OF_MONTH, daysToAdd);
-
-            int targetIndex = (toIndex(currentDay) + daysToAdd) % 7;
-            cal.set(Calendar.HOUR_OF_DAY, end[targetIndex].getHour());
-            cal.set(Calendar.MINUTE, end[targetIndex].getMinute());
-
-            targetTime = cal.getTimeInMillis();
-        }
+        long targetTime = getTargetTime(days, end);
 
         alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, targetTime, pending);
     }
@@ -244,10 +166,55 @@ public class TimeManager {
 
 
 
-    private long getTargetTime(boolean[] days, TimeObject[] time)
+    private static long getTargetTime(boolean[] days, TimeObject[] times)
     {
-        //TODO: Fill in this method.
-        return 0;
+        // Figure out when to execute the alarm
+
+        // First we get the current time
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(System.currentTimeMillis());
+        long currentTime = cal.getTimeInMillis();
+        int currentDay = cal.get(Calendar.DAY_OF_WEEK);
+
+        // Just in case, we check the start time from "today".
+        cal.set(Calendar.HOUR_OF_DAY, times[toIndex(currentDay)].getHour());
+        cal.set(Calendar.MINUTE, times[toIndex(currentDay)].getMinute());
+        long targetTime = cal.getTimeInMillis();
+        if (days[toIndex(currentDay)] && (currentTime < targetTime))
+        {
+            // Don't change target time.
+        }
+        else
+        {
+
+            // Now we have to match the next day to apply with the corresponding start time,
+            // so we have to find out the appropriate Array index.
+            // First we find out how many days we have to add to the current day.
+
+            int daysToAdd = 0;
+            int i = toIndex(currentDay);
+            int j = 0;
+            while (j <= 6) {
+                daysToAdd++;
+                i = (i + 1) % 7;
+                j++;
+                if (days[i])
+                    break;
+            }
+
+            // Now we determine the target time by adding the days to the Calendar instance
+            // and extracting the right start time from the TimeObject Array.
+
+            cal.add(Calendar.DAY_OF_MONTH, daysToAdd);
+
+            int targetIndex = (toIndex(currentDay) + daysToAdd) % 7;
+            cal.set(Calendar.HOUR_OF_DAY, times[targetIndex].getHour());
+            cal.set(Calendar.MINUTE, times[targetIndex].getMinute());
+
+            targetTime = cal.getTimeInMillis();
+        }
+
+        return targetTime;
     }
 
 
