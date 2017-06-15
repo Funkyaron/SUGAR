@@ -112,6 +112,7 @@ public class TimeManager {
 
     /**
      * Checks if the given profile should currently be enabled or not and updates its status.
+     * It also sets the next enabling and disabling alarms properly.
      *
      * @param context Needed for Intent
      * @param profile The profile which should be initialized
@@ -155,12 +156,14 @@ public class TimeManager {
             Intent intent = new Intent(context, DisableProfileReceiver.class);
             intent.addCategory(name);
             context.sendBroadcast(intent);
+            setNextEnable(context, profile);
         }
         else
         {
             Intent intent = new Intent(context, EnableProfileReceiver.class);
             intent.addCategory(name);
             context.sendBroadcast(intent);
+            setNextDisable(context, profile);
         }
     }
 

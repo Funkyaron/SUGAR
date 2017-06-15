@@ -22,24 +22,19 @@ class ProfileParser {
      * @throws XmlPullParserException is thrown if the file has formatting issues
      * @throws IOException is thrown if the file does not exist
      */
-    public Profile parse (InputStream in,Context context) throws IOException,XmlPullParserException
+    public Profile parse (InputStream in,Context context)
+            throws IOException,XmlPullParserException
     {
-        Profile result = null;
+        Log.d(MainActivity.LOG_TAG, "ProfileParser: parse()");
         try {
-            Log.d(MainActivity.LOG_TAG, "ProfileParser: parse()");
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(in, null);
             parser.nextTag();
-            result = readProfile(parser,context);
-            if (result == null)
-                Log.d(MainActivity.LOG_TAG, "Parsing result is null");
-        } catch ( Exception e ) {
-            e.printStackTrace();
+            return readProfile(parser);
         } finally {
             in.close();
         }
-        return result;
     }
 
     /**
@@ -50,12 +45,13 @@ class ProfileParser {
      * @throws XmlPullParserException
      * @throws IOException
      */
-    private Profile readProfile(XmlPullParser parser,Context context) throws XmlPullParserException,IOException
+    private Profile readProfile(XmlPullParser parser)
+            throws XmlPullParserException,IOException
     {
         String profileName = null;
-        boolean profileDays[] = new boolean[7];
-        TimeObject startTime[] = new TimeObject[7];
-        TimeObject endTime[] = new TimeObject[7];
+        boolean[] profileDays = new boolean[7];
+        TimeObject[] startTime = new TimeObject[7];
+        TimeObject[] endTime = new TimeObject[7];
         ArrayList<String> numbers = new ArrayList<String>(0);
 
         parser.require(XmlPullParser.START_TAG,ns,"profile");
@@ -66,34 +62,28 @@ class ProfileParser {
                 continue;
             }
             String name = parser.getName();
-            if( name.equals("name"))
-            {
-                profileName = readProfileName(parser);
-            }
-            else if ( name.equals("days"))
-            {
-                profileDays = readActivatedDays(parser);
-            }
-            else if ( name.equals("startTime"))
-            {
-                startTime = readStartTimes(parser);
-            }
-            else if ( name.equals("endTime"))
-            {
-                endTime = readEndTimes(parser);
-            }
-            else if ( name.equals("numbers"))
-            {
-                numbers = readPhoneNumbers(parser);
+            switch (name) {
+                case "name":
+                    profileName = readProfileName(parser);
+                    break;
+                case "days":
+                    profileDays = readActivatedDays(parser);
+                    break;
+                case "startTime":
+                    startTime = readStartTimes(parser);
+                    break;
+                case "endTime":
+                    endTime = readEndTimes(parser);
+                    break;
+                case "numbers":
+                    numbers = readPhoneNumbers(parser);
             }
         }
-        Log.d(MainActivity.LOG_TAG, "Parsing results:\n" +
-            profileName + "\n" + profileDays + "\n" + startTime + "\n" + endTime + "\n" +
-            numbers);
         return new Profile(profileName, profileDays, startTime, endTime,numbers);
     }
 
-    private String readProfileName(XmlPullParser parser) throws XmlPullParserException,IOException
+    private String readProfileName(XmlPullParser parser)
+            throws XmlPullParserException,IOException
     {
         parser.require(XmlPullParser.START_TAG,ns,"name");
         String name = readText(parser);
@@ -102,7 +92,8 @@ class ProfileParser {
     }
 
 
-    private boolean[] readActivatedDays(XmlPullParser parser) throws XmlPullParserException,IOException
+    private boolean[] readActivatedDays(XmlPullParser parser)
+            throws XmlPullParserException,IOException
     {
         boolean[] daysActivated = new boolean[7];
         parser.require(XmlPullParser.START_TAG,ns,"days");
@@ -123,44 +114,44 @@ class ProfileParser {
         return daysActivated;
     }
 
-    private TimeObject[] readStartTimes(XmlPullParser parser) throws XmlPullParserException,IOException
+    private TimeObject[] readStartTimes(XmlPullParser parser)
+            throws XmlPullParserException,IOException
     {
-        TimeObject result[] = new TimeObject[7];
+        TimeObject[] result = new TimeObject[7];
         parser.require(XmlPullParser.START_TAG, ns, "startTime");
-        String resultText[] = readText(parser).split(",");
-        for(int currentDay = 0; currentDay < resultText.length; currentDay++ )
-        {
-            String timeObjectDescription[] = resultText[currentDay].split(":");
-            int hours = Integer.parseInt(timeObjectDescription[0]);
-            int minutes = Integer.parseInt(timeObjectDescription[1]);
-            result[currentDay] = new TimeObject(hours,minutes);
-        }
+        String[] resultText = readText(parser).split(",");
         parser.require(XmlPullParser.END_TAG, ns, "startTime");
-        return result;
-    }
 
-    private TimeObject[] readEndTimes(XmlPullParser parser) throws XmlPullParserException,IOException
-    {
-        TimeObject result[] = new TimeObject[7];
-        parser.require(XmlPullParser.START_TAG,ns,"endTime");
-        String resultText[] = readText(parser).split(",");
         for(int currentDay = 0; currentDay < resultText.length; currentDay++ )
         {
-            String timeObjectDescription[] = resultText[currentDay].split(":");
-            int hours = Integer.parseInt(timeObjectDescription[0]);
-            int minutes = Integer.parseInt(timeObjectDescription[1]);
-            result[currentDay] = new TimeObject(hours,minutes);
+            result[currentDay] = new TimeObject(resultText[currentDay]);
         }
-        parser.require(XmlPullParser.END_TAG,ns,"endTime");
         return result;
     }
 
-    private ArrayList<String> readPhoneNumbers(XmlPullParser parser) throws XmlPullParserException,IOException
+    private TimeObject[] readEndTimes(XmlPullParser parser)
+            throws XmlPullParserException,IOException
+    {
+        TimeObject[] result = new TimeObject[7];
+        parser.require(XmlPullParser.START_TAG,ns,"endTime");
+        String[] resultText = readText(parser).split(",");
+        parser.require(XmlPullParser.END_TAG,ns,"endTime");
+
+        for(int currentDay = 0; currentDay < resultText.length; currentDay++ )
+        {
+            result[currentDay] = new TimeObject(resultText[currentDay]);
+        }
+        return result;
+    }
+
+    private ArrayList<String> readPhoneNumbers(XmlPullParser parser)
+            throws XmlPullParserException,IOException
     {
         ArrayList<String> resultList = new ArrayList<String>(0);
         parser.require(XmlPullParser.START_TAG,ns,"numbers");
         String[] phoneNumbers = readText(parser).split(",");
         parser.require(XmlPullParser.END_TAG,ns,"numbers");
+
         for( int currentPhoneNumber = 0; currentPhoneNumber < phoneNumbers.length; currentPhoneNumber++ )
         {
             resultList.add(phoneNumbers[currentPhoneNumber]);

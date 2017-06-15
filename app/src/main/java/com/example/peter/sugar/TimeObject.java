@@ -9,10 +9,17 @@ public class TimeObject {
     private int hour;
     private int minute;
 
-    public TimeObject(int conHour,int conMinute)
+    public TimeObject(int hour,int minute)
     {
-        setHour(conHour);
-        setMinute(conMinute);
+        this.hour = hour;
+        this.minute = minute;
+    }
+
+    // The following constructor requires a String in the format 18:30
+    public TimeObject(String time) {
+        String[] timeObjectDescription = time.split(":");
+        hour = Integer.parseInt(timeObjectDescription[0]);
+        minute = Integer.parseInt(timeObjectDescription[1]);
     }
 
     public int getHour()

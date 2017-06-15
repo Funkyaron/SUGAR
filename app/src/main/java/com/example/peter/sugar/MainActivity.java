@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity
 
     private TextView numbersView;
 
+    private Profile mProfile;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +63,47 @@ public class MainActivity extends AppCompatActivity
         Log.d(LOG_TAG, "getFilesDir(): " + getFilesDir());
 
 
+        String name = "Testprofile";
+        boolean[] days = {
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            false
+        };
+        TimeObject[] start = {
+                new TimeObject(9,30),
+                new TimeObject(10,5),
+                new TimeObject(0,0),
+                new TimeObject(11,13),
+                new TimeObject(8,0),
+                new TimeObject(0,0),
+                new TimeObject(0,0)
+        };
+        TimeObject[] end = {
+                new TimeObject(18,0),
+                new TimeObject(13,13),
+                new TimeObject(0,0),
+                new TimeObject(16,30),
+                new TimeObject(20,0),
+                new TimeObject(0,0),
+                new TimeObject(0,0)
+        };
+        ArrayList<String> numbers = new ArrayList<>(0);
+
+        mProfile = new Profile(name, days, start, end, numbers);
+
+        try {
+            mProfile.saveProfile(this);
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Save test profile: " + e.toString());
+        }
+
+        numbersView.setText(mProfile.toString());
+
+        TimeManager.updateProfileStatus(this, mProfile);
 
 
 
@@ -71,6 +114,9 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 DialogFragment newFragment = new ContactsDialogFragment();
+                Bundle args = new Bundle(1);
+                args.putString(KEY_PROFILE_NAME, mProfile.getName());
+                newFragment.setArguments(args);
                 try {
                     newFragment.show(getFragmentManager(), "contacts");
                 } catch (Exception e) {
@@ -83,13 +129,13 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onContactsSelected(ArrayList<String> numbers) {
-        StringBuilder builder = new StringBuilder();
-        for(String number : numbers) {
-            builder.append(number);
-            builder.append("\n");
+        mProfile.setPhoneNumbers(numbers);
+        try {
+            mProfile.saveProfile(this);
+        } catch (Exception e) {
+            Log.e(LOG_TAG, e.toString());
         }
-        String allNumbers = builder.toString();
-        numbersView.setText(allNumbers);
+        numbersView.setText(mProfile.toString());
     }
 
     // Handling runtime permissions

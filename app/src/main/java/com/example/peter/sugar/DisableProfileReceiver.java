@@ -9,26 +9,20 @@ import android.util.Log;
 
 public class DisableProfileReceiver extends BroadcastReceiver {
 
-    private static final int ID = 42;
+    private static final int ID = 43;
 
     @Override
     public void onReceive(Context context, Intent intent) {
 
         Log.d(MainActivity.LOG_TAG, "DisableProfileReceiver: onReceive()");
 
-        /* Temporarily coded to test the alarm functionality */
-
-        /*
-        String name = "";
+        // Temporarily coded to test the alarm functionality
 
         Object[] categories = intent.getCategories().toArray();
-        name = (String) categories[0];
-
-        Profile prof = null;
-        TestXmlWriter tester = new TestXmlWriter();
+        String name = (String) categories[0];
 
         try {
-            prof = tester.readTestProfile(context);
+            Profile prof = Profile.readProfileFromXmlFile(name, context);
             TimeManager.setNextDisable(context, prof);
         } catch (Exception e) {
             Log.e(MainActivity.LOG_TAG, e.toString());
@@ -46,6 +40,5 @@ public class DisableProfileReceiver extends BroadcastReceiver {
         NotificationManager notiMgr = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
         notiMgr.notify(ID, noti);
-        */
     }
 }

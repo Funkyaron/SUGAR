@@ -16,13 +16,13 @@ import java.io.*;
 class Profile implements Serializable
 {
     private String name;
-    private boolean days[];
-    private TimeObject startTime[];
-    private TimeObject endTime[];
+    private boolean[] days;
+    private TimeObject[] startTime;
+    private TimeObject[] endTime;
     private ArrayList<String> numbers;
     private final String[] weekDays = { "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
 
-    Profile(String name, boolean days[], TimeObject startTime[], TimeObject endTime[], ArrayList<String> numbers)
+    Profile(String name, boolean[] days, TimeObject[] startTime, TimeObject[] endTime, ArrayList<String> numbers)
     {
         this.name = name;
         this.days = days;
@@ -58,31 +58,33 @@ class Profile implements Serializable
      * @param
      * @return null if no profile is found
      */
-    public static Profile readProfileFromXmlFile(String name, Context context) throws IOException,XmlPullParserException
+    public static Profile readProfileFromXmlFile(String name, Context context)
+            throws IOException,XmlPullParserException
     {
         Log.d(MainActivity.LOG_TAG, "Profile: readProfileFromXmlFile()");
-        Profile result = null;
         FileInputStream fileInput = context.openFileInput(name + ".xml");
-        ProfileParser parser = new ProfileParser();
-        result = parser.parse(fileInput, context);
-        if (result == null)
-            Log.d(MainActivity.LOG_TAG, "Parsing result did not return");
-        fileInput.close();
-        return result;
+
+        try {
+            ProfileParser parser = new ProfileParser();
+            return parser.parse(fileInput, context);
+        } finally {
+            fileInput.close();
+        }
     }
     /**
      * Saves the given Profile to the default filepath of Android
-     * @return boolean whether the file was saved properly or not
      * @throws IOException if problems occured during the function execution
      */
-    public boolean saveProfile(Context context) throws IOException {
+    public void saveProfile(Context context) throws IOException {
         Log.d(MainActivity.LOG_TAG, "Profile: saveProfile()");
-        FileOutputStream fileOutput = null;
-        XmlSerializer xmlWriter;
-        try {
-            fileOutput = context.openFileOutput(name + ".xml",Context.MODE_PRIVATE);
 
-            xmlWriter = Xml.newSerializer();
+        File file = new File(context.getFilesDir() + "/" + name + ".xml");
+        if(file.exists())
+            file.delete();
+
+        FileOutputStream fileOutput = context.openFileOutput(name + ".xml",Context.MODE_PRIVATE);
+        XmlSerializer xmlWriter = Xml.newSerializer();
+        try {
             xmlWriter.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output",true);
             xmlWriter.setOutput(fileOutput, "UTF-8");
             xmlWriter.startDocument(null, true);
@@ -108,7 +110,7 @@ class Profile implements Serializable
             xmlWriter.startTag(null,"startTime");
             for(int currentDay = 0; currentDay < startTime.length; currentDay++ )
             {
-                if( currentDay == startTime.length)
+                if( currentDay == startTime.length - 1)
                     xmlWriter.text(startTime[currentDay].getHour() + ":" + startTime[currentDay].getMinute());
                 else
                     xmlWriter.text(startTime[currentDay].getHour() + ":" + startTime[currentDay].getMinute() + "," );
@@ -118,7 +120,7 @@ class Profile implements Serializable
             xmlWriter.startTag(null,"endTime");
             for(int currentDay = 0; currentDay < endTime.length; currentDay++ )
             {
-                if( currentDay == endTime.length)
+                if( currentDay == endTime.length - 1)
                     xmlWriter.text(endTime[currentDay].getHour() + ":" + endTime[currentDay].getMinute());
                 else
                     xmlWriter.text(endTime[currentDay].getHour() + ":" + endTime[currentDay].getMinute() + ",");
@@ -143,7 +145,6 @@ class Profile implements Serializable
 
             xmlWriter.endDocument();
             xmlWriter.flush();
-            return true;
         } finally {
             fileOutput.close();
         }
@@ -152,33 +153,44 @@ class Profile implements Serializable
     @Override
     public String toString()
     {
-        String result = "";
-        result = result + "Name : " + getName() + " \n";
-        result = result + "Days : ";
-        for( int currentDay = 0; currentDay < getDays().length; currentDay++ )
+        StringBuilder builder = new StringBuilder();
+        builder.append("Name : ").append(getName()).append("\n");
+        builder.append("Days : ");
+
+        for( int currentDay = 0; currentDay < days.length; currentDay++ )
         {
-            if( getDays()[currentDay] == true )
-                result = result + "{True}";
-            else if ( getDays()[currentDay] == false )
-                result = result + "{False}";
+            if( days[currentDay] == true )
+                builder.append("{True}");
+            else
+                builder.append("{False}");
         }
-        result = result + " \n";
-        result = result + "StartTime : " + " \n";
+        builder.append("\n");
+        builder.append("StartTime :\n");
         for( int currentDay = 0; currentDay < weekDays.length; currentDay++ )
         {
-            result = result + weekDays[currentDay] + ":" + startTime[currentDay].getHour() + ":" +  startTime[currentDay].getMinute() + "\n";
+            builder.append(weekDays[currentDay])
+                   .append(":")
+                   .append(startTime[currentDay].getHour())
+                   .append(":")
+                   .append(startTime[currentDay].getMinute())
+                   .append("\n");
         }
-        result = result + "EndTime : " +" \n";
+        builder.append("EndTime :\n");
         for( int currentDay = 0; currentDay < weekDays.length; currentDay++ )
         {
-            result = result + weekDays[currentDay] + ":" + endTime[currentDay].getHour() + ":" + endTime[currentDay].getMinute() + " \n";
+            builder.append(weekDays[currentDay])
+                   .append(":")
+                   .append(endTime[currentDay].getHour())
+                   .append(":")
+                   .append(endTime[currentDay].getMinute())
+                   .append("\n");
         }
-        result = result + "Numbers : ";
-        for(ListIterator<String> iterator = getPhoneNumbers().listIterator();iterator.hasNext();)
+        builder.append("Numbers :\n");
+        for(String number : numbers)
         {
-            result = result + iterator.next() + " \n";
+            builder.append(number).append("\n");
         }
-        return result;
+        return builder.toString();
     }
 
     public String getName()
@@ -226,10 +238,8 @@ class Profile implements Serializable
         endTime = updatedEnd;
     }
 
-    void addNumbers(String[] numbers) {
-        for(String number : numbers) {
-            this.numbers.add(number);
-        }
+    void setPhoneNumbers(ArrayList<String> numbers) {
+        this.numbers = numbers;
     }
 
 }
