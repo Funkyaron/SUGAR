@@ -6,4 +6,6 @@
     <string name="start_contacts_activity_button_text">Kontakte</string>
     <string name="prompt_select_contacts">Kontakte auswählen</string>
     <string name="read_contacts_failed">Kontakte konnten nicht gelesen werden</string>
+    <string name="calls_allowed">Anrufe sind jetzt erlaubt</string>
+    <string name="calls_forbidden">Anrufe sind jetzt verboten</string>
 </resources>

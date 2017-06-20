@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 public class DisableProfileReceiver extends BroadcastReceiver {
 
     private static final int ID = 43;
@@ -21,10 +23,23 @@ public class DisableProfileReceiver extends BroadcastReceiver {
         Object[] categories = intent.getCategories().toArray();
         String name = (String) categories[0];
 
+        Profile prof = null;
+        BlockList blockList = null;
         try {
-            Profile prof = Profile.readProfileFromXmlFile(name, context);
-            TimeManager.setNextDisable(context, prof);
+            prof = Profile.readProfileFromXmlFile(name, context);
         } catch (Exception e) {
+            Log.e(MainActivity.LOG_TAG, "Error reading Profile: " + e.toString());
+        }
+        try {
+            blockList = new BlockList(context);
+        } catch(Exception e) {
+            Log.e(MainActivity.LOG_TAG, "Error reading BlockList: " + e.toString());
+        }
+
+        try {
+            TimeManager.setNextDisable(context, prof);
+            blockList.removeProfile(context, prof);
+        } catch(Exception e) {
             Log.e(MainActivity.LOG_TAG, e.toString());
         }
 
@@ -32,7 +47,7 @@ public class DisableProfileReceiver extends BroadcastReceiver {
 
         builder.setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(name)
-                .setContentText("Disabled")
+                .setContentText(context.getString(R.string.calls_forbidden))
                 .setWhen(System.currentTimeMillis());
 
         Notification noti = builder.build();

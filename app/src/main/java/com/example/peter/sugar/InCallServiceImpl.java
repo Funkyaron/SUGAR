@@ -10,6 +10,7 @@ import android.telecom.InCallService;
 import android.telecom.TelecomManager;
 import android.util.Log;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -47,6 +48,10 @@ public class InCallServiceImpl extends InCallService {
 
 
 
+    // File[] directoryFiles = new File(".").listFiles(); // implements FilenameFilter
+
+
+
     // Copy-pasted from built-in phone app
     String getNumber(Call call) {
         if (call == null) {
@@ -67,13 +72,13 @@ public class InCallServiceImpl extends InCallService {
 
 
     private boolean shouldBlock(String number) {
-        boolean result = false;
+        boolean result = true;
 
         BlockList blockList = new BlockList(this);
         ArrayList<String> blockedNumbers = blockList.getBlockedNumbers();
         for(String blockedNumber : blockedNumbers) {
             if(number.equals(blockedNumber)) {
-                result = true;
+                result = false;
                 break;
             }
         }

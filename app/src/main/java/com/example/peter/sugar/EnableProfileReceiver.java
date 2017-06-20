@@ -25,10 +25,23 @@ public class EnableProfileReceiver extends BroadcastReceiver {
         Object[] categories = intent.getCategories().toArray();
         String name = (String) categories[0];
 
+        Profile prof = null;
+        BlockList blockList = null;
         try {
-            Profile prof = Profile.readProfileFromXmlFile(name, context);
-            TimeManager.setNextEnable(context, prof);
+            prof = Profile.readProfileFromXmlFile(name, context);
         } catch (Exception e) {
+            Log.e(MainActivity.LOG_TAG, "Error reading Profile: " + e.toString());
+        }
+        try {
+            blockList = new BlockList(context);
+        } catch(Exception e) {
+            Log.e(MainActivity.LOG_TAG, "Error reading BlockList: " + e.toString());
+        }
+
+        try {
+            TimeManager.setNextEnable(context, prof);
+            blockList.addProfile(context, prof);
+        } catch(Exception e) {
             Log.e(MainActivity.LOG_TAG, e.toString());
         }
 
@@ -36,7 +49,7 @@ public class EnableProfileReceiver extends BroadcastReceiver {
 
         builder.setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(name)
-                .setContentText("Enabled")
+                .setContentText(context.getString(R.string.calls_allowed))
                 .setWhen(System.currentTimeMillis());
 
         Notification noti = builder.build();
