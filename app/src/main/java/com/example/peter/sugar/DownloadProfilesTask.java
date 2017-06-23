@@ -1,8 +1,10 @@
 package com.example.peter.sugar;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.TextView;
 
 import org.apache.commons.net.ftp.*;
 import org.xmlpull.v1.XmlPullParserException;
@@ -17,10 +19,10 @@ import java.io.*;
 class DownloadProfilesTask extends AsyncTask<String,Void,Boolean>
 {
 
-    Context context;
+    Activity context;
     FTPClient androidClient = new FTPClient();
 
-    public DownloadProfilesTask(Context conContext)
+    public DownloadProfilesTask(Activity conContext)
     {
         context = conContext;
     }
@@ -42,10 +44,7 @@ class DownloadProfilesTask extends AsyncTask<String,Void,Boolean>
             FTPFile serverFiles[] = androidClient.listFiles();
             for( int currentFile = 0; currentFile < serverFiles.length; currentFile++ )
             {
-                if( serverFiles[currentFile].getName().equals(".."))
-                {
-                    continue;
-                } else {
+                if( ! serverFiles[currentFile].getName().equals("..")) {
                     String currentFileName = serverFiles[currentFile].getName();
                     FileOutputStream fos = context.openFileOutput(currentFileName, Context.MODE_PRIVATE);
                     isSuccessfull = androidClient.retrieveFile(serverFiles[currentFile].getName(), fos);
@@ -54,18 +53,22 @@ class DownloadProfilesTask extends AsyncTask<String,Void,Boolean>
             }
             return isSuccessfull;
         } catch ( IOException exception ) {
-            Log.d("IO ERROR : ",exception.getMessage());
+            Log.e(MainActivity.LOG_TAG,exception.toString());
             return isSuccessfull;
         } finally {
             try {
                 androidClient.logout();
             } catch ( IOException exception ) {
-                Log.d("LOGOUT ERROR : ",exception.getMessage());
+                Log.e(MainActivity.LOG_TAG,exception.toString());
+            }
+            try {
+                androidClient.disconnect();
+            } catch(IOException e) {
+                Log.e(MainActivity.LOG_TAG, e.toString());
             }
         }
     }
 
-    protected void onPostExecute()
-    {
+    protected void onPostExecute(Boolean isSuccessful) {
     }
 }

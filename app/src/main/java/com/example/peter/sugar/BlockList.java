@@ -34,7 +34,8 @@ public class BlockList {
             blockedNumbers = readBlockList(context);
         } catch (Exception e) {
             blockedNumbers = new ArrayList<>(0);
-            Log.e(MainActivity.LOG_TAG, "Blocklist(): " + e.toString());
+            Log.e(MainActivity.LOG_TAG, "BlockList(): " + e.toString());
+            Log.d(MainActivity.LOG_TAG, "Empty BlockList created");
         }
     }
 
