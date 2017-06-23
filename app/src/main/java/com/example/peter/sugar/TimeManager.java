@@ -1,12 +1,16 @@
 package com.example.peter.sugar;
 
 import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created by Funkyaron on 04.04.2017. <p/>
@@ -22,6 +26,8 @@ import java.util.Calendar;
  */
 
 public class TimeManager {
+
+    private static final int ID = 44;
 
     /**
      * Determines when the given profile should be enabled the next time and sets the
@@ -115,18 +121,29 @@ public class TimeManager {
      * It also sets the next enabling and disabling alarms properly.
      *
      * @param context Needed for Intent
-     * @param profile The profile which should be initialized
+     * @param profiles The profiles which should be initialized
      */
-    public static void updateProfileStatus(Context context, Profile profile) {
+    public static void initProfiles(Context context, Profile[] profiles) {
 
-        Log.d(MainActivity.LOG_TAG, "TimeManager: UpdateProfileStatus");
+        Log.d(MainActivity.LOG_TAG, "TimeManager: initProfiles");
 
-        String name = profile.getName();
-        boolean[] days = profile.getDays();
-        TimeObject[] startTimes = profile.getStart();
-        TimeObject[] endTimes = profile.getEnd();
-
-
+        /* Interesting thing: The BlockList contains every number that is allowed.
+         * And a number that is currently associated with two or more enabled
+         * profiles appears twice - or respectively more often - on the BlockList.
+         * We want to make every number that is not affected by any profile appear
+         * once.
+         * So the plan is:
+         *  1. Reset the BlockList so that every number appears once.
+         *  2. Remove every number associated with a disabled profile.
+         *     -> Some numbers may be "removed" more than once. That
+         *        doesn't have any further effect.
+         *  3. Handle enabled profiles:
+         *   a) Create a new list and add every number associated with an
+         *      enabled profile.
+         *   b) Remove every number that's already on the BlockList.
+         *   c) Add the result to the BlockList.
+         * Then save the BlockList and set the next alarms for every profile.
+         */
 
         // At first, get the current time.
         Calendar cal = Calendar.getInstance();
@@ -134,36 +151,98 @@ public class TimeManager {
         long currentTime = cal.getTimeInMillis();
         int currentDay = cal.get(Calendar.DAY_OF_WEEK);
 
+        // Now we collect every enabled and disabled profiles.
+        ArrayList<Profile> enabledProfiles = new ArrayList<>(0);
+        ArrayList<Profile> disabledProfiles = new ArrayList<>(0);
 
+        for(Profile prof : profiles) {
+            TimeObject[] startTimes = prof.getStart();
+            TimeObject[] endTimes = prof.getEnd();
+            boolean[] days = prof.getDays();
 
-        // Now set the start and end time for the current day.
-        // Later on we will check if we need it at all.
-        cal.set(Calendar.HOUR_OF_DAY, startTimes[toIndex(currentDay)].getHour());
-        cal.set(Calendar.MINUTE, startTimes[toIndex(currentDay)].getMinute());
-        long startTimeInMillis = cal.getTimeInMillis();
+            // Now set the start and end time for the current day.
+            // Later on we will check if we need it at all.
+            cal.set(Calendar.HOUR_OF_DAY, startTimes[toIndex(currentDay)].getHour());
+            cal.set(Calendar.MINUTE, startTimes[toIndex(currentDay)].getMinute());
+            long startTimeInMillis = cal.getTimeInMillis();
 
-        cal.set(Calendar.HOUR_OF_DAY, endTimes[toIndex(currentDay)].getHour());
-        cal.set(Calendar.MINUTE, endTimes[toIndex(currentDay)].getMinute());
-        long endTimeInMillis = cal.getTimeInMillis();
+            cal.set(Calendar.HOUR_OF_DAY, endTimes[toIndex(currentDay)].getHour());
+            cal.set(Calendar.MINUTE, endTimes[toIndex(currentDay)].getMinute());
+            long endTimeInMillis = cal.getTimeInMillis();
 
-
-
-        // Now we check for the current day and time.
-        if (days[toIndex(currentDay)] == false
-                || currentTime < startTimeInMillis
-                || currentTime > endTimeInMillis)
-        {
-            Intent intent = new Intent(context, DisableProfileReceiver.class);
-            intent.addCategory(name);
-            context.sendBroadcast(intent);
-            setNextEnable(context, profile);
+            // Now we check for the current day and time.
+            if (days[toIndex(currentDay)] == false
+                    || currentTime < startTimeInMillis
+                    || endTimeInMillis < currentTime) {
+                disabledProfiles.add(prof);
+            } else {
+                enabledProfiles.add(prof);
+            }
         }
-        else
-        {
-            Intent intent = new Intent(context, EnableProfileReceiver.class);
-            intent.addCategory(name);
-            context.sendBroadcast(intent);
-            setNextDisable(context, profile);
+
+        // Now we set up the BlockList as described above.
+        BlockList blockList = new BlockList(context);
+        try {
+            blockList.resetBlockList(context);
+        } catch(Exception e) {
+            Log.e(MainActivity.LOG_TAG, e.toString());
+        }
+
+        ArrayList<String> targetBlockList = blockList.getBlockedNumbers();
+        for(Profile disProf : disabledProfiles) {
+            targetBlockList.removeAll(disProf.getPhoneNumbers());
+        }
+        ArrayList<String> enabledNumbers = new ArrayList<>(0);
+        for(Profile enProf : enabledProfiles) {
+            enabledNumbers.addAll(enProf.getPhoneNumbers());
+        }
+        enabledNumbers.removeAll(targetBlockList);
+        targetBlockList.addAll(enabledNumbers);
+
+        // Save BlockList and set the next alarms.
+        try {
+            blockList.setNumbersAndSave(context, targetBlockList);
+        } catch(Exception e) {
+            Log.e(MainActivity.LOG_TAG, e.toString());
+        }
+
+        MainActivity.logBlockList(blockList);
+
+        int id = 1;
+
+        for(Profile disProf : disabledProfiles) {
+            setNextDisable(context, disProf);
+            setNextEnable(context, disProf);
+
+            // Inform the user about what happened.
+            Notification.Builder builder = new Notification.Builder(context);
+            builder.setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle(disProf.getName())
+                    .setContentText(context.getString(R.string.calls_forbidden))
+                    .setWhen(System.currentTimeMillis());
+
+            Notification noti = builder.build();
+
+            NotificationManager notiMgr = (NotificationManager)
+                    context.getSystemService(Context.NOTIFICATION_SERVICE);
+            notiMgr.notify(id++, noti);
+        }
+
+        for(Profile enProf : enabledProfiles) {
+            setNextEnable(context, enProf);
+            setNextDisable(context, enProf);
+
+            Notification.Builder builder = new Notification.Builder(context);
+            builder.setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle(enProf.getName())
+                    .setContentText(context.getString(R.string.calls_allowed))
+                    .setWhen(System.currentTimeMillis());
+
+            Notification noti = builder.build();
+
+            NotificationManager notiMgr = (NotificationManager)
+                    context.getSystemService(Context.NOTIFICATION_SERVICE);
+            notiMgr.notify(id++, noti);
         }
     }
 

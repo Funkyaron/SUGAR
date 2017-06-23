@@ -41,6 +41,11 @@ public class BlockList {
 
     public ArrayList<String> getBlockedNumbers() { return blockedNumbers; }
 
+    public void setNumbersAndSave(Context context, ArrayList<String> numbers) throws Exception {
+        blockedNumbers = numbers;
+        saveBlockList(context);
+    }
+
     public void addProfile(Context context, Profile profile) throws Exception
     {
         ArrayList<String> numbersToAdd = profile.getPhoneNumbers();
@@ -106,12 +111,12 @@ public class BlockList {
 
 
     public void resetBlockList(Context context) throws Exception {
+        Log.d(MainActivity.LOG_TAG, "Reset BlockList");
+
         ArrayList<String> allNumbers = new ArrayList<>();
 
-        // This is NOT intended to actually show a dialog.
-        ContactsDialogFragment databaseHelper = new ContactsDialogFragment();
-        Cursor dataCursor = databaseHelper.getDataCursor();
-        Cursor rawCursor = databaseHelper.getRawCursor();
+        Cursor dataCursor = getDataCursor(context);
+        Cursor rawCursor = getRawCursor(context);
 
         ArrayList<Long> allIds = new ArrayList<>();
 
@@ -127,19 +132,69 @@ public class BlockList {
                     dataCursor.getColumnIndex(ContactsContract.Data.RAW_CONTACT_ID));
             for(Long id : allIds) {
                 if(id.equals(currentId)) {
-                    try {
-                        allNumbers.add(dataCursor.getString(
-                                dataCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
-                        allNumbers.add(dataCursor.getString(
-                                dataCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER)));
-                    } catch(NullPointerException e) {}
+                    String number = dataCursor.getString(
+                            dataCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    if(number != null)
+                        allNumbers.add(number);
+                    String normNumber = dataCursor.getString(
+                            dataCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER));
+                    if(normNumber != null)
+                        allNumbers.add(normNumber);
                 }
             }
         }
 
         blockedNumbers = allNumbers;
+        MainActivity.logBlockList(this);
         saveBlockList(context);
     }
 
+
+    // The same as in ContactsDialogFragment
+
+    private Cursor getDataCursor(Context context) {
+
+        String[] dataProjection = new String[] {
+                ContactsContract.Data.RAW_CONTACT_ID,
+                ContactsContract.CommonDataKinds.Phone.NUMBER,
+                ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER,
+                ContactsContract.Data.MIMETYPE};
+        String dataSelection =
+                "(" + ContactsContract.Data.MIMETYPE + " =?)";
+        String[] dataSelectionArgs = new String[] {
+                ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE};
+
+        return context.getContentResolver().query(
+                ContactsContract.Data.CONTENT_URI,
+                dataProjection,
+                dataSelection,
+                dataSelectionArgs,
+                null);
+    }
+
+    private Cursor getRawCursor(Context context) {
+
+        String[] rawProjection = {
+                ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY,
+                ContactsContract.RawContacts._ID,
+                ContactsContract.RawContacts.ACCOUNT_NAME,
+                ContactsContract.RawContacts.DELETED};
+        String rawSelection = "(((" +
+                ContactsContract.RawContacts.ACCOUNT_NAME + " =?) OR (" +
+                ContactsContract.RawContacts.ACCOUNT_NAME + " =?) OR (" +
+                ContactsContract.RawContacts.ACCOUNT_NAME + " =?)) AND (" +
+                ContactsContract.RawContacts.DELETED + " =?))";
+        String[] rawSelectionArgs = {
+                "SIM1", "SIM2", "Phone", "0"};
+        String rawSortOrder =
+                ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY;
+
+        return context.getContentResolver().query(
+                ContactsContract.RawContacts.CONTENT_URI,
+                rawProjection,
+                rawSelection,
+                rawSelectionArgs,
+                rawSortOrder);
+    }
 
 }

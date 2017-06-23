@@ -176,7 +176,7 @@ public class ContactsDialogFragment extends DialogFragment {
      * We look for only those rows where actually a phone number is saved (MIMETYPE).
      */
 
-    public Cursor getDataCursor() {
+    private Cursor getDataCursor() {
         Log.d(MainActivity.LOG_TAG, "CDF: getDataCursor()");
 
         String[] dataProjection = new String[] {
@@ -197,7 +197,7 @@ public class ContactsDialogFragment extends DialogFragment {
                 null);
     }
 
-    public Cursor getRawCursor() {
+    private Cursor getRawCursor() {
         Log.d(MainActivity.LOG_TAG, "CDF: getRawCursor()");
 
         String[] rawProjection = {

@@ -71,6 +71,20 @@ class Profile implements Serializable
             fileInput.close();
         }
     }
+
+    public static Profile readProfileFromXmlFile(File file, Context context)
+            throws IOException, XmlPullParserException
+    {
+        FileInputStream fileInput = new FileInputStream(file);
+
+        try {
+            ProfileParser parser = new ProfileParser();
+            return parser.parse(fileInput, context);
+        } finally {
+            fileInput.close();
+        }
+    }
+
     /**
      * Saves the given Profile to the default filepath of Android
      * @throws IOException if problems occured during the function execution
