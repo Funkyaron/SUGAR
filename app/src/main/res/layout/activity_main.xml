@@ -1,22 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/ll"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.example.peter.sugar.MainActivity">
+<RelativeLayout
+    xmlns:android = "http://schemas.android.com/apk/res/android"
+    android:layout_width = "match_parent"
+    android:layout_height = "match_parent">
 
-    <Button
-        android:id="@+id/contacts_button_id"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="@string/start_contacts_activity_button_text" />
-
-    <TextView
-        android:id="@+id/numbers_view"
+    <ListView
+        android:id="@+id/list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/contacts_button_id"/>
-
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" />
 </RelativeLayout>
