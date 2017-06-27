@@ -11,8 +11,6 @@ import java.util.ArrayList;
 
 public class DisableProfileReceiver extends BroadcastReceiver {
 
-    private static final int ID = 43;
-
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -24,21 +22,16 @@ public class DisableProfileReceiver extends BroadcastReceiver {
         String name = (String) categories[0];
 
         Profile prof = null;
-        BlockList blockList = null;
         try {
             prof = Profile.readProfileFromXmlFile(name, context);
         } catch (Exception e) {
             Log.e(MainActivity.LOG_TAG, "Error reading Profile: " + e.toString());
         }
-        try {
-            blockList = new BlockList(context);
-        } catch(Exception e) {
-            Log.e(MainActivity.LOG_TAG, "Error reading BlockList: " + e.toString());
-        }
 
         try {
+            prof.setAllowed(false);
             TimeManager.setNextDisable(context, prof);
-            blockList.removeProfile(context, prof);
+            prof.saveProfile(context);
         } catch(Exception e) {
             Log.e(MainActivity.LOG_TAG, e.toString());
         }
@@ -54,6 +47,6 @@ public class DisableProfileReceiver extends BroadcastReceiver {
 
         NotificationManager notiMgr = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notiMgr.notify(ID, noti);
+        notiMgr.notify(name.hashCode() + 1, noti);
     }
 }

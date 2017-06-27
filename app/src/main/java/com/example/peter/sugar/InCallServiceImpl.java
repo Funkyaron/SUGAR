@@ -34,9 +34,9 @@ public class InCallServiceImpl extends InCallService {
         currentRingerMode = mAudioManager.getRingerMode();
         mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
 
-        if(!shouldBlock(number)) {
+        if(!shouldBlock(number))
             mAudioManager.setRingerMode(currentRingerMode);
-        }
+
         super.onCallAdded(call);
     }
 
@@ -45,12 +45,6 @@ public class InCallServiceImpl extends InCallService {
         mAudioManager.setRingerMode(currentRingerMode);
         super.onCallRemoved(call);
     }
-
-
-
-    // File[] directoryFiles = new File(".").listFiles(); // implements FilenameFilter
-
-
 
     // Copy-pasted from built-in phone app
     String getNumber(Call call) {
@@ -72,22 +66,28 @@ public class InCallServiceImpl extends InCallService {
 
 
     private boolean shouldBlock(String number) {
-        boolean result = true;
-
-        BlockList blockList = new BlockList(this);
-        ArrayList<String> blockedNumbers = blockList.getBlockedNumbers();
+        boolean result = false;
+        ArrayList<String> blockedNumbers = new ArrayList<>(0);
+        Profile[] allProfiles = Profile.readAllProfiles(this);
+        for(Profile prof : allProfiles) {
+            try {
+                if(!(prof.isAllowed()))
+                    blockedNumbers.addAll(prof.getPhoneNumbers());
+            } catch(NullPointerException e) {
+                //TODO: Catch Exception
+            }
+        }
         for(String blockedNumber : blockedNumbers) {
             if(number.equals(blockedNumber)) {
-                result = false;
+                result = true;
                 break;
             }
         }
 
-        if(result) {
+        if(result)
             Log.d(MainActivity.LOG_TAG, "Call should be blocked");
-        } else {
+        else
             Log.d(MainActivity.LOG_TAG, "Call is allowed");
-        }
 
         return result;
     }

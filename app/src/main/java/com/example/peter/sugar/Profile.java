@@ -89,12 +89,13 @@ class Profile implements Serializable
         }
     }
 
-    public static Profile[] readAllProfiles(File[] files, Context context) {
+    public static Profile[] readAllProfiles(Context context) {
         Log.d(MainActivity.LOG_TAG, "Profile: readAllProfiles");
-        Profile[] profiles = new Profile[files.length];
-        for(int i = 0; i < files.length; i++) {
+        File[] allFiles = context.getFilesDir().listFiles();
+        Profile[] profiles = new Profile[allFiles.length];
+        for(int i = 0; i < allFiles.length; i++) {
             try {
-                profiles[i] = readProfileFromXmlFile(files[i], context);
+                profiles[i] = readProfileFromXmlFile(allFiles[i], context);
             } catch(Exception e) {
                 Log.e(MainActivity.LOG_TAG, e.toString());
                 Log.d(MainActivity.LOG_TAG, "Inserted null-profile");
