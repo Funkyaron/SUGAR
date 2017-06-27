@@ -152,8 +152,7 @@ public class TimeManager {
          * Then save the BlockList and set the next alarms for every profile.
          */
 
-        File[] allFiles = context.getFilesDir().listFiles();
-        Profile[] allProfiles = Profile.readAllProfiles(allFiles, context);
+        Profile[] allProfiles = Profile.readAllProfiles(context);
 
         // At first, get the current time.
         Calendar cal = Calendar.getInstance();
