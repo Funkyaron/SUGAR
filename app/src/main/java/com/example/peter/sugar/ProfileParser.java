@@ -52,6 +52,7 @@ class ProfileParser {
         boolean[] profileDays = new boolean[7];
         TimeObject[] startTime = new TimeObject[7];
         TimeObject[] endTime = new TimeObject[7];
+        boolean allowed = false;
         ArrayList<String> numbers = new ArrayList<String>(0);
 
         parser.require(XmlPullParser.START_TAG,ns,"profile");
@@ -75,11 +76,13 @@ class ProfileParser {
                 case "endTime":
                     endTime = readEndTimes(parser);
                     break;
+                case "allowed":
+                    allowed = readIsAllowed(parser);
                 case "numbers":
                     numbers = readPhoneNumbers(parser);
             }
         }
-        return new Profile(profileName, profileDays, startTime, endTime,numbers);
+        return new Profile(profileName, profileDays, startTime, endTime, allowed, numbers);
     }
 
     private String readProfileName(XmlPullParser parser)
@@ -142,6 +145,16 @@ class ProfileParser {
             result[currentDay] = new TimeObject(resultText[currentDay]);
         }
         return result;
+    }
+
+    private boolean readIsAllowed(XmlPullParser parser)
+            throws XmlPullParserException, IOException
+    {
+        parser.require(XmlPullParser.START_TAG,ns,"allowed");
+        String resultText = readText(parser);
+        parser.require(XmlPullParser.END_TAG, ns, "allowed");
+
+        return resultText.equals("1");
     }
 
     private ArrayList<String> readPhoneNumbers(XmlPullParser parser)

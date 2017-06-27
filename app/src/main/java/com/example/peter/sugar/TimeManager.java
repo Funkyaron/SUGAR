@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.concurrent.TimeoutException;
@@ -27,7 +28,14 @@ import java.util.concurrent.TimeoutException;
 
 public class TimeManager {
 
-    private static final int ID = 44;
+    private static AlarmManager mAlarmManager;
+
+    private static AlarmManager getAlarmManager(Context context) {
+        if(mAlarmManager == null) {
+            mAlarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        }
+        return mAlarmManager;
+    }
 
     /**
      * Determines when the given profile should be enabled the next time and sets the
@@ -56,7 +64,7 @@ public class TimeManager {
             return;
 
         // Prepare the alarm
-        AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmMgr = getAlarmManager(context);
 
         Intent intent = new Intent(context, EnableProfileReceiver.class);
         intent.addCategory(name);
@@ -101,7 +109,7 @@ public class TimeManager {
 
 
 
-        AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmMgr = getAlarmManager(context);
 
         Intent intent = new Intent(context, DisableProfileReceiver.class);
         intent.addCategory(name);
@@ -121,9 +129,8 @@ public class TimeManager {
      * It also sets the next enabling and disabling alarms properly.
      *
      * @param context Needed for Intent
-     * @param profiles The profiles which should be initialized
      */
-    public static void initProfiles(Context context, Profile[] profiles) {
+    public static void initProfiles(Context context) {
 
         Log.d(MainActivity.LOG_TAG, "TimeManager: initProfiles");
 
@@ -145,6 +152,9 @@ public class TimeManager {
          * Then save the BlockList and set the next alarms for every profile.
          */
 
+        File[] allFiles = context.getFilesDir().listFiles();
+        Profile[] allProfiles = Profile.readAllProfiles(allFiles, context);
+
         // At first, get the current time.
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(System.currentTimeMillis());
@@ -155,7 +165,7 @@ public class TimeManager {
         ArrayList<Profile> enabledProfiles = new ArrayList<>(0);
         ArrayList<Profile> disabledProfiles = new ArrayList<>(0);
 
-        for(Profile prof : profiles) {
+        for(Profile prof : allProfiles) {
             TimeObject[] startTimes = prof.getStart();
             TimeObject[] endTimes = prof.getEnd();
             boolean[] days = prof.getDays();
@@ -174,43 +184,32 @@ public class TimeManager {
             if (days[toIndex(currentDay)] == false
                     || currentTime < startTimeInMillis
                     || endTimeInMillis < currentTime) {
-                disabledProfiles.add(prof);
+                try {
+                    disabledProfiles.add(prof);
+                } catch(NullPointerException e) {
+                    Log.e(MainActivity.LOG_TAG, e.toString());
+                }
             } else {
-                enabledProfiles.add(prof);
+                try {
+                    enabledProfiles.add(prof);
+                } catch(NullPointerException e) {
+                    Log.e(MainActivity.LOG_TAG, e.toString());
+                }
             }
         }
 
-        // Now we set up the BlockList as described above.
-        BlockList blockList = new BlockList(context);
-        try {
-            blockList.resetBlockList(context);
-        } catch(Exception e) {
-            Log.e(MainActivity.LOG_TAG, e.toString());
-        }
 
-        ArrayList<String> targetBlockList = blockList.getBlockedNumbers();
-        for(Profile disProf : disabledProfiles) {
-            targetBlockList.removeAll(disProf.getPhoneNumbers());
-        }
-        ArrayList<String> enabledNumbers = new ArrayList<>(0);
-        for(Profile enProf : enabledProfiles) {
-            enabledNumbers.addAll(enProf.getPhoneNumbers());
-        }
-        enabledNumbers.removeAll(targetBlockList);
-        targetBlockList.addAll(enabledNumbers);
-
-        // Save BlockList and set the next alarms.
-        try {
-            blockList.setNumbersAndSave(context, targetBlockList);
-        } catch(Exception e) {
-            Log.e(MainActivity.LOG_TAG, e.toString());
-        }
-
-        MainActivity.logBlockList(blockList);
 
         int id = 1;
 
         for(Profile disProf : disabledProfiles) {
+            disProf.setAllowed(false);
+            try {
+                disProf.saveProfile(context);
+            } catch(Exception e) {
+                Log.e(MainActivity.LOG_TAG, e.toString());
+            }
+
             setNextDisable(context, disProf);
             setNextEnable(context, disProf);
 
@@ -229,6 +228,13 @@ public class TimeManager {
         }
 
         for(Profile enProf : enabledProfiles) {
+            enProf.setAllowed(true);
+            try {
+                enProf.saveProfile(context);
+            } catch(Exception e) {
+                Log.e(MainActivity.LOG_TAG, e.toString());
+            }
+
             setNextEnable(context, enProf);
             setNextDisable(context, enProf);
 
@@ -313,7 +319,7 @@ public class TimeManager {
      * @param calendarDay Constant field value from java.util.Calendar
      * @return Index that can be used for an array, beginning from monday
      */
-    public static int toIndex(int calendarDay) {
+    private static int toIndex(int calendarDay) {
         return (calendarDay + 5) % 7;
     }
 }

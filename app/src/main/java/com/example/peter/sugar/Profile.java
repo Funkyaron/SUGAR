@@ -19,15 +19,18 @@ class Profile implements Serializable
     private boolean[] days;
     private TimeObject[] startTime;
     private TimeObject[] endTime;
+    private boolean allowed;
     private ArrayList<String> numbers;
+
     private final String[] weekDays = { "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
 
-    Profile(String name, boolean[] days, TimeObject[] startTime, TimeObject[] endTime, ArrayList<String> numbers)
+    Profile(String name, boolean[] days, TimeObject[] startTime, TimeObject[] endTime, boolean allowed, ArrayList<String> numbers)
     {
         this.name = name;
         this.days = days;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.allowed = allowed;
         this.numbers = numbers;
     }
 
@@ -49,6 +52,7 @@ class Profile implements Serializable
         {
             endTime[i] = new TimeObject(0,0);
         }
+        allowed = false;
         numbers = new ArrayList<String>(0);
         numbers.add("Pseudonumber");
     }
@@ -85,6 +89,21 @@ class Profile implements Serializable
         }
     }
 
+    public static Profile[] readAllProfiles(File[] files, Context context) {
+        Log.d(MainActivity.LOG_TAG, "Profile: readAllProfiles");
+        Profile[] profiles = new Profile[files.length];
+        for(int i = 0; i < files.length; i++) {
+            try {
+                profiles[i] = readProfileFromXmlFile(files[i], context);
+            } catch(Exception e) {
+                Log.e(MainActivity.LOG_TAG, e.toString());
+                Log.d(MainActivity.LOG_TAG, "Inserted null-profile");
+                profiles[i] = null;
+            }
+        }
+        return profiles;
+    }
+
     /**
      * Saves the given Profile to the default filepath of Android
      * @throws IOException if problems occured during the function execution
@@ -92,7 +111,7 @@ class Profile implements Serializable
     public void saveProfile(Context context) throws IOException {
         Log.d(MainActivity.LOG_TAG, "Profile: saveProfile()");
 
-        File file = new File(context.getFilesDir() + "/" + name + ".xml");
+        File file = new File(context.getFilesDir(), name + ".xml");
         if(file.exists())
             file.delete();
 
@@ -140,6 +159,13 @@ class Profile implements Serializable
                     xmlWriter.text(endTime[currentDay].getHour() + ":" + endTime[currentDay].getMinute() + ",");
             }
             xmlWriter.endTag(null,"endTime");
+
+            xmlWriter.startTag(null, "allowed");
+            if(allowed)
+                xmlWriter.text("1");
+            else
+                xmlWriter.text("0");
+            xmlWriter.endTag(null, "allowed");
 
             xmlWriter.startTag(null,"numbers");
             ListIterator<String> iterator = numbers.listIterator();
@@ -199,6 +225,10 @@ class Profile implements Serializable
                    .append(endTime[currentDay].getMinute())
                    .append("\n");
         }
+        if(allowed)
+            builder.append("Calls allowed\n");
+        else
+            builder.append("Calls not allowed\n");
         builder.append("Numbers :\n");
         for(String number : numbers)
         {
@@ -227,6 +257,8 @@ class Profile implements Serializable
         return endTime;
     }
 
+    public boolean isAllowed() { return allowed; }
+
     ArrayList<String> getPhoneNumbers()
     {
         return numbers;
@@ -251,6 +283,8 @@ class Profile implements Serializable
     {
         endTime = updatedEnd;
     }
+
+    public void setAllowed(boolean allowed) { this.allowed = allowed; }
 
     void setPhoneNumbers(ArrayList<String> numbers) {
         this.numbers = numbers;
