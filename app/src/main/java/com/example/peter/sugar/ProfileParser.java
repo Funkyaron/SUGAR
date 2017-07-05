@@ -64,22 +64,23 @@ class ProfileParser {
             }
             String name = parser.getName();
             switch (name) {
-                case "name":
+                case "name": {
                     profileName = readProfileName(parser);
-                    break;
-                case "days":
+                    break; }
+                case "days": {
                     profileDays = readActivatedDays(parser);
-                    break;
-                case "startTime":
+                    break; }
+                case "startTime": {
                     startTime = readStartTimes(parser);
-                    break;
-                case "endTime":
+                    break; }
+                case "endTime": {
                     endTime = readEndTimes(parser);
-                    break;
-                case "allowed":
+                    break; }
+                case "allowed": {
                     allowed = readIsAllowed(parser);
-                case "numbers":
-                    numbers = readPhoneNumbers(parser);
+                    break; }
+                case "numbers": {
+                    numbers = readPhoneNumbers(parser); }
             }
         }
         return new Profile(profileName, profileDays, startTime, endTime, allowed, numbers);

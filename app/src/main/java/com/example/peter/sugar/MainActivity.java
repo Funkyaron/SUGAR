@@ -50,10 +50,13 @@ public class MainActivity extends AppCompatActivity
 
        // numbersView = (TextView) findViewById(R.id.numbers_view);
 
-        String[] adapterContent = { "Hallo","Welt" };
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,adapterContent);
-        ListView list = (ListView) findViewById(R.id.list);
-        list.setAdapter(adapter);
+        new DownloadProfilesTask(this).execute("haha");
+        /*try {
+            Thread.sleep(3000);
+        } catch(Exception e) {
+            Log.e(LOG_TAG, e.toString());
+        }*/
+
 
         // Concerning runtime permissions
         if (ActivityCompat.checkSelfPermission(this,

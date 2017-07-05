@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import org.apache.commons.net.ftp.*;
@@ -70,5 +72,13 @@ class DownloadProfilesTask extends AsyncTask<String,Void,Boolean>
     }
 
     protected void onPostExecute(Boolean isSuccessful) {
+        ListView lv = (ListView) context.findViewById(R.id.list);
+        Profile[] profs = Profile.readAllProfiles(context);
+        String[] adapterContent = new String[profs.length];
+        for(int i = 0; i < profs.length; i++) {
+            adapterContent[i] = profs[i].getName();
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(context,android.R.layout.simple_list_item_1,adapterContent);
+        lv.setAdapter(adapter);
     }
 }

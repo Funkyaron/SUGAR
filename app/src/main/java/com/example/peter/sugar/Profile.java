@@ -92,17 +92,18 @@ class Profile implements Serializable
     public static Profile[] readAllProfiles(Context context) {
         Log.d(MainActivity.LOG_TAG, "Profile: readAllProfiles");
         File[] allFiles = context.getFilesDir().listFiles();
-        Profile[] profiles = new Profile[allFiles.length];
+        //Profile[] profiles = new Profile[allFiles.length];
+        ArrayList<Profile> profiles = new ArrayList<>();
         for(int i = 0; i < allFiles.length; i++) {
             try {
-                profiles[i] = readProfileFromXmlFile(allFiles[i], context);
+                profiles.add(readProfileFromXmlFile(allFiles[i], context));
             } catch(Exception e) {
                 Log.e(MainActivity.LOG_TAG, e.toString());
-                Log.d(MainActivity.LOG_TAG, "Inserted null-profile");
-                profiles[i] = null;
             }
         }
-        return profiles;
+        Profile[] result = new Profile[profiles.size()];
+        result = profiles.toArray(result);
+        return result;
     }
 
     /**
