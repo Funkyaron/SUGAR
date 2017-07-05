@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    //
     @Override
     public void onContactsSelected(ArrayList<String> numbers) {
         mProfile.setPhoneNumbers(numbers);
