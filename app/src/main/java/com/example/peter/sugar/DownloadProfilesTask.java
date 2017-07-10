@@ -79,7 +79,7 @@ class DownloadProfilesTask extends AsyncTask<String,Void,Boolean>
 
     protected void onPostExecute(Boolean isSuccessful) {
         ListView lv = (ListView) context.findViewById(R.id.list);
-        Profile[] profs = Profile.readAllProfiles(context);
+        final Profile[] profs = Profile.readAllProfiles(context);
         String[] adapterContent = new String[profs.length];
         for(int i = 0; i < profs.length; i++) {
             adapterContent[i] = profs[i].getName();
@@ -91,7 +91,7 @@ class DownloadProfilesTask extends AsyncTask<String,Void,Boolean>
             public void onItemClick(AdapterView parent, View v, int position, long id)
             {
                 Intent goToDisplayProfileActivity = new Intent(context,DisplayProfileActivity.class);
-                goToDisplayProfileActivity.putExtra("name",profileNames[0]);
+                goToDisplayProfileActivity.putExtra("profileName",profileNames[position]);
                 context.startActivity(goToDisplayProfileActivity);
             }
         });
