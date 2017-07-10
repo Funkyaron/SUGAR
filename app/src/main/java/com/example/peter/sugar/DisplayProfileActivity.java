@@ -12,8 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 class DisplayProfileActivity extends AppCompatActivity
 {
 
-    Bundle passedProfile;
-
+    //Bundle passedBundle = getIntent().getExtras();
     protected void onCreate(Bundle savedInstances)
     {
         super.onCreate(savedInstances);

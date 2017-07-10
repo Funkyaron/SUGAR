@@ -1,9 +1,15 @@
 package com.example.peter.sugar;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -73,12 +79,41 @@ class DownloadProfilesTask extends AsyncTask<String,Void,Boolean>
 
     protected void onPostExecute(Boolean isSuccessful) {
         ListView lv = (ListView) context.findViewById(R.id.list);
-        Profile[] profs = Profile.readAllProfiles(context);
+        final Profile[] profs = Profile.readAllProfiles(context);
         String[] adapterContent = new String[profs.length];
         for(int i = 0; i < profs.length; i++) {
             adapterContent[i] = profs[i].getName();
         }
+        final Bundle passedParameters = new Bundle();
+        final Intent goToDisplayProfileActivity = new Intent(context,DisplayProfileActivity.class);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context,android.R.layout.simple_list_item_1,adapterContent);
         lv.setAdapter(adapter);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView parent, View v, int position, long id)
+            {
+                switch(position)
+                {
+                    case 0 :
+                    {
+                        Intent nextActivity = new Intent(context,DisplayProfileActivity.class);
+                        Bundle intentBundle = new Bundle();
+                        intentBundle.putString("selectedProfile",profs[0].getName());
+                        nextActivity.putExtras(intentBundle);
+                        context.startActivity(goToDisplayProfileActivity,intentBundle);
+                        break;
+                    }
+                    case 1 :
+                    {
+                        Log.d("Ergebnis : ","");
+                        break;
+                    }
+                    case 2 :
+                    {
+                        Log.d("Ergebnis :","No one can kill a jedi!");
+                        break;
+                    }
+                }
+            }
+        });
     }
 }
