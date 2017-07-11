@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.peter.sugar">
-
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -50,20 +51,32 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </service>
-
+        <service
+            android:name="com.example.peter.sugar.CallService"
+            android:description="@string/callService"
+            android:label="CallServiceSUGAR"
+            android:permission="android.permission.BIND_TELECOM_CONNECTION_SERVICE">
+            <intent-filter>
+                <action android:name="android.telecom.ConnectionService"/>
+            </intent-filter>
+        </service>
         <receiver
             android:name=".DisableProfileReceiver"
             android:enabled="true"
             android:exported="false" />
-
         <receiver
             android:name=".BootCompletedReceiver"
             android:enabled="true"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
+        <activity
+            android:name=".DisplayProfileActivity"
+            android:label="@string/title_activity_display_profile"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

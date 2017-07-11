@@ -64,24 +64,37 @@ class ProfileParser {
             }
             String name = parser.getName();
             switch (name) {
-                case "name": {
+                case "name":
+                {
+                    Log.d("SUGAR","Parsing profile name ... ");
                     profileName = readProfileName(parser);
-                    break; }
-                case "days": {
+                    break;
+                }
+                case "days":
+                {
                     profileDays = readActivatedDays(parser);
-                    break; }
-                case "startTime": {
+                    break;
+                }
+                case "startTime":
+                {
                     startTime = readStartTimes(parser);
-                    break; }
-                case "endTime": {
+                    break;
+                }
+                case "endTime":
+                {
                     endTime = readEndTimes(parser);
-                    break; }
-                case "allowed": {
+                    break;
+                }
+                case "allowed":
+                {
                     allowed = readIsAllowed(parser);
-                    break; }
-                case "numbers": {
-                    numbers = readPhoneNumbers(parser); }
-            }
+                    break;
+                }
+                case "numbers":
+                {
+                    numbers = readPhoneNumbers(parser);
+                    break;}
+                }
         }
         return new Profile(profileName, profileDays, startTime, endTime, allowed, numbers);
     }
@@ -89,6 +102,7 @@ class ProfileParser {
     private String readProfileName(XmlPullParser parser)
             throws XmlPullParserException,IOException
     {
+        Log.d("SUGAR","Parsing profile name ... ");
         parser.require(XmlPullParser.START_TAG,ns,"name");
         String name = readText(parser);
         parser.require(XmlPullParser.END_TAG,ns,"name");
@@ -99,6 +113,7 @@ class ProfileParser {
     private boolean[] readActivatedDays(XmlPullParser parser)
             throws XmlPullParserException,IOException
     {
+        Log.d("SUGAR","Parsing profile days .... ");
         boolean[] daysActivated = new boolean[7];
         parser.require(XmlPullParser.START_TAG,ns,"days");
         char[] days = readText(parser).toCharArray();
@@ -121,6 +136,7 @@ class ProfileParser {
     private TimeObject[] readStartTimes(XmlPullParser parser)
             throws XmlPullParserException,IOException
     {
+        Log.d("SUGAR","Parsing profile start times ... ");
         TimeObject[] result = new TimeObject[7];
         parser.require(XmlPullParser.START_TAG, ns, "startTime");
         String[] resultText = readText(parser).split(",");
@@ -136,6 +152,7 @@ class ProfileParser {
     private TimeObject[] readEndTimes(XmlPullParser parser)
             throws XmlPullParserException,IOException
     {
+        Log.d("SUGAR","Parsing profile end times .... ");
         TimeObject[] result = new TimeObject[7];
         parser.require(XmlPullParser.START_TAG,ns,"endTime");
         String[] resultText = readText(parser).split(",");
@@ -151,6 +168,7 @@ class ProfileParser {
     private boolean readIsAllowed(XmlPullParser parser)
             throws XmlPullParserException, IOException
     {
+        Log.d("SUGAR","Parsing profile allowed .... ");
         parser.require(XmlPullParser.START_TAG,ns,"allowed");
         String resultText = readText(parser);
         parser.require(XmlPullParser.END_TAG, ns, "allowed");
@@ -161,6 +179,7 @@ class ProfileParser {
     private ArrayList<String> readPhoneNumbers(XmlPullParser parser)
             throws XmlPullParserException,IOException
     {
+        Log.d("SUGAR","Parsing profile numbers .... ");
         ArrayList<String> resultList = new ArrayList<String>(0);
         parser.require(XmlPullParser.START_TAG,ns,"numbers");
         String[] phoneNumbers = readText(parser).split(",");

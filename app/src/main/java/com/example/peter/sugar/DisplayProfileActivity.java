@@ -8,26 +8,30 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Peter on 09.07.2017.
  */
 
-class DisplayProfileActivity extends AppCompatActivity
+class DisplayProfileActivity extends AppCompatActivity implements ContactsDialogFragment.ContactsSelectedListener
 {
+    private Profile currentProfile = null;
+    private TextView numbersView;
+
     protected void onCreate(Bundle savedInstances)
     {
         super.onCreate(savedInstances);
         setContentView(R.layout.displayprofileactivity);
 
-        Profile currentProfile = null;
         TableLayout rootTable = (TableLayout) findViewById(R.id.root_table);
         try {
             currentProfile = Profile.readProfileFromXmlFile(getIntent().getStringExtra("profileName"), getApplicationContext());
@@ -59,9 +63,27 @@ class DisplayProfileActivity extends AppCompatActivity
 
     }
 
-    protected void displayContactsChooser()
+    protected void displayContactsChooser(View w)
     {
-        android.app.FragmentTransaction testTransaction = getFragmentManager().beginTransaction();
-        ContactsDialogFragment testFragment = new ContactsDialogFragment();
+        try {
+            android.app.FragmentTransaction testTransaction = getFragmentManager().beginTransaction();
+            ContactsDialogFragment testFragment = new ContactsDialogFragment();
+            Bundle profileBundle = new Bundle();
+            profileBundle.putString(MainActivity.KEY_PROFILE_NAME,currentProfile.getName());
+            testFragment.show(getFragmentManager(),"dialog");
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onContactsSelected(ArrayList<String> numbers) {
+        currentProfile.setPhoneNumbers(numbers);
+        try {
+            currentProfile.saveProfile(this);
+        } catch (Exception e) {
+            Log.e("DisplayProfileActivity:", e.toString());
+        }
+        numbersView.setText(currentProfile.toString());
     }
 }

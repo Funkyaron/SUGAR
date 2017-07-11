@@ -6,7 +6,7 @@
     android:layout_height="fill_parent"
     android:weightSum="7">
     <TextView
-        android:id="@+id/name"
+        android:id="@+id/profileName"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
@@ -14,47 +14,49 @@
         android:id="@+id/root_table"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1.37"
+        android:layout_weight="1.60"
         android:stretchColumns="1">
-       <TableRow>
+            <TableRow>
                 <TextView
-               android:id="@+id/displayMonday"
-               android:gravity="center"
-               android:background="#FF33B5E5"
-               android:text="Monday" />
+                    android:id="@+id/displayMonday"
+                    android:gravity="center"
+                    android:background="#FF33B5E5"
+                    android:text="@string/monday" />
                 <TextView
-               android:id="@+id/displayMondayTime"
-               android:text=""
-               android:gravity="center"/>
-       </TableRow>
-       <TableRow>
-                    <TextView
-                        android:id="@+id/displayTuesday"
-                        android:gravity="center"
-                        android:background="#FF33B5E5"
-                        android:text="Tuesday" />
-                    <TextView
+                    android:id="@+id/displayMondayTime"
+                    android:text=""
+                    android:gravity="center"/>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:id="@+id/displayTuesday"
+                    android:gravity="center"
+                    android:background="#FF33B5E5"
+                    android:text="@string/tuesday" />
+                <TextView
                     android:id="@+id/displayTuesdayTime"
                     android:text=""
                     android:gravity="center"/>
-       </TableRow>
-       <TableRow>
+            </TableRow>
+            <TableRow>
                 <TextView
                     android:id="@+id/displayWednesDay"
                     android:gravity="center"
                     android:background="#FF33B5E5"
-                    android:text="Monday" />
+                    android:text="@string/wednesday" />
                 <TextView
                     android:id="@+id/displayWednesDayTime"
                     android:text=""
                     android:gravity="center"/>
-       </TableRow>
+            </TableRow>
             <TableRow>
+
                 <TextView
                     android:id="@+id/displayThursDay"
-                    android:gravity="center"
                     android:background="#FF33B5E5"
-                    android:text="Thursday"/>
+                    android:gravity="center"
+                    android:text="@string/thursday" />
+
                 <TextView
                     android:id="@+id/displayThursDayTime"
                     android:gravity="center"
@@ -65,7 +67,7 @@
                     android:id="@+id/displayFriday"
                     android:gravity="center"
                     android:background="#FF33B5E5"
-                    android:text="Friday"/>
+                    android:text="@string/friday"/>
                 <TextView
                     android:id="@+id/displayFridayTime"
                     android:gravity="center"
@@ -76,7 +78,7 @@
                     android:id="@+id/displaySaturday"
                     android:gravity="center"
                     android:background="#FF33B5E5"
-                    android:text="Saturday"/>
+                    android:text="@string/saturday"/>
                 <TextView
                     android:id="@+id/displaySaturdayTime"
                     android:gravity="center"
@@ -87,18 +89,22 @@
                     android:id="@+id/displaySunday"
                     android:gravity="center"
                     android:background="#FF33B5E5"
-                    android:text="Sunday"/>
+                    android:text="@string/sunday"/>
                 <TextView
                     android:id="@+id/displaySundayTime"
                     android:gravity="center"
                     android:text=""/>
             </TableRow>
     </TableLayout>
+
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"/>
+        android:layout_weight="1.77"
+        android:fadeScrollbars="false"
+        android:layout_gravity="center"/>
+
     <TextView
         android:id="@+id/isActiveDisplay"
         android:layout_width="match_parent"
@@ -115,13 +121,13 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:onClick="wereDoomed()"
-            android:text="Do it!"/>
+            android:text="@string/back"/>
         <Button
             android:id="@+id/chooseContacts"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:onClick="displayContactsChooser()"
-            android:text="Choose Contacts"/>
+            android:onClick="displayContactsChooser"
+            android:text="@string/choosecontacts"/>
     </LinearLayout>
 </LinearLayout>

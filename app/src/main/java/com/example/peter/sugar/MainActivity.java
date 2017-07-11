@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -47,18 +48,8 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-       // numbersView = (TextView) findViewById(R.id.numbers_view);
-
-        new DownloadProfilesTask(this).execute("haha");
-        /*try {
-            Thread.sleep(3000);
-        } catch(Exception e) {
-            Log.e(LOG_TAG, e.toString());
-        }*/
-
-
-        // Concerning runtime permissions
+       // numbersView = (TextView) findViewById(R.id.numbers_view)
+        // Concerning runtime permission
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(this,
