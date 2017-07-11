@@ -1,5 +1,7 @@
 package com.example.peter.sugar;
 
+import java.text.DecimalFormat;
+
 /**
  * Created by Peter on 16.05.2017.
  */
@@ -40,6 +42,11 @@ public class TimeObject {
     public void setMinute( int updatedMinute )
     {
         minute = updatedMinute;
+    }
+
+    public String toString() {
+        DecimalFormat form = new DecimalFormat("00");
+        return "" + hour + ":" + form.format(minute) + " Uhr";
     }
 
 
