@@ -205,13 +205,14 @@ public class ContactsDialogFragment extends DialogFragment {
                 ContactsContract.RawContacts._ID,
                 ContactsContract.RawContacts.ACCOUNT_NAME,
                 ContactsContract.RawContacts.DELETED};
-        String rawSelection = "(((" +
-                ContactsContract.RawContacts.ACCOUNT_NAME + " =?) OR (" +
-                ContactsContract.RawContacts.ACCOUNT_NAME + " =?) OR (" +
-                ContactsContract.RawContacts.ACCOUNT_NAME + " =?)) AND (" +
-                ContactsContract.RawContacts.DELETED + " =?))";
+        String rawSelection = //"(((" +
+                //ContactsContract.RawContacts.ACCOUNT_NAME + " =?) OR (" +
+                //ContactsContract.RawContacts.ACCOUNT_NAME + " =?) OR (" +
+                //ContactsContract.RawContacts.ACCOUNT_NAME + " =?)) AND (" +
+                "(" + ContactsContract.RawContacts.DELETED + " =?) AND (" +
+                ContactsContract.RawContacts.ACCOUNT_NAME + " !=?)" /* + "))" */ ;
         String[] rawSelectionArgs = {
-                "SIM1", "SIM2", "Phone", "0"};
+                /*"SIM1", "SIM2", "Phone", */ "0", "WhatsApp"};
         String rawSortOrder =
                 ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY;
 
@@ -307,6 +308,7 @@ public class ContactsDialogFragment extends DialogFragment {
         while(rawCursor.moveToNext()) {
             names[rawCursor.getPosition()] = rawCursor.getString(rawCursor.getColumnIndex(
                     ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY));
+                    // ContactsContract.RawContacts.ACCOUNT_NAME));
         }
         return names;
     }
