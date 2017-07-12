@@ -134,24 +134,6 @@ public class TimeManager {
 
         Log.d(MainActivity.LOG_TAG, "TimeManager: initProfiles");
 
-        /* Interesting thing: The BlockList contains every number that is allowed.
-         * And a number that is currently associated with two or more enabled
-         * profiles appears twice - or respectively more often - on the BlockList.
-         * We want to make every number that is not affected by any profile appear
-         * once.
-         * So the plan is:
-         *  1. Reset the BlockList so that every number appears once.
-         *  2. Remove every number associated with a disabled profile.
-         *     -> Some numbers may be "removed" more than once. That
-         *        doesn't have any further effect.
-         *  3. Handle enabled profiles:
-         *   a) Create a new list and add every number associated with an
-         *      enabled profile.
-         *   b) Remove every number that's already on the BlockList.
-         *   c) Add the result to the BlockList.
-         * Then save the BlockList and set the next alarms for every profile.
-         */
-
         Profile[] allProfiles = Profile.readAllProfiles(context);
 
         // At first, get the current time.

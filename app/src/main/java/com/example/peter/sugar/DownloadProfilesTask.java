@@ -49,19 +49,51 @@ class DownloadProfilesTask extends AsyncTask<String,Void,Boolean>
             androidClient.enterLocalPassiveMode();
             androidClient.setFileType(FTP.BINARY_FILE_TYPE);
             androidClient.changeWorkingDirectory("SUGAR");
-            FTPFile serverFiles[] = androidClient.listFiles();
+
+            FTPFile[] serverFiles = androidClient.listFiles();
+            File[] localFiles = context.getFilesDir().listFiles();
+
+            boolean localMatchesServer;
+            for(int i = 0; i < localFiles.length; i++) {
+                localMatchesServer = false;
+                for(int j = 0; j < serverFiles.length; j++) {
+                    if((localFiles[i].getName()).equals(serverFiles[j].getName())) {
+                        localMatchesServer = true;
+                    }
+                }
+                if(!localMatchesServer) {
+                    localFiles[i].delete();
+                }
+            }
+
             for( int currentFile = 0; currentFile < serverFiles.length; currentFile++ )
             {
-                if( ! serverFiles[currentFile].getName().equals("..")) {
-                    String currentFileName = serverFiles[currentFile].getName();
-                    FileOutputStream fos = context.openFileOutput(currentFileName, Context.MODE_PRIVATE);
-                    isSuccessfull = androidClient.retrieveFile(serverFiles[currentFile].getName(), fos);
-                    fos.close();
+                String currentFileName = serverFiles[currentFile].getName();
+                if( ! currentFileName.equals("..")) {
+                    File localFile = new File(context.getFilesDir(), currentFileName);
+
+                    if(localFile.exists()) {
+                        ArrayList<String> tempNumbers = Profile.readProfileFromXmlFile(localFile, context).getPhoneNumbers();
+                        localFile.delete();
+                        FileOutputStream fos = context.openFileOutput(currentFileName, Context.MODE_PRIVATE);
+                        isSuccessfull = androidClient.retrieveFile(serverFiles[currentFile].getName(), fos);
+                        fos.close();
+                        Profile tempProfile = Profile.readProfileFromXmlFile(new File(context.getFilesDir(), currentFileName), context);
+                        tempProfile.setPhoneNumbers(tempNumbers);
+                        tempProfile.saveProfile(context);
+                    } else {
+                        FileOutputStream fos = context.openFileOutput(currentFileName, Context.MODE_PRIVATE);
+                        isSuccessfull = androidClient.retrieveFile(currentFileName, fos);
+                        fos.close();
+                    }
                 }
             }
             return isSuccessfull;
         } catch ( IOException exception ) {
-            Log.e(MainActivity.LOG_TAG,exception.toString());
+            Log.e(MainActivity.LOG_TAG, exception.toString());
+            return isSuccessfull;
+        } catch(XmlPullParserException e) {
+            Log.e(MainActivity.LOG_TAG, e.toString());
             return isSuccessfull;
         } finally {
             try {
@@ -95,5 +127,7 @@ class DownloadProfilesTask extends AsyncTask<String,Void,Boolean>
                 context.startActivity(goToDisplayProfileActivity);
             }
         });
+
+        TimeManager.initProfiles(context);
     }
 }
