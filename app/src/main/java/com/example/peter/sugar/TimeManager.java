@@ -15,7 +15,7 @@ import java.util.concurrent.TimeoutException;
 
 /**
  * Created by Funkyaron on 04.04.2017. <p/>
- * Helper class that provides static methods to handle time-dependent enabling
+ * Helper class that provides methods to handle time-dependent enabling
  * or disabling of SUGAR-Profiles.
  *
  * The general idea is to jump from one alarm to another because we can set only one alarm
@@ -28,13 +28,12 @@ import java.util.concurrent.TimeoutException;
 
 public class TimeManager {
 
-    private static AlarmManager mAlarmManager;
+    private AlarmManager mAlarmManager;
+    private Context context;
 
-    private static AlarmManager getAlarmManager(Context context) {
-        if(mAlarmManager == null) {
-            mAlarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        }
-        return mAlarmManager;
+    public TimeManager(Context context) {
+        mAlarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        this.context = context;
     }
 
     /**
@@ -42,10 +41,9 @@ public class TimeManager {
      * correspondent alarm. When a profile is enabled, calls from the associated
      * contacts are allowed.
      *
-     * @param context Needed for Intent, AlarmManager etc.
      * @param profile The profile for which the action should be performed
      */
-    public static void setNextEnable(Context context, Profile profile) {
+    public void setNextEnable(Profile profile) {
 
         Log.d(MainActivity.LOG_TAG, "TimeManager: setNextEnable()");
 
@@ -64,8 +62,6 @@ public class TimeManager {
             return;
 
         // Prepare the alarm
-        AlarmManager alarmMgr = getAlarmManager(context);
-
         Intent intent = new Intent(context, EnableProfileReceiver.class);
         intent.addCategory(name);
 
@@ -74,7 +70,7 @@ public class TimeManager {
 
         long targetTime = getTargetTime(days, start);
 
-        alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, targetTime, pending);
+        mAlarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, targetTime, pending);
     }
 
 
@@ -83,10 +79,9 @@ public class TimeManager {
      * correspondent alarm. When a profile is disabled, calls from the associated
      * contacts are blocked.
      *
-     * @param context Needed for Intent, AlarmManager etc.
      * @param profile The profile for which the action should be performed
      */
-    public static void setNextDisable(Context context, Profile profile) {
+    public void setNextDisable(Profile profile) {
 
         Log.d(MainActivity.LOG_TAG, "TimeManager: setNextDisable()");
 
@@ -107,10 +102,6 @@ public class TimeManager {
         if (!shouldApply)
             return;
 
-
-
-        AlarmManager alarmMgr = getAlarmManager(context);
-
         Intent intent = new Intent(context, DisableProfileReceiver.class);
         intent.addCategory(name);
 
@@ -119,7 +110,7 @@ public class TimeManager {
 
         long targetTime = getTargetTime(days, end);
 
-        alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, targetTime, pending);
+        mAlarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, targetTime, pending);
     }
 
 
@@ -128,9 +119,8 @@ public class TimeManager {
      * Checks if the given profile should currently be enabled or not and updates its status.
      * It also sets the next enabling and disabling alarms properly.
      *
-     * @param context Needed for Intent
      */
-    public static void initProfiles(Context context) {
+    public void initProfiles() {
 
         Log.d(MainActivity.LOG_TAG, "TimeManager: initProfiles");
 
@@ -191,8 +181,8 @@ public class TimeManager {
                 Log.e(MainActivity.LOG_TAG, e.toString());
             }
 
-            setNextDisable(context, disProf);
-            setNextEnable(context, disProf);
+            setNextDisable(disProf);
+            setNextEnable(disProf);
 
             // Inform the user about what happened.
             Notification.Builder builder = new Notification.Builder(context);
@@ -216,8 +206,8 @@ public class TimeManager {
                 Log.e(MainActivity.LOG_TAG, e.toString());
             }
 
-            setNextEnable(context, enProf);
-            setNextDisable(context, enProf);
+            setNextEnable(enProf);
+            setNextDisable(enProf);
 
             Notification.Builder builder = new Notification.Builder(context);
             builder.setSmallIcon(R.mipmap.ic_launcher)
@@ -235,7 +225,7 @@ public class TimeManager {
 
 
 
-    private static long getTargetTime(boolean[] days, TimeObject[] times)
+    private long getTargetTime(boolean[] days, TimeObject[] times)
     {
         // Figure out when to execute the alarm
 
@@ -300,7 +290,7 @@ public class TimeManager {
      * @param calendarDay Constant field value from java.util.Calendar
      * @return Index that can be used for an array, beginning from monday
      */
-    private static int toIndex(int calendarDay) {
+    private int toIndex(int calendarDay) {
         return (calendarDay + 5) % 7;
     }
 }

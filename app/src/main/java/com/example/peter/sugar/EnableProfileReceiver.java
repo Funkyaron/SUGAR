@@ -32,7 +32,8 @@ public class EnableProfileReceiver extends BroadcastReceiver {
 
         try {
             prof.setAllowed(true);
-            TimeManager.setNextEnable(context, prof);
+            TimeManager mgr = new TimeManager(context);
+            mgr.setNextEnable(prof);
             prof.saveProfile(context);
         } catch(Exception e) {
             Log.e(MainActivity.LOG_TAG, e.toString());

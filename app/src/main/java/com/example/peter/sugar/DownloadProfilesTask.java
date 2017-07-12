@@ -38,7 +38,6 @@ class DownloadProfilesTask extends AsyncTask<String,Void,Boolean>
     protected Boolean doInBackground(String... params)
     {
         boolean isSuccessfull = false;
-        ArrayList<Profile> result = new ArrayList<Profile>(0);
         String serverName = params[0];
         int serverPort = Integer.parseInt(params[1]);
         String serverUser = params[2];
@@ -128,6 +127,7 @@ class DownloadProfilesTask extends AsyncTask<String,Void,Boolean>
             }
         });
 
-        TimeManager.initProfiles(context);
+        TimeManager mgr = new TimeManager(context);
+        mgr.initProfiles();
     }
 }
