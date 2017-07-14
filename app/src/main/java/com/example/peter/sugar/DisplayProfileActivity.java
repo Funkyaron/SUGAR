@@ -9,11 +9,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,12 +29,12 @@ import java.util.List;
 class DisplayProfileActivity extends AppCompatActivity implements ContactsDialogFragment.ContactsSelectedListener
 {
     private Profile currentProfile = null;
-    private TextView numbersView;
+    //private TextView numbersView;
 
     protected void onCreate(Bundle savedInstances)
     {
         super.onCreate(savedInstances);
-        setContentView(R.layout.displayprofileactivity);
+        setContentView(R.layout.ias);
 
         TableLayout rootTable = (TableLayout) findViewById(R.id.root_table);
         try {
@@ -38,28 +42,84 @@ class DisplayProfileActivity extends AppCompatActivity implements ContactsDialog
         } catch ( Exception e ) {
             e.printStackTrace();
         }
+        GridView gridContent = (GridView) findViewById(R.id.gridView);
+        TimeObject[] startTimes = currentProfile.getStart();
+        TimeObject[] endTImes = currentProfile.getEnd();
+        String startTimesAsString[] = new String[startTimes.length];
+        for( int currentTime = 0; currentTime < startTimes.length; currentTime++ )
+        {
+            startTimesAsString[currentTime] = startTimes[currentTime].toString();
+        }
+        gridContent.setAdapter(new ArrayAdapter(this,android.R.layout.simple_list_item_1,startTimesAsString));
+        gridContent.setOnItemClickListener(new OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent,View v,int position,long id)
+            {
+                switch(position)
+                {
+                    case 0 :
+                    {
+                        Toast.makeText(getApplicationContext(),"You have clicked on Monday!",Toast.LENGTH_SHORT).show();
+                        TimePickerFragment test = new TimePickerFragment();
+                        test.show(getFragmentManager(),"datePicker");
+                        break;
+                    }
+                    case 1 :
+                    {
+                        Toast.makeText(getApplicationContext(),"You have clicked on Tuesday!",Toast.LENGTH_SHORT).show();
+                        TimePickerFragment test = new TimePickerFragment();
+                        test.show(getFragmentManager(),"datePicker");
+                        break;
+                    }
+                    case 2 :
+                    {
+                        Toast.makeText(getApplicationContext(),"You have clicked on Wednesday!",Toast.LENGTH_SHORT).show();
+                        TimePickerFragment test = new TimePickerFragment();
+                        test.show(getFragmentManager(),"datePicker");
+                        break;
+                    }
+                    case 3 :
+                    {
+                        Toast.makeText(getApplicationContext(),"You have clicked on Thursday!",Toast.LENGTH_SHORT).show();
+                        TimePickerFragment test = new TimePickerFragment();
+                        test.show(getFragmentManager(),"datePicker");
+                        break;
+                    }
+                    case 4 :
+                    {
+                        Toast.makeText(getApplicationContext(),"You have clicked on Friday!",Toast.LENGTH_SHORT).show();
+                        TimePickerFragment test = new TimePickerFragment();
+                        test.show(getFragmentManager(),"datePicker");
+                        break;
+                    }
+                    case 5 :
+                    {
+                        Toast.makeText(getApplicationContext(),"You have clicked on Saturday!",Toast.LENGTH_SHORT).show();
+                        TimePickerFragment test = new TimePickerFragment();
+                        test.show(getFragmentManager(),"datePicker");
+                        break;
+                    }
+                    case 6 :
+                    {
+                        Toast.makeText(getApplicationContext(),"You have clicked on Sunday!",Toast.LENGTH_SHORT).show();
+                        TimePickerFragment test = new TimePickerFragment();
+                        test.show(getFragmentManager(),"datePicker");
+                        break;
+                    }
+                }
+            }
+        });
+
         TextView profileNameDisplayerTextView = (TextView) findViewById(R.id.profileName);
         profileNameDisplayerTextView.setText(currentProfile.getName());
-        profileNameDisplayerTextView.setBackgroundColor(Color.GREEN);
         profileNameDisplayerTextView.setTextSize(24.0f);
         profileNameDisplayerTextView.setGravity(Gravity.CENTER);
-        for( int currentWeekDay = 0; currentWeekDay < rootTable.getChildCount(); currentWeekDay++ )
-        {
-            TableRow currentRow = (TableRow) rootTable.getChildAt(currentWeekDay);
-            TextView modifiedColumn = (TextView) currentRow.getChildAt(1);
-            int startHours = currentProfile.getStart()[currentWeekDay].getHour();
-            int startMinutes = currentProfile.getStart()[currentWeekDay].getMinute();
-            int endHours = currentProfile.getEnd()[currentWeekDay].getHour();
-            int endMinutes = currentProfile.getEnd()[currentWeekDay].getMinute();
-            modifiedColumn.setText(startHours+":"+startMinutes+" - "+endHours+":"+endMinutes);
-        }
         ListView phoneNumberList = (ListView) findViewById(R.id.list);
         ArrayAdapter<String> numberListContent = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,currentProfile.getPhoneNumbers());
         phoneNumberList.setAdapter(numberListContent);
         if( currentProfile.isAllowed() )
-            findViewById(R.id.isActiveDisplay).setBackgroundColor(Color.GREEN);
+            findViewById(R.id.allowedDisplay).setBackgroundColor(Color.GREEN);
         else
-            findViewById(R.id.isActiveDisplay).setBackgroundColor(Color.RED);
+            findViewById(R.id.allowedDisplay).setBackgroundColor(Color.RED);
 
     }
 
@@ -72,7 +132,7 @@ class DisplayProfileActivity extends AppCompatActivity implements ContactsDialog
             profileBundle.putString(MainActivity.KEY_PROFILE_NAME,currentProfile.getName());
             testFragment.show(getFragmentManager(),"dialog");
         } catch ( Exception e ) {
-            e.printStackTrace();
+            Log.d("SUGAR : ",e.getMessage());
         }
     }
 
@@ -84,6 +144,5 @@ class DisplayProfileActivity extends AppCompatActivity implements ContactsDialog
         } catch (Exception e) {
             Log.e("DisplayProfileActivity:", e.toString());
         }
-        numbersView.setText(currentProfile.toString());
     }
 }
