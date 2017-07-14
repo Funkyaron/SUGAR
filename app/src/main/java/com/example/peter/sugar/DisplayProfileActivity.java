@@ -1,5 +1,6 @@
 package com.example.peter.sugar;
 
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -17,16 +18,19 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Created by Peter on 09.07.2017.
  */
 
-class DisplayProfileActivity extends AppCompatActivity implements ContactsDialogFragment.ContactsSelectedListener
+class DisplayProfileActivity extends AppCompatActivity implements ContactsDialogFragment.ContactsSelectedListener,TimePickerDialog.OnTimeSetListener
 {
     private Profile currentProfile = null;
     //private TextView numbersView;
@@ -138,11 +142,27 @@ class DisplayProfileActivity extends AppCompatActivity implements ContactsDialog
 
     @Override
     public void onContactsSelected(ArrayList<String> numbers) {
-        currentProfile.setPhoneNumbers(numbers);
+        ArrayList<String> currentProfileNumbers = currentProfile.getPhoneNumbers();
+        for(ListIterator<String> parsedNumberIterator = numbers.listIterator();parsedNumberIterator.hasNext();)
+        {
+            String currentNumber = parsedNumberIterator.next();
+            if(!currentProfileNumbers.contains(currentNumber))
+            {
+                currentProfile.getPhoneNumbers().add(currentNumber);
+            } else {
+                Log.d("SUGAR : ","This is already associated to this profile!");
+            }
+        }
+
         try {
             currentProfile.saveProfile(this);
         } catch (Exception e) {
             Log.e("DisplayProfileActivity:", e.toString());
         }
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute)
+    {
     }
 }
