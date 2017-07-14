@@ -120,6 +120,81 @@ public class TimeManager {
      * It also sets the next enabling and disabling alarms properly.
      *
      */
+    public void initProfile(Profile prof) {
+        Log.d(MainActivity.LOG_TAG, "TimeManager: initProfile");
+
+        // At first, get the current time.
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(System.currentTimeMillis());
+        long currentTime = cal.getTimeInMillis();
+        int currentDay = cal.get(Calendar.DAY_OF_WEEK);
+
+        TimeObject[] startTimes = prof.getStart();
+        TimeObject[] endTimes = prof.getEnd();
+        boolean[] days = prof.getDays();
+
+        // Now set the start and end time for the current day.
+        // Later on we will check if we need it at all.
+        cal.set(Calendar.HOUR_OF_DAY, startTimes[toIndex(currentDay)].getHour());
+        cal.set(Calendar.MINUTE, startTimes[toIndex(currentDay)].getMinute());
+        long startTimeInMillis = cal.getTimeInMillis();
+
+        cal.set(Calendar.HOUR_OF_DAY, endTimes[toIndex(currentDay)].getHour());
+        cal.set(Calendar.MINUTE, endTimes[toIndex(currentDay)].getMinute());
+        long endTimeInMillis = cal.getTimeInMillis();
+
+        // Now we check for the current day and time.
+        if (days[toIndex(currentDay)] == false
+                || currentTime < startTimeInMillis
+                || endTimeInMillis < currentTime)
+        {
+            prof.setAllowed(false);
+            try {
+                prof.saveProfile(context);
+            } catch(Exception e) {
+                Log.e(MainActivity.LOG_TAG, e.toString());
+            }
+
+            setNextDisable(prof);
+            setNextEnable(prof);
+
+            // Inform the user about what happened.
+            Notification.Builder builder = new Notification.Builder(context);
+            builder.setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle(prof.getName())
+                    .setContentText(context.getString(R.string.calls_forbidden))
+                    .setWhen(System.currentTimeMillis());
+
+            Notification noti = builder.build();
+
+            NotificationManager notiMgr = (NotificationManager)
+                    context.getSystemService(Context.NOTIFICATION_SERVICE);
+            notiMgr.notify(23, noti);
+        } else {
+            prof.setAllowed(true);
+            try {
+                prof.saveProfile(context);
+            } catch(Exception e) {
+                Log.e(MainActivity.LOG_TAG, e.toString());
+            }
+
+            setNextEnable(prof);
+            setNextDisable(prof);
+
+            Notification.Builder builder = new Notification.Builder(context);
+            builder.setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle(prof.getName())
+                    .setContentText(context.getString(R.string.calls_allowed))
+                    .setWhen(System.currentTimeMillis());
+
+            Notification noti = builder.build();
+
+            NotificationManager notiMgr = (NotificationManager)
+                    context.getSystemService(Context.NOTIFICATION_SERVICE);
+            notiMgr.notify(24, noti);
+        }
+    }
+
     public void initProfiles() {
 
         Log.d(MainActivity.LOG_TAG, "TimeManager: initProfiles");
@@ -154,18 +229,11 @@ public class TimeManager {
             // Now we check for the current day and time.
             if (days[toIndex(currentDay)] == false
                     || currentTime < startTimeInMillis
-                    || endTimeInMillis < currentTime) {
-                try {
-                    disabledProfiles.add(prof);
-                } catch(NullPointerException e) {
-                    Log.e(MainActivity.LOG_TAG, e.toString());
-                }
+                    || endTimeInMillis < currentTime)
+            {
+                disabledProfiles.add(prof);
             } else {
-                try {
-                    enabledProfiles.add(prof);
-                } catch(NullPointerException e) {
-                    Log.e(MainActivity.LOG_TAG, e.toString());
-                }
+                enabledProfiles.add(prof);
             }
         }
 

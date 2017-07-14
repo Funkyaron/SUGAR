@@ -16,8 +16,6 @@ public class EnableProfileReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        // Temporarily coded to test the alarm functionality
-
         Log.d(MainActivity.LOG_TAG, "EnableProfileReceiver: onReceive()");
 
         Object[] categories = intent.getCategories().toArray();
@@ -30,10 +28,13 @@ public class EnableProfileReceiver extends BroadcastReceiver {
             Log.e(MainActivity.LOG_TAG, "Error reading Profile: " + e.toString());
         }
 
+        if(prof == null || !(prof.isActive()))
+            return;
+
+        prof.setAllowed(true);
+        TimeManager mgr = new TimeManager(context);
+        mgr.setNextEnable(prof);
         try {
-            prof.setAllowed(true);
-            TimeManager mgr = new TimeManager(context);
-            mgr.setNextEnable(prof);
             prof.saveProfile(context);
         } catch(Exception e) {
             Log.e(MainActivity.LOG_TAG, e.toString());

@@ -16,8 +16,6 @@ public class DisableProfileReceiver extends BroadcastReceiver {
 
         Log.d(MainActivity.LOG_TAG, "DisableProfileReceiver: onReceive()");
 
-        // Temporarily coded to test the alarm functionality
-
         Object[] categories = intent.getCategories().toArray();
         String name = (String) categories[0];
 
@@ -28,10 +26,13 @@ public class DisableProfileReceiver extends BroadcastReceiver {
             Log.e(MainActivity.LOG_TAG, "Error reading Profile: " + e.toString());
         }
 
+        if(prof == null || !(prof.isActive()))
+            return;
+
+        prof.setAllowed(false);
+        TimeManager mgr = new TimeManager(context);
+        mgr.setNextDisable(prof);
         try {
-            prof.setAllowed(false);
-            TimeManager mgr = new TimeManager(context);
-            mgr.setNextDisable(prof);
             prof.saveProfile(context);
         } catch(Exception e) {
             Log.e(MainActivity.LOG_TAG, e.toString());

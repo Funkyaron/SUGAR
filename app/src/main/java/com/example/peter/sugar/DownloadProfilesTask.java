@@ -37,6 +37,7 @@ class DownloadProfilesTask extends AsyncTask<String,Void,Boolean>
 
     protected Boolean doInBackground(String... params)
     {
+        Log.d(MainActivity.LOG_TAG, "DownloadProfilesTask: doInBackground()");
         boolean isSuccessfull = false;
         String serverName = params[0];
         int serverPort = Integer.parseInt(params[1]);
@@ -73,12 +74,14 @@ class DownloadProfilesTask extends AsyncTask<String,Void,Boolean>
 
                     if(localFile.exists()) {
                         ArrayList<String> tempNumbers = Profile.readProfileFromXmlFile(localFile, context).getPhoneNumbers();
+                        ArrayList<String> tempNames = Profile.readProfileFromXmlFile(localFile, context).getContactNames();
                         localFile.delete();
                         FileOutputStream fos = context.openFileOutput(currentFileName, Context.MODE_PRIVATE);
                         isSuccessfull = androidClient.retrieveFile(serverFiles[currentFile].getName(), fos);
                         fos.close();
                         Profile tempProfile = Profile.readProfileFromXmlFile(new File(context.getFilesDir(), currentFileName), context);
                         tempProfile.setPhoneNumbers(tempNumbers);
+                        tempProfile.setContactNames(tempNames);
                         tempProfile.saveProfile(context);
                     } else {
                         FileOutputStream fos = context.openFileOutput(currentFileName, Context.MODE_PRIVATE);
