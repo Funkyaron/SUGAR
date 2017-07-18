@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
        // numbersView = (TextView) findViewById(R.id.numbers_view)
         // Concerning runtime permission
-        new DownloadProfilesTask(this).execute("ftp.strato.com","21","prog@prog.smart-arbeiten.org","roTos.c1");
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(this,
