@@ -30,7 +30,7 @@ import java.util.ListIterator;
  * Created by Peter on 09.07.2017.
  */
 
-class DisplayProfileActivity extends AppCompatActivity implements ContactsDialogFragment.ContactsSelectedListener,TimePickerDialog.OnTimeSetListener
+class DisplayProfileActivity extends AppCompatActivity implements ContactsDialogFragment.ContactsSelectedListener ,TimePickerDialog.OnTimeSetListener
 {
     private Profile currentProfile = null;
     private ListView phoneNumberList;
@@ -43,7 +43,6 @@ class DisplayProfileActivity extends AppCompatActivity implements ContactsDialog
         super.onCreate(savedInstances);
         setContentView(R.layout.ias);
 
-        TableLayout rootTable = (TableLayout) findViewById(R.id.root_table);
         try {
             currentProfile = Profile.readProfileFromXmlFile(getIntent().getStringExtra("profileName"), getApplicationContext());
         } catch ( Exception e ) {
@@ -128,7 +127,7 @@ class DisplayProfileActivity extends AppCompatActivity implements ContactsDialog
         profileNameDisplayerTextView.setTextSize(24.0f);
         profileNameDisplayerTextView.setGravity(Gravity.CENTER);
         phoneNumberList = (ListView) findViewById(R.id.list);
-        numberListContent = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,currentProfile.getPhoneNumbers());
+        numberListContent = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,currentProfile.getContactNames());
         phoneNumberList.setAdapter(numberListContent);
         if( currentProfile.isAllowed() )
             findViewById(R.id.allowedDisplay).setBackgroundColor(Color.GREEN);
@@ -140,26 +139,28 @@ class DisplayProfileActivity extends AppCompatActivity implements ContactsDialog
     protected void displayContactsChooser(View w)
     {
         try {
-            android.app.FragmentTransaction testTransaction = getFragmentManager().beginTransaction();
             ContactsDialogFragment testFragment = new ContactsDialogFragment();
             Bundle profileBundle = new Bundle();
             profileBundle.putString(MainActivity.KEY_PROFILE_NAME,currentProfile.getName());
             testFragment.setArguments(profileBundle);
             testFragment.show(getFragmentManager(),"dialog");
         } catch ( Exception e ) {
-            Log.d("SUGAR : ",e.getMessage());
+            Log.d(MainActivity.LOG_TAG,e.getMessage());
         }
     }
 
     @Override
-    public void onContactsSelected(ArrayList<String> numbers) {
+    public void onContactsSelected(ArrayList<String> numbers,ArrayList<String> names)
+    {
         currentProfile.setPhoneNumbers(numbers);
+        currentProfile.setContactNames(names);
         try {
             currentProfile.saveProfile(this);
         } catch (Exception e) {
             Log.e("SUGAR : ", e.toString());
         }
-        numberListContent = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,numbers);
+        numberListContent = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,names);
+        phoneNumberList = (ListView) findViewById(R.id.list);
         phoneNumberList.setAdapter(numberListContent);
     }
 
