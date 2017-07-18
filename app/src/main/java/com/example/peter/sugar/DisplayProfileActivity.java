@@ -33,6 +33,9 @@ import java.util.ListIterator;
 class DisplayProfileActivity extends AppCompatActivity implements ContactsDialogFragment.ContactsSelectedListener,TimePickerDialog.OnTimeSetListener
 {
     private Profile currentProfile = null;
+    private ListView phoneNumberList;
+    private ArrayAdapter<String> numberListContent;
+    private int selectedWeekDay = -1;
     //private TextView numbersView;
 
     protected void onCreate(Bundle savedInstances)
@@ -62,6 +65,7 @@ class DisplayProfileActivity extends AppCompatActivity implements ContactsDialog
                 {
                     case 0 :
                     {
+                        selectedWeekDay = 0;
                         Toast.makeText(getApplicationContext(),"You have clicked on Monday!",Toast.LENGTH_SHORT).show();
                         TimePickerFragment test = new TimePickerFragment();
                         test.show(getFragmentManager(),"datePicker");
@@ -69,6 +73,7 @@ class DisplayProfileActivity extends AppCompatActivity implements ContactsDialog
                     }
                     case 1 :
                     {
+                        selectedWeekDay = 1;
                         Toast.makeText(getApplicationContext(),"You have clicked on Tuesday!",Toast.LENGTH_SHORT).show();
                         TimePickerFragment test = new TimePickerFragment();
                         test.show(getFragmentManager(),"datePicker");
@@ -76,6 +81,7 @@ class DisplayProfileActivity extends AppCompatActivity implements ContactsDialog
                     }
                     case 2 :
                     {
+                        selectedWeekDay = 2;
                         Toast.makeText(getApplicationContext(),"You have clicked on Wednesday!",Toast.LENGTH_SHORT).show();
                         TimePickerFragment test = new TimePickerFragment();
                         test.show(getFragmentManager(),"datePicker");
@@ -83,6 +89,7 @@ class DisplayProfileActivity extends AppCompatActivity implements ContactsDialog
                     }
                     case 3 :
                     {
+                        selectedWeekDay = 3;
                         Toast.makeText(getApplicationContext(),"You have clicked on Thursday!",Toast.LENGTH_SHORT).show();
                         TimePickerFragment test = new TimePickerFragment();
                         test.show(getFragmentManager(),"datePicker");
@@ -90,6 +97,7 @@ class DisplayProfileActivity extends AppCompatActivity implements ContactsDialog
                     }
                     case 4 :
                     {
+                        selectedWeekDay = 4;
                         Toast.makeText(getApplicationContext(),"You have clicked on Friday!",Toast.LENGTH_SHORT).show();
                         TimePickerFragment test = new TimePickerFragment();
                         test.show(getFragmentManager(),"datePicker");
@@ -97,6 +105,7 @@ class DisplayProfileActivity extends AppCompatActivity implements ContactsDialog
                     }
                     case 5 :
                     {
+                        selectedWeekDay = 5;
                         Toast.makeText(getApplicationContext(),"You have clicked on Saturday!",Toast.LENGTH_SHORT).show();
                         TimePickerFragment test = new TimePickerFragment();
                         test.show(getFragmentManager(),"datePicker");
@@ -104,6 +113,7 @@ class DisplayProfileActivity extends AppCompatActivity implements ContactsDialog
                     }
                     case 6 :
                     {
+                        selectedWeekDay = 6;
                         Toast.makeText(getApplicationContext(),"You have clicked on Sunday!",Toast.LENGTH_SHORT).show();
                         TimePickerFragment test = new TimePickerFragment();
                         test.show(getFragmentManager(),"datePicker");
@@ -117,8 +127,8 @@ class DisplayProfileActivity extends AppCompatActivity implements ContactsDialog
         profileNameDisplayerTextView.setText(currentProfile.getName());
         profileNameDisplayerTextView.setTextSize(24.0f);
         profileNameDisplayerTextView.setGravity(Gravity.CENTER);
-        ListView phoneNumberList = (ListView) findViewById(R.id.list);
-        ArrayAdapter<String> numberListContent = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,currentProfile.getPhoneNumbers());
+        phoneNumberList = (ListView) findViewById(R.id.list);
+        numberListContent = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,currentProfile.getPhoneNumbers());
         phoneNumberList.setAdapter(numberListContent);
         if( currentProfile.isAllowed() )
             findViewById(R.id.allowedDisplay).setBackgroundColor(Color.GREEN);
@@ -134,6 +144,7 @@ class DisplayProfileActivity extends AppCompatActivity implements ContactsDialog
             ContactsDialogFragment testFragment = new ContactsDialogFragment();
             Bundle profileBundle = new Bundle();
             profileBundle.putString(MainActivity.KEY_PROFILE_NAME,currentProfile.getName());
+            testFragment.setArguments(profileBundle);
             testFragment.show(getFragmentManager(),"dialog");
         } catch ( Exception e ) {
             Log.d("SUGAR : ",e.getMessage());
@@ -142,27 +153,19 @@ class DisplayProfileActivity extends AppCompatActivity implements ContactsDialog
 
     @Override
     public void onContactsSelected(ArrayList<String> numbers) {
-        ArrayList<String> currentProfileNumbers = currentProfile.getPhoneNumbers();
-        for(ListIterator<String> parsedNumberIterator = numbers.listIterator();parsedNumberIterator.hasNext();)
-        {
-            String currentNumber = parsedNumberIterator.next();
-            if(!currentProfileNumbers.contains(currentNumber))
-            {
-                currentProfile.getPhoneNumbers().add(currentNumber);
-            } else {
-                Log.d("SUGAR : ","This is already associated to this profile!");
-            }
-        }
-
+        currentProfile.setPhoneNumbers(numbers);
         try {
             currentProfile.saveProfile(this);
         } catch (Exception e) {
-            Log.e("DisplayProfileActivity:", e.toString());
+            Log.e("SUGAR : ", e.toString());
         }
+        numberListContent = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,numbers);
+        phoneNumberList.setAdapter(numberListContent);
     }
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute)
     {
+        TimeObject updatedTimeObjectList[] = new TimeObject[currentProfile.getDays().length];
     }
 }
