@@ -42,7 +42,7 @@ public class EnableProfileReceiver extends BroadcastReceiver {
 
         Notification.Builder builder = new Notification.Builder(context);
 
-        builder.setSmallIcon(R.mipmap.ic_launcher)
+        builder.setSmallIcon(R.mipmap.sugar)
                 .setContentTitle(name)
                 .setContentText(context.getString(R.string.calls_allowed))
                 .setWhen(System.currentTimeMillis());

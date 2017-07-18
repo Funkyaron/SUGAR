@@ -160,7 +160,7 @@ public class TimeManager {
 
             // Inform the user about what happened.
             Notification.Builder builder = new Notification.Builder(context);
-            builder.setSmallIcon(R.mipmap.ic_launcher)
+            builder.setSmallIcon(R.mipmap.sugar)
                     .setContentTitle(prof.getName())
                     .setContentText(context.getString(R.string.calls_forbidden))
                     .setWhen(System.currentTimeMillis());
@@ -182,7 +182,7 @@ public class TimeManager {
             setNextDisable(prof);
 
             Notification.Builder builder = new Notification.Builder(context);
-            builder.setSmallIcon(R.mipmap.ic_launcher)
+            builder.setSmallIcon(R.mipmap.sugar)
                     .setContentTitle(prof.getName())
                     .setContentText(context.getString(R.string.calls_allowed))
                     .setWhen(System.currentTimeMillis());
@@ -254,7 +254,7 @@ public class TimeManager {
 
             // Inform the user about what happened.
             Notification.Builder builder = new Notification.Builder(context);
-            builder.setSmallIcon(R.mipmap.ic_launcher)
+            builder.setSmallIcon(R.mipmap.sugar)
                     .setContentTitle(disProf.getName())
                     .setContentText(context.getString(R.string.calls_forbidden))
                     .setWhen(System.currentTimeMillis());
@@ -278,7 +278,7 @@ public class TimeManager {
             setNextDisable(enProf);
 
             Notification.Builder builder = new Notification.Builder(context);
-            builder.setSmallIcon(R.mipmap.ic_launcher)
+            builder.setSmallIcon(R.mipmap.sugar)
                     .setContentTitle(enProf.getName())
                     .setContentText(context.getString(R.string.calls_allowed))
                     .setWhen(System.currentTimeMillis());
