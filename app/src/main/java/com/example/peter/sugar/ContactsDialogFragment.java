@@ -121,8 +121,11 @@ public class ContactsDialogFragment extends DialogFragment {
                    @Override
                    public void onClick(DialogInterface dialogInterface, int i) {
                        mNumbers = getNumbersByIds(mRawContactIds, mDataCursor);
-                       ArrayList<String> names = getNamesByIds(mRawContactIds, mRawCursor);
-                       mListener.onContactsSelected(mNumbers);
+                       try {
+                           mListener.onContactsSelected(mNumbers);
+                       } catch (Exception e ) {
+                           Log.e(MainActivity.LOG_TAG,e.toString());
+                       }
                    }
                })
                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -206,11 +209,14 @@ public class ContactsDialogFragment extends DialogFragment {
                 ContactsContract.RawContacts._ID,
                 ContactsContract.RawContacts.ACCOUNT_NAME,
                 ContactsContract.RawContacts.DELETED};
-        String rawSelection =
+        String rawSelection = //"(((" +
+                //ContactsContract.RawContacts.ACCOUNT_NAME + " =?) OR (" +
+                //ContactsContract.RawContacts.ACCOUNT_NAME + " =?) OR (" +
+                //ContactsContract.RawContacts.ACCOUNT_NAME + " =?)) AND (" +
                 "(" + ContactsContract.RawContacts.DELETED + " =?) AND (" +
-                ContactsContract.RawContacts.ACCOUNT_NAME + " !=?)";
+                ContactsContract.RawContacts.ACCOUNT_NAME + " !=?)" /* + "))" */ ;
         String[] rawSelectionArgs = {
-                "0", "WhatsApp"};
+                /*"SIM1", "SIM2", "Phone", */ "0", "WhatsApp"};
         String rawSortOrder =
                 ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY;
 
@@ -252,7 +258,7 @@ public class ContactsDialogFragment extends DialogFragment {
     private ArrayList<String> getNumbersByIds(ArrayList<Long> ids, Cursor dataCursor) {
         Log.d(MainActivity.LOG_TAG, "CDF: getNumbersByIds()");
 
-        ArrayList<String> numbers = new ArrayList<>();
+        ArrayList<String> numbers = new ArrayList<>(0);
 
         dataCursor.moveToPosition(-1);
         while(dataCursor.moveToNext()) {
@@ -306,12 +312,13 @@ public class ContactsDialogFragment extends DialogFragment {
         while(rawCursor.moveToNext()) {
             names[rawCursor.getPosition()] = rawCursor.getString(rawCursor.getColumnIndex(
                     ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY));
+                    // ContactsContract.RawContacts.ACCOUNT_NAME));
         }
         return names;
     }
 
     private ArrayList<Long> getIdsByCheckedItems(boolean[] checkedItems, Cursor rawCursor) {
-        ArrayList<Long> ids = new ArrayList<>();
+        ArrayList<Long> ids = new ArrayList<>(0);
         for(int i = 0; i < checkedItems.length; i++) {
             if(checkedItems[i]) {
                 rawCursor.moveToPosition(i);
@@ -321,21 +328,11 @@ public class ContactsDialogFragment extends DialogFragment {
         return ids;
     }
 
-    private ArrayList<String> getNamesByIds(ArrayList<Long> ids, Cursor rawCursor) {
-        ArrayList<String> result = new ArrayList<>();
-
-        rawCursor.moveToPosition(-1);
-        while(rawCursor.moveToNext()) {
-            for(Long id : ids) {
-                if(id.equals(rawCursor.getLong(rawCursor.getColumnIndex(
-                        ContactsContract.RawContacts._ID))))
-                {
-                    result.add(rawCursor.getString(rawCursor.getColumnIndex(
-                            ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY)));
-                    break;
-                }
-            }
+    @Deprecated
+    private void logIds(ArrayList<Long> ids) {
+        Log.d(MainActivity.LOG_TAG, "Selected Ids:");
+        for(Long id : ids) {
+            Log.d(MainActivity.LOG_TAG, id.toString());
         }
-        return result;
     }
 }

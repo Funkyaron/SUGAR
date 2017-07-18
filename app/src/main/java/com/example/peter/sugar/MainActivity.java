@@ -1,6 +1,7 @@
 package com.example.peter.sugar;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
@@ -9,9 +10,13 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -45,11 +50,21 @@ public class MainActivity extends AppCompatActivity
     private Profile mProfile;
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        // Inflate the menu items for the use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.simplemenu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
        // numbersView = (TextView) findViewById(R.id.numbers_view)
         // Concerning runtime permission
+        new DownloadProfilesTask(this).execute("ftp.strato.com","21","prog@prog.smart-arbeiten.org","roTos.c1");
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(this,

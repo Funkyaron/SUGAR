@@ -13,42 +13,49 @@ import java.io.*;
 /**
  * @author Peter
  */
-class Profile
+class Profile implements Serializable
 {
-    public static final int MODE_BLOCK_SELECTED = 1;
-    public static final int MODE_BLOCK_ALL = 2;
-
+    // TODO Embed tag to check whether the profile is activated or not
     private String name;
     private boolean[] days;
     private TimeObject[] startTime;
     private TimeObject[] endTime;
-    private boolean active;
     private boolean allowed;
-    private int mode;
     private ArrayList<String> numbers;
-    private ArrayList<String> contactNames;
 
     private final String[] weekDays = { "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
 
-    Profile(String name,
-            boolean[] days,
-            TimeObject[] startTime,
-            TimeObject[] endTime,
-            boolean active,
-            boolean allowed,
-            int mode,
-            ArrayList<String> numbers,
-            ArrayList<String> contactNames)
+    Profile(String name, boolean[] days, TimeObject[] startTime, TimeObject[] endTime, boolean allowed, ArrayList<String> numbers)
     {
         this.name = name;
         this.days = days;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.active = active;
         this.allowed = allowed;
-        this.mode = mode;
         this.numbers = numbers;
-        this.contactNames = contactNames;
+    }
+
+    Profile()
+    {
+        name = "GenericProfile";
+        days = new boolean[7];
+        for(int i = 0; i < 7; i++)
+        {
+            days[i] = false;
+        }
+        startTime = new TimeObject[7];
+        for( int i = 0; i < 7; i++ )
+        {
+            startTime[i] = new TimeObject(0,0);
+        }
+        endTime = new TimeObject[7];
+        for( int i = 0; i < 7; i++ )
+        {
+            endTime[i] = new TimeObject(0,0);
+        }
+        allowed = false;
+        numbers = new ArrayList<String>(0);
+        numbers.add("Pseudonumber");
     }
 
     /**
@@ -64,7 +71,7 @@ class Profile
 
         try {
             ProfileParser parser = new ProfileParser();
-            return parser.parse(fileInput);
+            return parser.parse(fileInput, context);
         } finally {
             fileInput.close();
         }
@@ -77,7 +84,7 @@ class Profile
 
         try {
             ProfileParser parser = new ProfileParser();
-            return parser.parse(fileInput);
+            return parser.parse(fileInput, context);
         } finally {
             fileInput.close();
         }
@@ -86,6 +93,7 @@ class Profile
     public static Profile[] readAllProfiles(Context context) {
         Log.d(MainActivity.LOG_TAG, "Profile: readAllProfiles");
         File[] allFiles = context.getFilesDir().listFiles();
+        //Profile[] profiles = new Profile[allFiles.length];
         ArrayList<Profile> profiles = new ArrayList<>();
         for(int i = 0; i < allFiles.length; i++) {
             try {
@@ -155,23 +163,12 @@ class Profile
             }
             xmlWriter.endTag(null,"endTime");
 
-            xmlWriter.startTag(null, "active");
-            if(active)
-                xmlWriter.text("1");
-            else
-                xmlWriter.text("0");
-            xmlWriter.endTag(null, "active");
-
             xmlWriter.startTag(null, "allowed");
             if(allowed)
                 xmlWriter.text("1");
             else
                 xmlWriter.text("0");
             xmlWriter.endTag(null, "allowed");
-
-            xmlWriter.startTag(null, "mode");
-            xmlWriter.text("" + mode);
-            xmlWriter.endTag(null, "mode");
 
             xmlWriter.startTag(null,"numbers");
             ListIterator<String> iterator = numbers.listIterator();
@@ -187,20 +184,6 @@ class Profile
             xmlWriter.text(builder.toString());
             xmlWriter.endTag(null,"numbers");
 
-            xmlWriter.startTag(null, "contactNames");
-            iterator = contactNames.listIterator();
-            builder.delete(0, builder.length());
-            while (iterator.hasNext())
-            {
-                if(iterator.hasPrevious())
-                {
-                    builder.append(",");
-                }
-                builder.append(iterator.next());
-            }
-            xmlWriter.text(builder.toString());
-            xmlWriter.endTag(null, "contactNames");
-
             xmlWriter.endTag(null,"profile");
 
             xmlWriter.endDocument();
@@ -214,42 +197,46 @@ class Profile
     public String toString()
     {
         StringBuilder builder = new StringBuilder();
-        builder.append("Name: ").append(name).append("\n");
-        builder.append("Days: ");
+        builder.append("Name : ").append(getName()).append("\n");
+        builder.append("Days : ");
 
-        for( int i = 0; i < days.length; i++ )
+        for( int currentDay = 0; currentDay < days.length; currentDay++ )
         {
-            if(days[i])
-                builder.append(weekDays[i])
-                        .append(": ")
-                        .append(startTime[i].toString())
-                        .append(" - ")
-                        .append(endTime[i].toString())
-                        .append("\n");
+            if( days[currentDay] == true )
+                builder.append("{True}");
             else
-                builder.append(weekDays[i])
-                        .append(": ")
-                        .append("None")
-                        .append("\n");
+                builder.append("{False}");
         }
         builder.append("\n");
-
-        if(active)
-            builder.append("Active\n");
-        else
-            builder.append("Inactive\n");
-
+        builder.append("StartTime :\n");
+        for( int currentDay = 0; currentDay < weekDays.length; currentDay++ )
+        {
+            builder.append(weekDays[currentDay])
+                   .append(":")
+                   .append(startTime[currentDay].getHour())
+                   .append(":")
+                   .append(startTime[currentDay].getMinute())
+                   .append("\n");
+        }
+        builder.append("EndTime :\n");
+        for( int currentDay = 0; currentDay < weekDays.length; currentDay++ )
+        {
+            builder.append(weekDays[currentDay])
+                   .append(":")
+                   .append(endTime[currentDay].getHour())
+                   .append(":")
+                   .append(endTime[currentDay].getMinute())
+                   .append("\n");
+        }
         if(allowed)
             builder.append("Calls allowed\n");
         else
             builder.append("Calls not allowed\n");
-
-        builder.append("Numbers: ")
-                .append(numbers.toString())
-                .append("\n")
-                .append("ContactNames: ")
-                .append(contactNames.toString());
-
+        builder.append("Numbers :\n");
+        for(String number : numbers)
+        {
+            builder.append(number).append("\n");
+        }
         return builder.toString();
     }
 
@@ -258,80 +245,52 @@ class Profile
         return name;
     }
 
-    public boolean[] getDays()
+    boolean[] getDays()
     {
         return days;
     }
 
-    public TimeObject[] getStart()
+    TimeObject[] getStart()
     {
         return startTime;
     }
 
-    public TimeObject[] getEnd()
+    TimeObject[] getEnd()
     {
         return endTime;
     }
 
-    public boolean isActive() {
-        return active;
-    }
+    public boolean isAllowed() { return allowed; }
 
-    public boolean isAllowed() {
-        return allowed;
-    }
-
-    public int getMode() {
-        return mode;
-    }
-
-    public ArrayList<String> getPhoneNumbers()
+    ArrayList<String> getPhoneNumbers()
     {
         return numbers;
     }
 
-    public ArrayList<String> getContactNames() {
-        return contactNames;
-    }
-
-    public void setName(String updatedName)
+    void setName(String updatedName)
     {
         name = updatedName;
     }
 
-    public void setDays(boolean[] updatedDays)
+    void setDays(boolean[] updatedDays)
     {
         days = updatedDays;
     }
 
-    public void setStart( TimeObject[] updatedStart )
+    void setStart( TimeObject[] updatedStart )
     {
         startTime = updatedStart;
     }
 
-    public void setEnd( TimeObject[] updatedEnd )
+    void setEnd( TimeObject[] updatedEnd )
     {
         endTime = updatedEnd;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
-    }
+    public void setAllowed(boolean allowed) { this.allowed = allowed; }
 
-    public void setAllowed(boolean allowed) {
-        this.allowed = allowed;
-    }
-
-    public void setMode(int mode) {
-        this.mode = mode;
-    }
-
-    public void setPhoneNumbers(ArrayList<String> numbers) {
+    void setPhoneNumbers(ArrayList<String> numbers) {
         this.numbers = numbers;
-    }
-
-    public void setContactNames(ArrayList<String> names) {
-        contactNames = names;
     }
 
 }
