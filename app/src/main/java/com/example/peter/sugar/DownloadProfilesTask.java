@@ -73,13 +73,13 @@ class DownloadProfilesTask extends AsyncTask<String,Void,Boolean>
                     File localFile = new File(context.getFilesDir(), currentFileName);
 
                     if(localFile.exists()) {
-                        ArrayList<String> tempNumbers = Profile.readProfileFromXmlFile(localFile, context).getPhoneNumbers();
-                        ArrayList<String> tempNames = Profile.readProfileFromXmlFile(localFile, context).getContactNames();
+                        ArrayList<String> tempNumbers = Profile.readProfileFromXmlFile(localFile).getPhoneNumbers();
+                        ArrayList<String> tempNames = Profile.readProfileFromXmlFile(localFile).getContactNames();
                         localFile.delete();
                         FileOutputStream fos = context.openFileOutput(currentFileName, Context.MODE_PRIVATE);
                         isSuccessfull = androidClient.retrieveFile(serverFiles[currentFile].getName(), fos);
                         fos.close();
-                        Profile tempProfile = Profile.readProfileFromXmlFile(new File(context.getFilesDir(), currentFileName), context);
+                        Profile tempProfile = Profile.readProfileFromXmlFile(new File(context.getFilesDir(), currentFileName));
                         tempProfile.setPhoneNumbers(tempNumbers);
                         tempProfile.setContactNames(tempNames);
                         tempProfile.saveProfile(context);
