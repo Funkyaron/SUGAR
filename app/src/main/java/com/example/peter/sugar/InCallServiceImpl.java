@@ -34,10 +34,12 @@ public class InCallServiceImpl extends InCallService {
         currentRingerMode = mAudioManager.getRingerMode();
         mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
 
-        if(!shouldBlock(number))
+        if(shouldBlock(number))
+            call.reject(true, "Zur zeit leider nicht erreichbar");
+        else {
             mAudioManager.setRingerMode(currentRingerMode);
-
-        super.onCallAdded(call);
+            super.onCallAdded(call);
+        }
     }
 
     @Override
@@ -65,22 +67,28 @@ public class InCallServiceImpl extends InCallService {
 
 
 
+    // Self-made ;)
     private boolean shouldBlock(String number) {
         boolean result = false;
-        ArrayList<String> blockedNumbers = new ArrayList<>(0);
+        ArrayList<String> blockedNumbers = new ArrayList<>();
         Profile[] allProfiles = Profile.readAllProfiles(this);
         for(Profile prof : allProfiles) {
-            try {
-                if(!(prof.isAllowed()))
+            if(!(prof.isAllowed())) {
+                if(prof.getMode() == Profile.MODE_BLOCK_ALL) {
+                    result = true;
+                    break;
+                }
+                else
                     blockedNumbers.addAll(prof.getPhoneNumbers());
-            } catch(NullPointerException e) {
-                //TODO: Catch Exception
             }
+
         }
-        for(String blockedNumber : blockedNumbers) {
-            if(number.equals(blockedNumber)) {
-                result = true;
-                break;
+        if(!result) {
+            for (String blockedNumber : blockedNumbers) {
+                if (number.equals(blockedNumber)) {
+                    result = true;
+                    break;
+                }
             }
         }
 
@@ -91,4 +99,8 @@ public class InCallServiceImpl extends InCallService {
 
         return result;
     }
+
+    /* private boolean shouldBlock(String number) {
+        return true;
+    } */
 }
