@@ -348,17 +348,29 @@ public class TimeManager {
 
     /**
      * Converts constant field values from java.util.Calendar to array-index,
-     * beginning from monday. <p/><p/>
-     * Calendar.MONDAY = 2 -> 0 <p/>
-     * Calendar.TUESDAY = 3 -> 1 <p/>
-     * ... <p/>
-     * Calendar.SATURDAY = 7 -> 5 <p/>
-     * Calendar.SUNDAY = 1 -> 6 <p/>
+     * beginning from monday.
      *
      * @param calendarDay Constant field value from java.util.Calendar
      * @return Index that can be used for an array, beginning from monday
      */
     private int toIndex(int calendarDay) {
-        return (calendarDay + 5) % 7;
+        switch(calendarDay) {
+            case Calendar.MONDAY:
+                return 0;
+            case Calendar.TUESDAY:
+                return 1;
+            case Calendar.WEDNESDAY:
+                return 2;
+            case Calendar.THURSDAY:
+                return 3;
+            case Calendar.FRIDAY:
+                return 4;
+            case Calendar.SATURDAY:
+                return 5;
+            case Calendar.SUNDAY:
+                return 6;
+            default:
+                return 0; // Never used.
+        }
     }
 }
