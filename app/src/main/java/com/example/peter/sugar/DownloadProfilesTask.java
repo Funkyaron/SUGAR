@@ -119,7 +119,7 @@ class DownloadProfilesTask extends AsyncTask<String,Void,Boolean>
             adapterContent[i] = profs[i].getName();
         }
         final String profileNames[] = adapterContent;
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(context,android.R.layout.simple_list_item_1,adapterContent);
+        ProfileListAdapter adapter = new ProfileListAdapter(context,adapterContent);
         lv.setAdapter(adapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView parent, View v, int position, long id)

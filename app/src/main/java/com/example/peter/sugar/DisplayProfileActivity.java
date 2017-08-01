@@ -30,7 +30,7 @@ import java.util.ListIterator;
  * Created by Peter on 09.07.2017.
  */
 
-class DisplayProfileActivity extends AppCompatActivity implements ContactsDialogFragment.ContactsSelectedListener ,TimePickerDialog.OnTimeSetListener
+public class DisplayProfileActivity extends AppCompatActivity implements ContactsDialogFragment.ContactsSelectedListener ,TimePickerDialog.OnTimeSetListener
 {
     private Profile currentProfile = null;
     private ListView phoneNumberList;
@@ -48,6 +48,7 @@ class DisplayProfileActivity extends AppCompatActivity implements ContactsDialog
         } catch ( Exception e ) {
             e.printStackTrace();
         }
+        /*
         GridView gridContent = (GridView) findViewById(R.id.gridView);
         TimeObject[] startTimes = currentProfile.getStart();
         TimeObject[] endTImes = currentProfile.getEnd();
@@ -56,6 +57,7 @@ class DisplayProfileActivity extends AppCompatActivity implements ContactsDialog
         {
             startTimesAsString[currentTime] = startTimes[currentTime].toString();
         }
+
         gridContent.setAdapter(new ArrayAdapter(this,android.R.layout.simple_list_item_1,startTimesAsString));
         gridContent.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent,View v,int position,long id)
@@ -120,7 +122,7 @@ class DisplayProfileActivity extends AppCompatActivity implements ContactsDialog
                     }
                 }
             }
-        });
+        }); */
 
         TextView profileNameDisplayerTextView = (TextView) findViewById(R.id.profileName);
         profileNameDisplayerTextView.setText(currentProfile.getName());
@@ -157,7 +159,7 @@ class DisplayProfileActivity extends AppCompatActivity implements ContactsDialog
         try {
             currentProfile.saveProfile(this);
         } catch (Exception e) {
-            Log.e("SUGAR : ", e.toString());
+            Log.e(MainActivity.LOG_TAG, e.toString());
         }
         numberListContent = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,names);
         phoneNumberList = (ListView) findViewById(R.id.list);
@@ -168,5 +170,11 @@ class DisplayProfileActivity extends AppCompatActivity implements ContactsDialog
     public void onTimeSet(TimePicker view, int hourOfDay, int minute)
     {
         TimeObject updatedTimeObjectList[] = new TimeObject[currentProfile.getDays().length];
+    }
+
+    /* This function shall */
+    public void onTableColumnClick()
+    {
+
     }
 }

@@ -51,15 +51,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </service>
-        <service
-            android:name="com.example.peter.sugar.CallService"
-            android:description="@string/callService"
-            android:label="CallServiceSUGAR"
-            android:permission="android.permission.BIND_TELECOM_CONNECTION_SERVICE">
-            <intent-filter>
-                <action android:name="android.telecom.ConnectionService"/>
-            </intent-filter>
-        </service>
         <receiver
             android:name=".DisableProfileReceiver"
             android:enabled="true"

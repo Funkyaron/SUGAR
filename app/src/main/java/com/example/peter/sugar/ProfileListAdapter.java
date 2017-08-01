@@ -36,6 +36,7 @@ public class ProfileListAdapter extends ArrayAdapter<String>
         nameDisplay.setText(profileNames[position]);
         nameDisplay.setTextColor(Color.WHITE);
         Button activateButton = (Button) profileView.findViewById(R.id.activation_button);
+        activateButton.setBackgroundColor(Color.RED);
         activateButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
             {
@@ -46,6 +47,7 @@ public class ProfileListAdapter extends ArrayAdapter<String>
             }
         });
         Button editButton = (Button) profileView.findViewById(R.id.edit_button);
+        editButton.setBackgroundColor(Color.BLUE);
         editButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
             {
