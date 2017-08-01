@@ -5,9 +5,9 @@
     <string name="on_cancel">Abort process</string>
     <string name="start_contacts_activity_button_text">Contacs</string>
     <string name="prompt_select_contacts">Choose Contacts</string>
-    <string name="read_contacts_failed">Your adress book couldn\'t be read</string>
+    <string name="read_contacts_failed">Your address book couldn\'t be read</string>
     <string name="calls_allowed">Phone calls are allowed</string>
-    <string name="calls_forbidden">Phone calls are not restricted</string>
+    <string name="calls_forbidden">Phone calls are restricted</string>
     <string name="title_activity_display_profile">DisplayProfileActivity</string>
     <string name="callService">This service shall monitor phone calls and block them if nessecary :)</string>
     <string name="monday">Monday</string>
@@ -20,4 +20,5 @@
     <string name="back">Go back</string>
     <string name="choosecontacts">Choose Contacts</string>
     <string name="deleteMenuButton">Delete</string>
+    <string name="block_all_calls">Block all calls</string>
 </resources>

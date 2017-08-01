@@ -19,4 +19,5 @@
     <string name="sunday">Sontag</string>
     <string name="back">Zurück</string>
     <string name="choosecontacts">Kontakte wählen</string>
+    <string name="block_all_calls">Alle Anrufe blockieren</string>
 </resources>
