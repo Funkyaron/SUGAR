@@ -49,6 +49,6 @@ public class DisableProfileReceiver extends BroadcastReceiver {
 
         NotificationManager notiMgr = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notiMgr.notify(name.hashCode() + 1, noti);
+        notiMgr.notify(name.hashCode(), noti);
     }
 }
