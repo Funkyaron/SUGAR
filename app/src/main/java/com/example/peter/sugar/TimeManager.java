@@ -70,7 +70,7 @@ public class TimeManager {
 
         long targetTime = getTargetTime(days, start);
 
-        mAlarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, targetTime, pending);
+        mAlarmManager.setExact(AlarmManager.RTC_WAKEUP, targetTime, pending);
     }
 
 
@@ -110,7 +110,7 @@ public class TimeManager {
 
         long targetTime = getTargetTime(days, end);
 
-        mAlarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, targetTime, pending);
+        mAlarmManager.setExact(AlarmManager.RTC_WAKEUP, targetTime, pending);
     }
 
 
