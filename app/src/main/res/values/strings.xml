@@ -21,4 +21,7 @@
     <string name="choosecontacts">Choose Contacts</string>
     <string name="deleteMenuButton">Delete</string>
     <string name="block_all_calls">Block all calls</string>
+    <string name="from_to">From %1$s to %2$s</string>
+    <string name="not_at_all">Not at all</string>
+    <string name="error">An error occurred</string>
 </resources>

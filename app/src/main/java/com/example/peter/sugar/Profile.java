@@ -301,7 +301,7 @@ class Profile implements Serializable
         endTime = updatedEnd;
     }
 
-    public void setActive(boolean acive) {
+    public void setActive(boolean active) {
         this.active = active;
     }
 

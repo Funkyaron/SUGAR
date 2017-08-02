@@ -47,7 +47,7 @@
     </RelativeLayout>
 
     <TableLayout
-        android:id="@+id/times_displayer"
+        android:id="@+id/times_displayer_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/profile_name_displayer"
@@ -109,7 +109,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/times_displayer"
+        android:layout_below="@id/times_displayer_id"
         android:paddingTop="@dimen/text_bar_vertical_padding"
         android:paddingBottom="@dimen/text_bar_vertical_padding"
         android:paddingLeft="@dimen/text_bar_horizontal_padding"
