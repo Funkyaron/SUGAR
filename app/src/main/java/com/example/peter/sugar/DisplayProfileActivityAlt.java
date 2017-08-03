@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -21,7 +23,10 @@ public class DisplayProfileActivityAlt extends AppCompatActivity
     private Profile prof;
 
     private Switch activateProfileSwitch;
+    private TableLayout timeTable;
+    private LinearLayout blockAllCallsTextBar;
     private CheckBox blockAllCallsCheckbox;
+    private TextView profileInactiveView;
     private Button backButton;
     private Button chooseContactsButton;
 
@@ -59,16 +64,22 @@ public class DisplayProfileActivityAlt extends AppCompatActivity
         ((TextView) findViewById(R.id.profile_name_view_id)).setText(name);
 
         activateProfileSwitch = (Switch) findViewById(R.id.activate_profile_switch_id);
+        timeTable = (TableLayout) findViewById(R.id.times_displayer_id);
+        blockAllCallsTextBar = (LinearLayout) findViewById(R.id.block_all_calls_text_bar_id);
+        blockAllCallsCheckbox = (CheckBox) findViewById(R.id.block_all_calls_checkbox_id);
+        profileInactiveView = (TextView) findViewById(R.id.profile_inactive_view_id);
+        chooseContactsButton = (Button) findViewById(R.id.choose_contacts_button_id);
+        backButton = (Button) findViewById(R.id.back_button_id);
+
+
         activateProfileSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Log.d(MainActivity.LOG_TAG, "activateProfileSwitch: onCheckedChanged()");
-                Log.d(MainActivity.LOG_TAG, "isChecked: " + isChecked);
                 prof.setActive(isChecked);
                 try {
                     prof.saveProfile(DisplayProfileActivityAlt.this);
                     active = prof.isActive();
-                    Log.d(MainActivity.LOG_TAG, "End of try-block");
                 } catch(Exception e) {
                     Log.e(MainActivity.LOG_TAG, e.toString());
                     prof.setActive(active);
@@ -76,15 +87,21 @@ public class DisplayProfileActivityAlt extends AppCompatActivity
                     activateProfileSwitch.setChecked(active); // Caution!!
                 }
                 if(active) {
-                    Log.d(MainActivity.LOG_TAG, "Profile is active");
+                    timeTable.setVisibility(View.VISIBLE);
+                    blockAllCallsTextBar.setVisibility(View.VISIBLE);
+                    profileInactiveView.setVisibility(View.INVISIBLE);
                     TimeManager mgr = new TimeManager(DisplayProfileActivityAlt.this);
                     mgr.initProfile(prof);
+                } else {
+                    timeTable.setVisibility(View.INVISIBLE);
+                    blockAllCallsTextBar.setVisibility(View.INVISIBLE);
+                    profileInactiveView.setVisibility(View.VISIBLE);
                 }
             }
         });
-        activateProfileSwitch.setChecked(active);
 
-        TableLayout timeTable = (TableLayout) findViewById(R.id.times_displayer_id);
+
+
         TableRow row;
         TextView view;
         for(int i = 0; i < 7; i++) {
@@ -97,7 +114,7 @@ public class DisplayProfileActivityAlt extends AppCompatActivity
             }
         }
 
-        blockAllCallsCheckbox = (CheckBox) findViewById(R.id.block_all_calls_checkbox_id);
+
         blockAllCallsCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -115,11 +132,16 @@ public class DisplayProfileActivityAlt extends AppCompatActivity
                     blockAllCallsCheckbox.setChecked(mode == Profile.MODE_BLOCK_ALL);
                     Toast.makeText(DisplayProfileActivityAlt.this, R.string.error, Toast.LENGTH_LONG).show();
                 }
+                if(mode == Profile.MODE_BLOCK_ALL) {
+                    chooseContactsButton.setVisibility(View.INVISIBLE);
+                } else {
+                    chooseContactsButton.setVisibility(View.VISIBLE);
+                }
             }
         });
-        blockAllCallsCheckbox.setChecked(mode == Profile.MODE_BLOCK_ALL);
 
-        chooseContactsButton = (Button) findViewById(R.id.choose_contacts_button_id);
+
+
         chooseContactsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,13 +153,32 @@ public class DisplayProfileActivityAlt extends AppCompatActivity
             }
         });
 
-        backButton = (Button) findViewById(R.id.back_button_id);
+
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
+
+
+        if(active) {
+            timeTable.setVisibility(View.VISIBLE);
+            blockAllCallsTextBar.setVisibility(View.VISIBLE);
+            profileInactiveView.setVisibility(View.INVISIBLE);
+            if(mode == Profile.MODE_BLOCK_ALL) {
+                chooseContactsButton.setVisibility(View.INVISIBLE);
+            } else {
+                chooseContactsButton.setVisibility(View.VISIBLE);
+            }
+        } else {
+            timeTable.setVisibility(View.INVISIBLE);
+            blockAllCallsTextBar.setVisibility(View.INVISIBLE);
+            profileInactiveView.setVisibility(View.VISIBLE);
+        }
+
+        blockAllCallsCheckbox.setChecked(mode == Profile.MODE_BLOCK_ALL);
+        activateProfileSwitch.setChecked(active);
     }
 
     @Override

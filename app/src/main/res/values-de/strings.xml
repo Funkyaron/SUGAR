@@ -19,8 +19,10 @@
     <string name="sunday">Sontag</string>
     <string name="back">Zurück</string>
     <string name="choosecontacts">Kontakte wählen</string>
-    <string name="block_all_calls">Alle Anrufe blockieren</string>
+    <string name="block_calls">Anrufe blockieren:</string>
     <string name="from_to">Von %1$s bis %2$s</string>
     <string name="not_at_all">Gar nicht</string>
     <string name="error">Ein Fehler ist aufgetreten</string>
+    <string name="profile_inactive">Profil inaktiv</string>
+    <string name="all">Alle</string>
 </resources>

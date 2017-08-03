@@ -169,7 +169,7 @@ public class TimeManager {
 
             NotificationManager notiMgr = (NotificationManager)
                     context.getSystemService(Context.NOTIFICATION_SERVICE);
-            notiMgr.notify(23, noti);
+            notiMgr.notify(prof.getName().hashCode(), noti);
         } else {
             prof.setAllowed(true);
             try {
@@ -191,7 +191,7 @@ public class TimeManager {
 
             NotificationManager notiMgr = (NotificationManager)
                     context.getSystemService(Context.NOTIFICATION_SERVICE);
-            notiMgr.notify(24, noti);
+            notiMgr.notify(prof.getName().hashCode(), noti);
         }
     }
 
