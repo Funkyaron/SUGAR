@@ -30,14 +30,15 @@ public class DisplayProfileActivityAlt extends AppCompatActivity
     private Button backButton;
     private Button chooseContactsButton;
 
-    String name;
-    boolean[] days;
-    TimeObject[] startTimes;
-    TimeObject[] endTimes;
-    boolean active;
-    int mode;
-    ArrayList<String> numbers;
-    ArrayList<String> names;
+    private String name;
+    private boolean[] days;
+    private TimeObject[] startTimes;
+    private TimeObject[] endTimes;
+    private boolean active;
+    private boolean allowed;
+    private int mode;
+    private ArrayList<String> numbers;
+    private ArrayList<String> names;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +58,7 @@ public class DisplayProfileActivityAlt extends AppCompatActivity
         startTimes = prof.getStart();
         endTimes = prof.getEnd();
         active = prof.isActive();
+        allowed = prof.isAllowed();
         mode = prof.getMode();
         numbers = prof.getPhoneNumbers();
         names = prof.getContactNames();
@@ -77,12 +79,16 @@ public class DisplayProfileActivityAlt extends AppCompatActivity
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Log.d(MainActivity.LOG_TAG, "activateProfileSwitch: onCheckedChanged()");
                 prof.setActive(isChecked);
+                if(!isChecked)
+                    prof.setAllowed(true);
                 try {
                     prof.saveProfile(DisplayProfileActivityAlt.this);
                     active = prof.isActive();
+                    allowed = prof.isAllowed();
                 } catch(Exception e) {
                     Log.e(MainActivity.LOG_TAG, e.toString());
                     prof.setActive(active);
+                    prof.setAllowed(allowed);
                     Toast.makeText(DisplayProfileActivityAlt.this, R.string.error, Toast.LENGTH_LONG).show();
                     activateProfileSwitch.setChecked(active); // Caution!!
                 }
