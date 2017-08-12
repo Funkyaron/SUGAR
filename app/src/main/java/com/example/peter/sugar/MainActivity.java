@@ -1,6 +1,7 @@
 package com.example.peter.sugar;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Context;
@@ -21,15 +22,18 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
-        implements ActivityCompat.OnRequestPermissionsResultCallback,
-        ContactsDialogFragment.ContactsSelectedListener {
+        implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     public static final String LOG_TAG = "SUGAR";
     public static final String KEY_PROFILE_NAME = "profile name";
@@ -62,6 +66,13 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        LinearLayout ll = (LinearLayout) findViewById(R.id.root_layout);
+        TimeTableLayout ttl = new TimeTableLayout(this);
+        TimeObject startTime = new TimeObject(8,0);
+        TimeObject endTime = new TimeObject(11,0);
+        TimeObject[] timeSpan = { startTime,endTime };
+        ttl.addTimeRow(timeSpan,3);
+        ll.addView(ttl);
        // numbersView = (TextView) findViewById(R.id.numbers_view)
         // Concerning runtime permission
         if (ActivityCompat.checkSelfPermission(this,
@@ -74,18 +85,6 @@ public class MainActivity extends AppCompatActivity
         } else {
             Log.d(LOG_TAG, "Permissions granted");
         }
-    }
-
-    //
-    @Override
-    public void onContactsSelected(ArrayList<String> numbers) {
-        mProfile.setPhoneNumbers(numbers);
-        try {
-            mProfile.saveProfile(this);
-        } catch (Exception e) {
-            Log.e(LOG_TAG, e.toString());
-        }
-        numbersView.setText(mProfile.toString());
     }
 
     // Handling runtime permissions
