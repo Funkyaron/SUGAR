@@ -1,9 +1,0 @@
-<resources>
-    <style
-        name = "SUGAR_Theme"
-        parent = "Theme.AppCompat">
-        <item name = "colorPrimary">#673AB7</item>
-        <item name = "colorPrimaryDark">#512DA8</item>
-        <item name = "colorAccent">#00603A</item>
-    </style>
-</resources>
