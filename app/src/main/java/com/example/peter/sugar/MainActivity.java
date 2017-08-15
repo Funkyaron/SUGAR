@@ -66,13 +66,6 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        LinearLayout ll = (LinearLayout) findViewById(R.id.root_layout);
-        TimeTableLayout ttl = new TimeTableLayout(this);
-        TimeObject startTime = new TimeObject(8,0);
-        TimeObject endTime = new TimeObject(11,0);
-        TimeObject[] timeSpan = { startTime,endTime };
-        ttl.addTimeRow(timeSpan,3);
-        ll.addView(ttl);
        // numbersView = (TextView) findViewById(R.id.numbers_view)
         // Concerning runtime permission
         if (ActivityCompat.checkSelfPermission(this,
@@ -82,7 +75,7 @@ public class MainActivity extends AppCompatActivity
         {
             Log.d(MainActivity.LOG_TAG, "ConAct: Permissions not granted, sending request.");
             ActivityCompat.requestPermissions(this, PERMISSION_CONTACTS, REQUEST_CONTACTS);
-        } else {
+        }else {
             Log.d(LOG_TAG, "Permissions granted");
         }
     }
