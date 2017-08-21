@@ -98,23 +98,5 @@ class DownloadProfilesTaskAlt extends AsyncTask<String,Void,Boolean>
     }
 
     protected void onPostExecute(Boolean isSuccessful) {
-        ListView lv = (ListView) context.findViewById(R.id.list);
-        final Profile[] profs = Profile.readAllProfiles(context);
-        String[] adapterContent = new String[profs.length];
-        for(int i = 0; i < profs.length; i++) {
-            adapterContent[i] = profs[i].getName();
-        }
-        final String profileNames[] = adapterContent;
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context,
-                android.R.layout.simple_list_item_1, adapterContent);
-        lv.setAdapter(adapter);
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView parent, View v, int position, long id)
-            {
-                Intent goToDisplayProfileActivity = new Intent(context,DisplayProfileActivityAlt.class);
-                goToDisplayProfileActivity.putExtra(MainActivity.KEY_PROFILE_NAME,profileNames[position]);
-                context.startActivity(goToDisplayProfileActivity);
-            }
-        });
     }
 }
