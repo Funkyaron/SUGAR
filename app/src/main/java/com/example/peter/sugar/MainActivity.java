@@ -113,4 +113,10 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    public void openClosingTimeActivity(View v)
+    {
+        Intent moveToClosingTimeActivity = new Intent(this,ClosingTimeDisplayActivity.class);
+        startActivity(moveToClosingTimeActivity);
+    }
+
 }

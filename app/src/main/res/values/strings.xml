@@ -17,6 +17,13 @@
     <string name="friday">Freitag</string>
     <string name="saturday">Samstag</string>
     <string name="sunday">Sontag</string>
+    <string name="monday_short">MO</string>
+    <string name="tuesday_short">DI</string>
+    <string name="wednesday_short">MI</string>
+    <string name="thursday_short">DO</string>
+    <string name="friday_short">FR</string>
+    <string name="saturday_short">SA</string>
+    <string name="sunday_short">SO</string>
     <string name="back">Zurück</string>
     <string name="choosecontacts">Kontakte wählen</string>
     <string name="block_calls">Anrufe blockieren:</string>
@@ -25,8 +32,11 @@
     <string name="error">Ein Fehler ist aufgetreten</string>
     <string name="profile_inactive">Profil inaktiv</string>
     <string name="all">Alle</string>
-    <string name="greetings">Herzlich wilkommen!Was möchtest du tun?</string>
+    <string name="greetings">Herzlich wilkommen!</string>
+    <string name="greetings2">Was möchten sie tun?</string>
     <string name="greetings_edit">Profile bearbeiten</string>
     <string name="greetings_disturb">Ungestört arbeiten</string>
     <string name="greetings_closingtime">Feierabend</string>
+    <string name="closing_time_announcment">Wann ist Feierabend?</string>
+    <string name="test_time">17:45</string>
 </resources>

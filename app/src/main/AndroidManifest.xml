@@ -15,7 +15,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/sugar"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/sugar">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -67,7 +67,8 @@
         </receiver>
 
         <activity android:name=".DisplayProfileActivityAlt" />
-        <activity android:name=".ListProfilesActivity"></activity>
+        <activity android:name=".ListProfilesActivity" />
+        <activity android:name=".ClosingTimeDisplayActivity"></activity>
     </application>
 
 </manifest>

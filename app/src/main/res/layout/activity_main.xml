@@ -6,41 +6,52 @@
     android:layout_height = "match_parent"
     android:orientation = "vertical">
     <TextView
+        android:id="@+id/welcoming"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:gravity="center"
+        android:text="@string/greetings"
+        android:textColor="@color/black"
+        android:textSize="@dimen/genericTextSize" />
+    <TextView
         android:id="@+id/homescreen_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="120dp"
+        android:layout_below="@id/welcoming"
         android:gravity="center"
-        android:text=""
-        android:textSize="20dp" />
+        android:text="@string/greetings2"
+        android:textColor="@color/black"
+        android:textSize="@dimen/genericTextSize"/>
     <Button
         android:id="@+id/edit_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"
-        android:layout_below="@id/homescreen_label"
-        android:text=""
-        android:gravity="center"/>
+        android:layout_marginLeft="@dimen/horizontalMargin"
+        android:layout_marginRight="@dimen/horizontalMargin"
+        android:text="@string/greetings_edit"
+        android:gravity="center"
+        android:layout_below="@+id/homescreen_label"
+        android:layout_alignStart="@+id/dont_disturb_button" />
     <Button
         android:id="@+id/dont_disturb_button"
         android:layout_below="@id/edit_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"
+        android:layout_marginTop="@dimen/verticalMargin"
+        android:layout_marginLeft="@dimen/horizontalMargin"
+        android:layout_marginRight="@dimen/horizontalMargin"
         android:gravity="center"
-        android:text=""/>
+        android:text="@string/greetings_disturb"/>
     <Button
         android:id="@+id/closing_time"
         android:layout_below="@id/dont_disturb_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"
+        android:layout_marginTop="@dimen/verticalMargin"
+        android:layout_marginLeft="@dimen/horizontalMargin"
+        android:layout_marginRight="@dimen/horizontalMargin"
         android:gravity="center"
-        android:text=""/>
+        android:text="@string/greetings_closingtime"
+        android:onClick="openClosingTimeActivity"/>
 </RelativeLayout>
