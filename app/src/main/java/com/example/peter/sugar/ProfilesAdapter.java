@@ -18,12 +18,7 @@ import android.widget.TextView;
 
 public class ProfilesAdapter extends ArrayAdapter<Profile> {
 
-    private String name;
-    private boolean active;
 
-    private TextView profileNameView;
-    private ImageView onOffView;
-    private ImageView editView;
 
     public ProfilesAdapter(Context context, Profile[] profiles) {
         super(context, 0, profiles);
@@ -33,22 +28,21 @@ public class ProfilesAdapter extends ArrayAdapter<Profile> {
     public View getView(int position, View convertView, ViewGroup parent) {
         View result = convertView;
 
-        if(result == null) {
-            LayoutInflater inflater = LayoutInflater.from(getContext());
-            result = inflater.inflate(R.layout.profile_list_item, null);
-        }
+
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        result = inflater.inflate(R.layout.profile_list_item, null);
+
 
         final Profile prof = getItem(position);
 
-        name = prof.getName();
-        active = prof.isActive();
+        final String name = prof.getName();
 
-        profileNameView = (TextView) result.findViewById(R.id.profile_name_view);
-        onOffView = (ImageView) result.findViewById(R.id.on_off_view);
-        editView = (ImageView) result.findViewById(R.id.edit_view);
+        final TextView profileNameView = (TextView) result.findViewById(R.id.profile_name_view);
+        final ImageView onOffView = (ImageView) result.findViewById(R.id.on_off_view);
+        final ImageView editView = (ImageView) result.findViewById(R.id.edit_view);
 
         profileNameView.setText(name);
-        if(active) {
+        if(prof.isActive()) {
             onOffView.setImageResource(R.mipmap.on1);
         } else {
             onOffView.setImageResource(R.mipmap.off1);
@@ -56,7 +50,8 @@ public class ProfilesAdapter extends ArrayAdapter<Profile> {
         onOffView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                if(active) {
+                Log.d(MainActivity.LOG_TAG, "Concerning profile: " + name);
+                if(prof.isActive()) {
                     prof.setActive(false);
                     onOffView.setImageResource(R.mipmap.off1);
                 } else {
