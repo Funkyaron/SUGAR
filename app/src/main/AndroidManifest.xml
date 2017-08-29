@@ -68,7 +68,8 @@
 
         <activity android:name=".DisplayProfileActivityAlt" />
         <activity android:name=".ListProfilesActivity" />
-        <activity android:name=".ClosingTimeDisplayActivity"></activity>
+        <activity android:name=".ClosingTimeDisplayActivity" />
+        <activity android:name=".DoNotDisturbActivity"></activity>
     </application>
 
 </manifest>
