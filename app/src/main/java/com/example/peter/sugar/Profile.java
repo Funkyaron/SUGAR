@@ -26,7 +26,8 @@ class Profile implements Serializable
     private ArrayList<String> contactNames;
 
     public static final int MODE_BLOCK_SELECTED = 1;
-    public static final int MODE_BLOCK_ALL = 2;
+    public static final int MODE_BLOCK_NOT_SELECTED = 2;
+    public static final int MODE_BLOCK_ALL = 3;
 
     private final String[] weekDays = { "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
 

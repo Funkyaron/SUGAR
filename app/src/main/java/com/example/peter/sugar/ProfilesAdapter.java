@@ -18,10 +18,11 @@ import android.widget.TextView;
 
 public class ProfilesAdapter extends ArrayAdapter<Profile> {
 
-
+    private Context context;
 
     public ProfilesAdapter(Context context, Profile[] profiles) {
         super(context, 0, profiles);
+        this.context = context;
     }
 
     @Override @NonNull
@@ -53,9 +54,11 @@ public class ProfilesAdapter extends ArrayAdapter<Profile> {
                 Log.d(MainActivity.LOG_TAG, "Concerning profile: " + name);
                 if(prof.isActive()) {
                     prof.setActive(false);
+                    prof.setAllowed(true);
                     onOffView.setImageResource(R.mipmap.off1);
                 } else {
                     prof.setActive(true);
+                    new TimeManager(context).initProfile(prof);
                     onOffView.setImageResource(R.mipmap.on1);
                 }
                 try {

@@ -69,35 +69,18 @@ public class InCallServiceImpl extends InCallService {
 
     // Self-made ;)
     private boolean shouldBlock(String number) {
-        boolean result = false;
-        ArrayList<String> blockedNumbers = new ArrayList<>();
         Profile[] allProfiles = Profile.readAllProfiles(this);
         for(Profile prof : allProfiles) {
             if(!(prof.isAllowed())) {
-                if(prof.getMode() == Profile.MODE_BLOCK_ALL) {
-                    result = true;
-                    break;
-                }
-                else
-                    blockedNumbers.addAll(prof.getPhoneNumbers());
-            }
-
-        }
-        if(!result) {
-            for (String blockedNumber : blockedNumbers) {
-                if (number.equals(blockedNumber)) {
-                    result = true;
-                    break;
-                }
+                if(prof.getMode() == Profile.MODE_BLOCK_ALL)
+                    return true;
+                else if(prof.getMode() == Profile.MODE_BLOCK_SELECTED && prof.getPhoneNumbers().contains(number))
+                    return true;
+                else if(prof.getMode() == Profile.MODE_BLOCK_NOT_SELECTED && !(prof.getPhoneNumbers().contains(number)))
+                    return true;
             }
         }
-
-        if(result)
-            Log.d(MainActivity.LOG_TAG, "Call should be blocked");
-        else
-            Log.d(MainActivity.LOG_TAG, "Call is allowed");
-
-        return result;
+        return false;
     }
 
     /* private boolean shouldBlock(String number) {
