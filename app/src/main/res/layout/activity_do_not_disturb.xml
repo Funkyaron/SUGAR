@@ -7,36 +7,70 @@
     tools:context="com.example.peter.sugar.DoNotDisturbActivity">
 
     <TextView
-        android:id="@+id/anchor"
+        android:id="@+id/do_not_disturb_display"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"/>
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/grand_vertical_margin"
+        android:textSize="@dimen/genericTextSize"
+        android:textAlignment="center"
+        android:text="@string/prompt_do_not_disturb"/>
+
+    <RelativeLayout
+        android:id="@+id/time_amount_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+        <TextView
+            android:id="@+id/dotdot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text=":"
+            android:textSize="@dimen/genericTextSize"/>
+        <NumberPicker
+            android:id="@+id/minute_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/dotdot"
+            android:scaleX="1.2"/>
+        <NumberPicker
+            android:id="@+id/hour_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/dotdot"
+            android:scaleX="1.2"/>
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/count_down_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/anchor"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="70dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
         android:textSize="@dimen/genericTextSize"/>
 
     <Button
         android:id="@+id/start_count_down_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/anchor"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/grand_vertical_margin"
         android:text="@string/start"/>
 
     <Button
         android:id="@+id/stop_count_down_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/anchor"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/grand_vertical_margin"
         android:visibility="gone"
         android:text="@string/cancel"/>
 
