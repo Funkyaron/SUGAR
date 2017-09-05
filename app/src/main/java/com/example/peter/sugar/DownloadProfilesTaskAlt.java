@@ -53,6 +53,9 @@ class DownloadProfilesTaskAlt extends AsyncTask<String,Void,Boolean>
             FTPFile[] serverFiles = androidClient.listFiles();
             File[] localFiles = context.getFilesDir().listFiles();
 
+            Log.d(MainActivity.LOG_TAG, "Server files count: " + serverFiles.length);
+            Log.d(MainActivity.LOG_TAG, "Local files count: " + localFiles.length);
+
             boolean localMatchesServer;
             for(int i = 0; i < localFiles.length; i++) {
                 localMatchesServer = false;
@@ -73,6 +76,7 @@ class DownloadProfilesTaskAlt extends AsyncTask<String,Void,Boolean>
                     File localFile = new File(context.getFilesDir(), currentFileName);
 
                     if(!localFile.exists()) {
+                        Log.d(MainActivity.LOG_TAG, "Retrieving file from server");
                         FileOutputStream fos = context.openFileOutput(currentFileName, Context.MODE_PRIVATE);
                         isSuccessfull = androidClient.retrieveFile(currentFileName, fos);
                         fos.close();
@@ -96,6 +100,7 @@ class DownloadProfilesTaskAlt extends AsyncTask<String,Void,Boolean>
             }
         }
     }
+
 
     protected void onPostExecute(Boolean isSuccessful) {
     }
