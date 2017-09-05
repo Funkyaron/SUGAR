@@ -17,7 +17,7 @@ public class TimeObject {
         this.minute = minute;
     }
 
-    // The following constructor requires a String in the format 18:30
+    // The following constructor requires a String in the format hh:mm
     public TimeObject(String time) {
         String[] timeObjectDescription = time.split(":");
         hour = Integer.parseInt(timeObjectDescription[0]);
@@ -44,9 +44,24 @@ public class TimeObject {
         minute = updatedMinute;
     }
 
+    public void setTime(int hour, int minute) {
+        this.hour = hour;
+        this.minute = minute;
+    }
+
+    public void setTimeInMillis(long millis) {
+        millis /= (1000 * 60);
+        hour = (int) (millis / 60);
+        minute = (int) (millis % 60);
+    }
+
+    public long getTimeInMillis() {
+        return ((hour * 60) + minute) * 60 * 1000;
+    }
+
     public String toString() {
         DecimalFormat form = new DecimalFormat("00");
-        return "" + hour + ":" + form.format(minute) + " Uhr";
+        return "" + hour + ":" + form.format(minute);
     }
 
 

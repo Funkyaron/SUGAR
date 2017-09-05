@@ -19,6 +19,8 @@ import java.util.ArrayList;
 
 public class InCallServiceImpl extends InCallService {
 
+    static boolean shouldBlockAbsolutely = false;
+
     private int currentRingerMode;
     private AudioManager mAudioManager;
 
@@ -35,7 +37,7 @@ public class InCallServiceImpl extends InCallService {
         mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
 
         if(shouldBlock(number))
-            call.reject(true, "Zur zeit leider nicht erreichbar");
+            call.reject(false, "Zur zeit leider nicht erreichbar");
         else {
             mAudioManager.setRingerMode(currentRingerMode);
             super.onCallAdded(call);
@@ -69,6 +71,9 @@ public class InCallServiceImpl extends InCallService {
 
     // Self-made ;)
     private boolean shouldBlock(String number) {
+        if(shouldBlockAbsolutely)
+            return true;
+
         Profile[] allProfiles = Profile.readAllProfiles(this);
         for(Profile prof : allProfiles) {
             if(!(prof.isAllowed())) {
