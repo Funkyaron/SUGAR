@@ -12,12 +12,13 @@ public class EditProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
+        final String passedName = getIntent().getExtras().getString("profileName");
         LinearLayout ll = (LinearLayout) findViewById(R.id.edit_layout);
         TextView profileName = (TextView) findViewById(R.id.profile_name);
         profileName.setText(getIntent().getExtras().getString("profileName"));
         TimeTable testTable = new TimeTable(this);
         try {
-            testTable.convertProfileToTimeTable(Profile.readProfileFromXmlFile("Kurz",this));
+            testTable.convertProfileToTimeTable(Profile.readProfileFromXmlFile(passedName,this));
         } catch ( Exception e ) {
             e.printStackTrace();
         }

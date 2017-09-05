@@ -9,6 +9,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -38,6 +39,7 @@ public class TimeTable extends TableLayout
 
     public void convertProfileToTimeTable(Profile passedProfile) throws Exception
     {
+        int timeIndex = 0;
         TimeObject[] startTimes = passedProfile.getStart();
         TimeObject[] endTimes = passedProfile.getEnd();
         boolean[] activatedDays = passedProfile.getDays();
@@ -45,7 +47,7 @@ public class TimeTable extends TableLayout
         // Setup the ArrayList of TableRow
         for(ListIterator<TableRow> rowIterator = timeTableRows.listIterator();rowIterator.hasNext();)
         {
-            Log.d(MainActivity.LOG_TAG,"Another one!");
+            Log.d(MainActivity.LOG_TAG,"Weekday ");
             // Setup TableRow's properties
             TableRow currRow = rowIterator.next();
             currRow.setLayoutParams(new TableLayout.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT));
@@ -58,11 +60,17 @@ public class TimeTable extends TableLayout
             TextView currWeekDayTime = new TextView(context);
             currWeekDayTime.setLayoutParams(new TableRow.LayoutParams(0,TableRow.LayoutParams.WRAP_CONTENT,3.0f));
             currWeekDayTime.setBackgroundColor(Color.GREEN);
+            currWeekDayTime.setText(startTimes[timeIndex].toString()+" bis " + endTimes[timeIndex].toString());
+            currWeekDayTime.setOnClickListener(new OnClickListener() {
+                public void onClick(View v) {
+                }
+            });
 
             // Add TextView to the current TableRow
             currRow.addView(currWeekDay);
             currRow.addView(currWeekDayTime);
             addView(currRow);
+            timeIndex++;
         }
     }
 }

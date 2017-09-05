@@ -1,6 +1,8 @@
 package com.example.peter.sugar;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -71,7 +73,11 @@ public class ProfilesAdapter extends ArrayAdapter<Profile> {
         editView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                //TODO: open edit screen
+                Intent openEditProfileActivity = new Intent(context,EditProfileActivity.class);
+                Bundle openEditProfileActivityBundle = new Bundle();
+                openEditProfileActivityBundle.putString("profileName",name);
+                openEditProfileActivity.putExtras(openEditProfileActivityBundle);
+                context.startActivity(openEditProfileActivity);
             }
         });
 

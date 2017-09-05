@@ -16,13 +16,7 @@ public class ListProfilesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_profiles);
 
-        Profile[] profiles = new Profile[0];
-
-        try {
-            profiles = Profile.readAllProfiles(this);
-        } catch(Exception e) {
-            Log.e(MainActivity.LOG_TAG, e.toString());
-        }
+        Profile[] profiles = Profile.readAllProfiles(this);
 
         ProfilesAdapter adapter = new ProfilesAdapter(this, profiles);
         ListView listView = (ListView) findViewById(R.id.profiles_list);
