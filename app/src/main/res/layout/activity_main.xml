@@ -32,7 +32,7 @@
         android:text="@string/greetings_edit"
         android:gravity="center"
         android:layout_below="@+id/homescreen_label"
-        android:layout_alignStart="@+id/dont_disturb_button" />
+        android:onClick="openListProfilesActivity"/>
     <Button
         android:id="@+id/dont_disturb_button"
         android:layout_below="@id/edit_button"
