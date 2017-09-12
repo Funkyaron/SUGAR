@@ -66,7 +66,7 @@ public class ContactsDialogFragment extends DialogFragment {
         // it will be an empty list.
         try {
             Bundle args = getArguments();
-            String profileName = (String) args.get(MainActivity.KEY_PROFILE_NAME);
+            String profileName = (String) args.get(MainActivity.EXTRA_PROFILE_NAME);
             Profile profile = Profile.readProfileFromXmlFile(profileName, getActivity());
             mNumbers = profile.getPhoneNumbers();
         } catch (Exception e) {

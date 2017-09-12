@@ -44,7 +44,9 @@ public class MainActivity extends AppCompatActivity
         implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     public static final String LOG_TAG = "SUGAR";
-    public static final String KEY_PROFILE_NAME = "profile name";
+    public static final String EXTRA_PROFILE_NAME = "profile name";
+    public static final String EXTRA_INDEX = "index";
+    public static final String EXTRA_IS_START = "isStart";
     String[] closingTimes = new String[7];
     /**
      * Request code to identify the request for contacts permissions.

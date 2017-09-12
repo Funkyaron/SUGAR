@@ -46,7 +46,7 @@ public class DisplayProfileActivityAlt extends AppCompatActivity
         setContentView(R.layout.activity_display_profile_alt);
 
         try {
-            prof = Profile.readProfileFromXmlFile(getIntent().getStringExtra(MainActivity.KEY_PROFILE_NAME), this);
+            prof = Profile.readProfileFromXmlFile(getIntent().getStringExtra(MainActivity.EXTRA_PROFILE_NAME), this);
         } catch(Exception e) {
             Log.e(MainActivity.LOG_TAG, e.toString());
             Toast.makeText(this, R.string.error, Toast.LENGTH_LONG).show();
@@ -152,7 +152,7 @@ public class DisplayProfileActivityAlt extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 Bundle args = new Bundle(1);
-                args.putString(MainActivity.KEY_PROFILE_NAME, name);
+                args.putString(MainActivity.EXTRA_PROFILE_NAME, name);
                 ContactsDialogFragment frag = new ContactsDialogFragment();
                 frag.setArguments(args);
                 frag.show(getFragmentManager(), "cont");
