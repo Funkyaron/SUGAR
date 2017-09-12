@@ -11,6 +11,7 @@ import android.provider.ContactsContract;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -19,28 +20,13 @@ import java.util.ArrayList;
  * The aim of this dialog is to select the contacts / phone numbers the user wants to
  * associate with a profile.
  *
- * The activity that opens this dialog has to do 2 things:
- * 1. Implement the ContactsDialogFragment.ContactsSelectedListener interface.
- *    Otherwise it will throw an exception.
- *    The onContactsSelected()-method is invoked when the user clicks the positive
- *    button and receives the phone numbers of the selected contacts as parameter.
- * 2. Pass the profile name via the setArguments()-method. The dialog will read the
- *    numbers that are already associated with this profile and marks the correspondent
- *    contacts as checked when opening the dialog.
+ * It must be opened by the EditProfilesActivity
  *
- * The parent activity can use the onContactsSelected()-method to do whatever it wants
- * to do with the numbers.
  */
 
 public class ContactsDialogFragment extends DialogFragment {
 
-    public interface ContactsSelectedListener {
-        void onContactsSelected(ArrayList<String> numbers, ArrayList<String> names);
-    }
-
-    private ArrayList<String> mNumbers;
     private ArrayList<Long> mRawContactIds;
-    private ContactsSelectedListener mListener;
     private Cursor mDataCursor;
     private Cursor mRawCursor;
 
@@ -48,31 +34,13 @@ public class ContactsDialogFragment extends DialogFragment {
     public void onAttach(Context context) {
         Log.d(MainActivity.LOG_TAG, "CDF: onAttach()");
         super.onAttach(context);
-
-        // Instanciate the parent activity as listener.
-        try {
-            mListener = (ContactsSelectedListener) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() +
-                    " must implement ContactsDialogFragment.ContactsSelectedListener");
-        }
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Log.d(MainActivity.LOG_TAG, "CDF: onCreateDialog()");
 
-        // Read the numbers already  associated with the profile. If an error occurs,
-        // it will be an empty list.
-        try {
-            Bundle args = getArguments();
-            String profileName = (String) args.get(MainActivity.EXTRA_PROFILE_NAME);
-            Profile profile = Profile.readProfileFromXmlFile(profileName, getActivity());
-            mNumbers = profile.getPhoneNumbers();
-        } catch (Exception e) {
-            Toast.makeText(getActivity(), R.string.read_contacts_failed, Toast.LENGTH_LONG).show();
-            mNumbers = new ArrayList<>(0);
-        }
+        ArrayList<String> numbers = EditProfileActivity.prof.getPhoneNumbers();
 
         // For information about the cursors see below.
         // The RawContacts query is the one that is displayed to the user.
@@ -82,7 +50,7 @@ public class ContactsDialogFragment extends DialogFragment {
         // Now we have to reverse-engine the checked items, so we extract the RawContact IDs
         // from the data table using the list of numbers. Then we go through the RawContacts
         // query to identify the checked items using the IDs.
-        mRawContactIds = getIdsByNumbers(mNumbers, mDataCursor);
+        mRawContactIds = getIdsByNumbers(numbers, mDataCursor);
         boolean[] checkedItems = getCheckedItemsByIds(mRawContactIds, mRawCursor);
 
         // Here we get the contact names which are displayed in the list out of the
@@ -120,13 +88,9 @@ public class ContactsDialogFragment extends DialogFragment {
                .setPositiveButton(R.string.finish, new DialogInterface.OnClickListener() {
                    @Override
                    public void onClick(DialogInterface dialogInterface, int i) {
-                       mNumbers = getNumbersByIds(mRawContactIds, mDataCursor);
-                       ArrayList<String> names = getNamesByIds(mRawContactIds, mRawCursor);
-                       try {
-                           mListener.onContactsSelected(mNumbers, names);
-                       } catch (Exception e ) {
-                           Log.e(MainActivity.LOG_TAG,e.toString());
-                       }
+                       ArrayList<String> newNumbers = getNumbersByIds(mRawContactIds, mDataCursor);
+                       ArrayList<String> newNames = getNamesByIds(mRawContactIds, mRawCursor);
+                       onContactsSelected(newNumbers, newNames);
                    }
                })
                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -340,5 +304,10 @@ public class ContactsDialogFragment extends DialogFragment {
             }
         }
         return result;
+    }
+
+    private void onContactsSelected(ArrayList<String> numbers, ArrayList<String> names) {
+        EditProfileActivity.prof.setPhoneNumbers(numbers);
+        EditProfileActivity.prof.setContactNames(names);
     }
 }

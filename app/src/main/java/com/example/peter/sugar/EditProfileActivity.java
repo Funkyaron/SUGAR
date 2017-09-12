@@ -6,13 +6,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 public class EditProfileActivity extends AppCompatActivity {
 
-    private Profile prof = null;
+    static Profile prof = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,9 +29,9 @@ public class EditProfileActivity extends AppCompatActivity {
             return;
         }
 
-        boolean[] days = prof.getDays();
-        TimeObject[] startTimes = prof.getStart();
-        TimeObject[] endTimes = prof.getEnd();
+        final boolean[] days = prof.getDays();
+        final TimeObject[] startTimes = prof.getStart();
+        final TimeObject[] endTimes = prof.getEnd();
 
         TextView profileNameView = (TextView) findViewById(R.id.profile_name);
 
@@ -50,7 +51,39 @@ public class EditProfileActivity extends AppCompatActivity {
             v.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View view) {
-                    TextView view1 = (TextView) daysRow.getChildAt(index);
+                    TextView dayView = (TextView) daysRow.getChildAt(index);
+                    TextView startTimeView = (TextView) startTimeRow.getChildAt(index);
+                    TextView endTimeView = (TextView) endTimeRow.getChildAt(index);
+
+                    days[index] = !days[index];
+
+                    if(days[index]) {
+                        dayView.setBackgroundColor(Color.GREEN);
+                        startTimeView.setBackgroundColor(Color.GREEN);
+                        startTimeView.setText(startTimes[index].toString());
+                        startTimeView.setOnClickListener(new View.OnClickListener(){
+                            @Override
+                            public void onClick(View v) {
+                                pickTime(passedName, index, true);
+                            }
+                        });
+                        endTimeView.setBackgroundColor(Color.GREEN);
+                        endTimeView.setText(endTimes[index].toString());
+                        endTimeView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                pickTime(passedName, index, false);
+                            }
+                        });
+                    } else {
+                        dayView.setBackgroundColor(Color.RED);
+                        startTimeView.setBackgroundColor(Color.RED);
+                        startTimeView.setText("");
+                        startTimeView.setOnClickListener(null);
+                        endTimeView.setBackgroundColor(Color.RED);
+                        endTimeView.setText("");
+                        endTimeView.setOnClickListener(null);
+                    }
                 }
             });
         }
@@ -62,22 +95,18 @@ public class EditProfileActivity extends AppCompatActivity {
             if(days[i]) {
                 v.setText(startTimes[i].toString());
                 v.setBackgroundColor(Color.GREEN);
+                final Integer index = i;
+                v.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        pickTime(passedName, index, true);
+                    }
+                });
             } else {
                 v.setBackgroundColor(Color.RED);
+                v.setOnClickListener(null);
             }
-            final Integer index = i;
-            v.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Bundle args = new Bundle();
-                    args.putString(MainActivity.EXTRA_PROFILE_NAME, passedName);
-                    args.putInt(MainActivity.EXTRA_INDEX, index);
-                    args.putBoolean(MainActivity.EXTRA_IS_START, true);
-                    DialogFragment newFragment = new TimePickerFragment();
-                    newFragment.setArguments(args);
-                    newFragment.show(getFragmentManager(), "start" + index);
-                }
-            });
+
         }
 
         for(int i = 0; i < endTimeRow.getChildCount(); i++) {
@@ -85,45 +114,50 @@ public class EditProfileActivity extends AppCompatActivity {
             if(days[i]) {
                 v.setText(endTimes[i].toString());
                 v.setBackgroundColor(Color.GREEN);
+                final Integer index = i;
+                v.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        pickTime(passedName, index, false);
+                    }
+                });
             } else {
                 v.setBackgroundColor(Color.RED);
+                v.setOnClickListener(null);
             }
-            final Integer index = i;
-            v.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Bundle args = new Bundle();
-                    args.putString(MainActivity.EXTRA_PROFILE_NAME, passedName);
-                    args.putInt(MainActivity.EXTRA_INDEX, index);
-                    args.putBoolean(MainActivity.EXTRA_IS_START, false);
-                    DialogFragment newFragment = new TimePickerFragment();
-                    newFragment.setArguments(args);
-                    newFragment.show(getFragmentManager(), "end" + index);
-                }
-            });
+
         }
 
-        /*
-        LinearLayout ll = (LinearLayout) findViewById(R.id.edit_layout);
-        TextView profileName = (TextView) findViewById(R.id.profile_name);
-        profileName.setText(getIntent().getExtras().getString("profileName"));
-        TimeTable testTable = new TimeTable(this);
-        try {
-            testTable.convertProfileToTimeTable(Profile.readProfileFromXmlFile(passedName,this));
-        } catch ( Exception e ) {
-            e.printStackTrace();
-        }
-        ll.addView(testTable);
-        */
+        Button chooseContactsButton = (Button) findViewById(R.id.choose_contacts_button);
+        chooseContactsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new ContactsDialogFragment().show(getFragmentManager(), "cont");
+            }
+        });
     }
 
     @Override
     public void onDestroy() {
         try {
-            //prof.saveProfile(this);
+            prof.saveProfile(this);
         } catch(Exception e) {
             Log.e(MainActivity.LOG_TAG, e.toString());
         }
+        if(prof.isActive()) {
+            TimeManager mgr = new TimeManager(this);
+            mgr.initProfile(prof);
+        }
         super.onDestroy();
+    }
+
+    private void pickTime(String passedName, int index, boolean isStart) {
+        Bundle args = new Bundle();
+        args.putString(MainActivity.EXTRA_PROFILE_NAME, passedName);
+        args.putInt(MainActivity.EXTRA_INDEX, index);
+        args.putBoolean(MainActivity.EXTRA_IS_START, isStart);
+        DialogFragment newFragment = new TimePickerFragment();
+        newFragment.setArguments(args);
+        newFragment.show(getFragmentManager(), "end" + index);
     }
 }

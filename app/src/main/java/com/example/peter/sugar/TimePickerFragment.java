@@ -19,7 +19,6 @@ import java.util.Calendar;
 
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
 
-    private Profile prof = null;
     private int index;
     private boolean isStart;
 
@@ -27,12 +26,6 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     public Dialog onCreateDialog(Bundle savedInstance)
     {
         Bundle args = getArguments();
-        String name = args.getString(MainActivity.EXTRA_PROFILE_NAME);
-        try {
-            prof = Profile.readProfileFromXmlFile(name, getContext());
-        } catch(Exception e) {
-            Log.e(MainActivity.LOG_TAG, e.toString());
-        }
 
         index = args.getInt(MainActivity.EXTRA_INDEX);
         Log.d(MainActivity.LOG_TAG, "index is: " + index);
@@ -42,9 +35,9 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         TimeObject time;
 
         if(isStart) {
-            time = prof.getStart()[index];
+            time = EditProfileActivity.prof.getStart()[index];
         } else {
-            time = prof.getEnd()[index];
+            time = EditProfileActivity.prof.getEnd()[index];
         }
         return new TimePickerDialog(getActivity(),this,
                 time.getHour(),time.getMinute(), DateFormat.is24HourFormat(getActivity()));
@@ -52,23 +45,34 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
 
     public void onTimeSet(TimePicker view, int hourOfDay, int minute)
     {
+        boolean isValid = true;
+        TimeObject startTime;
+        TimeObject endTime;
+        if(isStart) {
+            startTime = new TimeObject(hourOfDay, minute);
+            endTime = EditProfileActivity.prof.getEnd()[index];
+        } else {
+            startTime = EditProfileActivity.prof.getStart()[index];
+            endTime = new TimeObject(hourOfDay, minute);
+        }
+        isValid = startTime.earlierThan(endTime);
+        if(!isValid) {
+            return;
+        }
+
         TimeObject modifiedTime;
         if(isStart) {
-            TimeObject[] modified = prof.getStart();
+            TimeObject[] modified = EditProfileActivity.prof.getStart();
             modified[index] = new TimeObject(hourOfDay, minute);
             modifiedTime = modified[index];
-            prof.setStart(modified);
+            EditProfileActivity.prof.setStart(modified);
         } else {
-            TimeObject[] modified = prof.getEnd();
+            TimeObject[] modified = EditProfileActivity.prof.getEnd();
             modified[index] = new TimeObject(hourOfDay, minute);
             modifiedTime = modified[index];
-            prof.setEnd(modified);
+            EditProfileActivity.prof.setEnd(modified);
         }
-        try {
-            prof.saveProfile(getContext());
-        } catch(Exception e) {
-            Log.e(MainActivity.LOG_TAG, e.toString());
-        }
+
         Activity parentActivity = (Activity) getContext();
         TableRow row;
         if(isStart)

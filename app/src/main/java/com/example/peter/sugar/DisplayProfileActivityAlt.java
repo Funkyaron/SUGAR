@@ -18,7 +18,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class DisplayProfileActivityAlt extends AppCompatActivity
-        implements ContactsDialogFragment.ContactsSelectedListener {
+        //implements ContactsDialogFragment.ContactsSelectedListener
+        {
 
     private Profile prof;
 
@@ -187,7 +188,7 @@ public class DisplayProfileActivityAlt extends AppCompatActivity
         activateProfileSwitch.setChecked(active);
     }
 
-    @Override
+    /*@Override
     public void onContactsSelected(ArrayList<String> newNumbers, ArrayList<String> newNames) {
         prof.setPhoneNumbers(newNumbers);
         prof.setContactNames(newNames);
@@ -201,5 +202,5 @@ public class DisplayProfileActivityAlt extends AppCompatActivity
             prof.setContactNames(names);
             Toast.makeText(this, R.string.error, Toast.LENGTH_LONG).show();
         }
-    }
+    }*/
 }

@@ -64,5 +64,13 @@ public class TimeObject {
         return "" + hour + ":" + form.format(minute);
     }
 
-
+    public boolean earlierThan(TimeObject other) {
+        if(this.hour < other.hour) {
+            return true;
+        } else if(this.hour > other.hour) {
+            return false;
+        } else {
+            return this.minute < other.minute;
+        }
+    }
 }
