@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -40,15 +42,15 @@ public class ProfilesAdapter extends ArrayAdapter<Profile> {
 
         final String name = prof.getName();
 
-        final TextView profileNameView = (TextView) result.findViewById(R.id.profile_name_view);
-        final ImageView onOffView = (ImageView) result.findViewById(R.id.on_off_view);
-        final ImageView editView = (ImageView) result.findViewById(R.id.edit_view);
+        final TextView profileNameView = (TextView) result.findViewById(R.id.profile_name_text);
+        final ImageButton onOffView = (ImageButton) result.findViewById(R.id.power_icon);
+        final ImageButton editView = (ImageButton) result.findViewById(R.id.edit_icon);
 
         profileNameView.setText(name);
         if(prof.isActive()) {
-            onOffView.setImageResource(R.mipmap.on1);
+            onOffView.setImageResource(R.mipmap.power_on);
         } else {
-            onOffView.setImageResource(R.mipmap.off1);
+            onOffView.setImageResource(R.mipmap.power_off);
         }
         onOffView.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -57,11 +59,11 @@ public class ProfilesAdapter extends ArrayAdapter<Profile> {
                 if(prof.isActive()) {
                     prof.setActive(false);
                     prof.setAllowed(true);
-                    onOffView.setImageResource(R.mipmap.off1);
+                    onOffView.setImageResource(R.mipmap.power_off);
                 } else {
                     prof.setActive(true);
                     new TimeManager(context).initProfile(prof);
-                    onOffView.setImageResource(R.mipmap.on1);
+                    onOffView.setImageResource(R.mipmap.power_on);
                 }
                 try {
                     prof.saveProfile(getContext());

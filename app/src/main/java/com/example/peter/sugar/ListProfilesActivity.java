@@ -9,10 +9,12 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class ListProfilesActivity extends AppCompatActivity {
+public class ListProfilesActivity extends AppCompatActivity
+{
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_profiles);
 
