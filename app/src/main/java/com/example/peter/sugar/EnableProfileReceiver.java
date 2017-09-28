@@ -18,8 +18,7 @@ public class EnableProfileReceiver extends BroadcastReceiver {
 
         Log.d(MainActivity.LOG_TAG, "EnableProfileReceiver: onReceive()");
 
-        Object[] categories = intent.getCategories().toArray();
-        String name = (String) categories[0];
+        String name = intent.getCategories().toArray(new String[0])[0];
 
         Profile prof = null;
         try {
@@ -45,7 +44,8 @@ public class EnableProfileReceiver extends BroadcastReceiver {
         builder.setSmallIcon(R.mipmap.sugar)
                 .setContentTitle(name)
                 .setContentText(context.getString(R.string.calls_allowed))
-                .setWhen(System.currentTimeMillis());
+                .setWhen(System.currentTimeMillis())
+                .setPriority(Notification.PRIORITY_LOW);
 
         Notification noti = builder.build();
 
