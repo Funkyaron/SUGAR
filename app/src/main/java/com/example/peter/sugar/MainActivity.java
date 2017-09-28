@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity
     public static final String EXTRA_PROFILE_NAME = "profile name";
     public static final String EXTRA_INDEX = "index";
     public static final String EXTRA_IS_START = "isStart";
+    public static final String EXTRA_HOUR_OF_DAY = "hour";
+    public static final String EXTRA_MINUTE = "minute";
     String[] closingTimes = new String[7];
     /**
      * Request code to identify the request for contacts permissions.

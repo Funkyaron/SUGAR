@@ -19,6 +19,7 @@
         android:gravity="center"
         android:text="@string/closing_time_announcment"
         android:textSize="@dimen/genericTextSize"/>
+    <!--
     <TableLayout
         android:id="@+id/closing_time_table"
         android:layout_width="match_parent"
@@ -216,6 +217,79 @@
                 android:layout_weight="3"
                 android:gravity="center"
                 android:text="@string/test_time"
+                android:textSize="@dimen/genericTextSize"/>
+        </TableRow>
+    </TableLayout>
+    -->
+
+    <TableLayout
+        android:id="@+id/closing_time_table"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grand_vertical_margin"
+        android:layout_below="@id/label_closing_time"
+        android:stretchColumns="*">
+        <TableRow>
+            <TextView
+                android:text="@string/monday"
+                android:textAlignment="center"
+                android:textSize="@dimen/genericTextSize"/>
+            <TextView
+                android:textAlignment="center"
+                android:textSize="@dimen/genericTextSize"/>
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:text="@string/tuesday"
+                android:textAlignment="center"
+                android:textSize="@dimen/genericTextSize"/>
+            <TextView
+                android:textAlignment="center"
+                android:textSize="@dimen/genericTextSize"/>
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:text="@string/wednesday"
+                android:textAlignment="center"
+                android:textSize="@dimen/genericTextSize"/>
+            <TextView
+                android:textAlignment="center"
+                android:textSize="@dimen/genericTextSize"/>
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:text="@string/thursday"
+                android:textAlignment="center"
+                android:textSize="@dimen/genericTextSize"/>
+            <TextView
+                android:textAlignment="center"
+                android:textSize="@dimen/genericTextSize"/>
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:text="@string/friday"
+                android:textAlignment="center"
+                android:textSize="@dimen/genericTextSize"/>
+            <TextView
+                android:textAlignment="center"
+                android:textSize="@dimen/genericTextSize"/>
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:text="@string/saturday"
+                android:textAlignment="center"
+                android:textSize="@dimen/genericTextSize"/>
+            <TextView
+                android:textAlignment="center"
+                android:textSize="@dimen/genericTextSize"/>
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:text="@string/sunday"
+                android:textAlignment="center"
+                android:textSize="@dimen/genericTextSize"/>
+            <TextView
+                android:textAlignment="center"
                 android:textSize="@dimen/genericTextSize"/>
         </TableRow>
     </TableLayout>

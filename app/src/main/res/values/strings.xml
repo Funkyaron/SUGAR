@@ -42,4 +42,7 @@
     <string name="start">Starten</string>
     <string name="prompt_do_not_disturb">Wie lange möchten Sie nicht erreichbar sein?</string>
     <string name="time_remaining">Verbleibende Zeit:</string>
+    <string name="remove">Entfernen</string>
+    <string name="closing_time_title">Feierabend!</string>
+    <string name="closing_time_text">Mach mal Pause</string>
 </resources>

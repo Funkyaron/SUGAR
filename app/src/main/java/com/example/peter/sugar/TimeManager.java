@@ -114,6 +114,47 @@ public class TimeManager {
     }
 
 
+    public void setNextClosingTime(int index, TimeObject time) {
+        Log.d(MainActivity.LOG_TAG, "TimeManager: setNextClosingTime");
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(System.currentTimeMillis());
+        long currentTime = cal.getTimeInMillis();
+
+        cal.set(Calendar.DAY_OF_WEEK, toCalendarDay(index));
+        cal.set(Calendar.HOUR_OF_DAY, time.getHour());
+        cal.set(Calendar.MINUTE, time.getMinute());
+        long targetTime = cal.getTimeInMillis();
+
+        if(targetTime < currentTime) {
+            cal.add(Calendar.WEEK_OF_YEAR, 1);
+        }
+
+        targetTime = cal.getTimeInMillis();
+
+        Intent intent = new Intent(context, ClosingTimeReceiver.class);
+        intent.addCategory("" + index);
+        intent.putExtra(MainActivity.EXTRA_HOUR_OF_DAY, time.getHour());
+        intent.putExtra(MainActivity.EXTRA_MINUTE, time.getMinute());
+        PendingIntent pending = PendingIntent.getBroadcast(context,
+                0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        mAlarmManager.setExact(AlarmManager.RTC_WAKEUP, targetTime, pending);
+    }
+
+
+    public void unsetClosingTime(int index) {
+        Log.d(MainActivity.LOG_TAG, "TimeManager: unsetClosingTime");
+
+        Intent intent = new Intent(context, ClosingTimeReceiver.class);
+        intent.addCategory("" + index);
+        PendingIntent pending = PendingIntent.getBroadcast(context,
+                0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        mAlarmManager.cancel(pending);
+    }
+
+
 
     /**
      * Checks if the given profile should currently be enabled or not and updates its status.
@@ -371,6 +412,27 @@ public class TimeManager {
                 return 6;
             default:
                 return 0; // Never used.
+        }
+    }
+
+    private int toCalendarDay(int index) {
+        switch(index) {
+            case 0:
+                return Calendar.MONDAY;
+            case 1:
+                return Calendar.TUESDAY;
+            case 2:
+                return Calendar.WEDNESDAY;
+            case 3:
+                return Calendar.THURSDAY;
+            case 4:
+                return Calendar.FRIDAY;
+            case 5:
+                return Calendar.SATURDAY;
+            case 6:
+                return Calendar.SUNDAY;
+            default:
+                return 0;
         }
     }
 }
