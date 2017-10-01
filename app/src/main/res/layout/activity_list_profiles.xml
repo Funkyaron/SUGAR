@@ -5,11 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.peter.sugar.ListProfilesActivity">
-
     <ListView
         android:id="@+id/profiles_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:divider="@color/black"
+        android:dividerHeight="0.5dp"/>
 
 
 </RelativeLayout>

@@ -2,6 +2,7 @@ package com.example.peter.sugar;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -13,6 +14,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.Calendar;
 
 /**
  * Created by arons on 22.08.2017.
@@ -32,57 +35,29 @@ public class ProfilesAdapter extends ArrayAdapter<Profile> {
     @Override @NonNull
     public View getView(int position, View convertView, ViewGroup parent) {
         View result = convertView;
-
-
         LayoutInflater inflater = LayoutInflater.from(getContext());
         result = inflater.inflate(R.layout.profile_list_item, null);
 
-
         final Profile prof = getItem(position);
-
-        final String name = prof.getName();
-
-        final TextView profileNameView = (TextView) result.findViewById(R.id.profile_name_text);
-        final ImageButton onOffView = (ImageButton) result.findViewById(R.id.power_icon);
-        final ImageButton editView = (ImageButton) result.findViewById(R.id.edit_icon);
-
-        profileNameView.setText(name);
-        if(prof.isActive()) {
-            onOffView.setImageResource(R.mipmap.power_on);
-        } else {
-            onOffView.setImageResource(R.mipmap.power_off);
+        final int currentWeekDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+        TimeObject startTime = new TimeObject(0,0);
+        TimeObject endTime = new TimeObject(0,0);
+        if( currentWeekDay == 1 )
+        {
+            startTime = prof.getStart()[6];
+            endTime = prof.getEnd()[6];
+        } else if( currentWeekDay > 1 ){
+            startTime = prof.getStart()[currentWeekDay-2];
+            endTime = prof.getEnd()[currentWeekDay-2];
         }
-        onOffView.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                Log.d(MainActivity.LOG_TAG, "Concerning profile: " + name);
-                if(prof.isActive()) {
-                    prof.setActive(false);
-                    prof.setAllowed(true);
-                    onOffView.setImageResource(R.mipmap.power_off);
-                } else {
-                    prof.setActive(true);
-                    new TimeManager(context).initProfile(prof);
-                    onOffView.setImageResource(R.mipmap.power_on);
-                }
-                try {
-                    prof.saveProfile(getContext());
-                } catch (Exception e) {
-                    Log.e(MainActivity.LOG_TAG, e.toString());
-                }
-            }
-        });
-        editView.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                Intent openEditProfileActivity = new Intent(context,EditProfileActivity.class);
-                Bundle openEditProfileActivityBundle = new Bundle();
-                openEditProfileActivityBundle.putString("profileName",name);
-                openEditProfileActivity.putExtras(openEditProfileActivityBundle);
-                context.startActivity(openEditProfileActivity);
-            }
-        });
-
+        final String name = prof.getName();
+        final TextView profileName= (TextView) result.findViewById(R.id.profile_name);
+        final TextView profileStartTime = (TextView) result.findViewById(R.id.profile_start);
+        final TextView profileEndTime = (TextView) result.findViewById(R.id.profile_end);
+        final ImageView profileImage = (ImageView) result.findViewById(R.id.profile_icon);
+        profileName.setText(name);
+        profileStartTime.setText("Anfang : " + startTime.toString());
+        profileEndTime.setText("Ende : " + endTime.toString());
         return result;
     }
 }
