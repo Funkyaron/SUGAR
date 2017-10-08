@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.Calendar;
@@ -58,6 +59,17 @@ public class ProfilesAdapter extends ArrayAdapter<Profile> {
         profileName.setText(name);
         profileStartTime.setText("Anfang : " + startTime.toString());
         profileEndTime.setText("Ende : " + endTime.toString());
+        RelativeLayout clickableView = (RelativeLayout) result.findViewById(R.id.textArea);
+        clickableView.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v)
+            {
+                Intent moveToEditProfileActivity = new Intent(context,EditProfileActivity.class);
+                Bundle passedBundle = new Bundle();
+                passedBundle.putString("profileName",name);
+                moveToEditProfileActivity.putExtras(passedBundle);
+                context.startActivity(moveToEditProfileActivity);
+            }
+        });
         return result;
     }
 }
