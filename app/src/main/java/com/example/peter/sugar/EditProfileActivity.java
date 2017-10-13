@@ -11,9 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-public class EditProfileActivity extends AppCompatActivity {
-
-    static Profile prof = null;
+public class EditProfileActivity extends ActivityContainingProfile {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +20,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         final String passedName = getIntent().getExtras().getString("profileName");
         try {
-            prof = Profile.readProfileFromXmlFile(passedName, this);
+            setProfile(Profile.readProfileFromXmlFile(passedName, this));
         } catch(Exception e) {
             Log.e(MainActivity.LOG_TAG, e.toString());
             finish();

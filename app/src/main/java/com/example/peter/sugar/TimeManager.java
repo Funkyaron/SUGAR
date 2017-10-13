@@ -70,7 +70,8 @@ public class TimeManager {
 
         long targetTime = getTargetTime(days, start);
 
-        mAlarmManager.setExact(AlarmManager.RTC_WAKEUP, targetTime, pending);
+        AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(targetTime, null);
+        mAlarmManager.setAlarmClock(info, pending);
     }
 
 
@@ -110,7 +111,8 @@ public class TimeManager {
 
         long targetTime = getTargetTime(days, end);
 
-        mAlarmManager.setExact(AlarmManager.RTC_WAKEUP, targetTime, pending);
+        AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(targetTime, null);
+        mAlarmManager.setAlarmClock(info, pending);
     }
 
 
@@ -139,7 +141,8 @@ public class TimeManager {
         PendingIntent pending = PendingIntent.getBroadcast(context,
                 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        mAlarmManager.setExact(AlarmManager.RTC_WAKEUP, targetTime, pending);
+        AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(targetTime, null);
+        mAlarmManager.setAlarmClock(info, pending);
     }
 
 

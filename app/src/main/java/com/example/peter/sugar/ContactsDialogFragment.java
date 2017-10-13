@@ -40,7 +40,10 @@ public class ContactsDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Log.d(MainActivity.LOG_TAG, "CDF: onCreateDialog()");
 
-        ArrayList<String> numbers = EditProfileActivity.prof.getPhoneNumbers();
+        ActivityContainingProfile parentActivity = (ActivityContainingProfile) getActivity();
+        Profile prof = parentActivity.getProfile();
+
+        ArrayList<String> numbers = prof.getPhoneNumbers();
 
         // For information about the cursors see below.
         // The RawContacts query is the one that is displayed to the user.
@@ -307,7 +310,10 @@ public class ContactsDialogFragment extends DialogFragment {
     }
 
     private void onContactsSelected(ArrayList<String> numbers, ArrayList<String> names) {
-        EditProfileActivity.prof.setPhoneNumbers(numbers);
-        EditProfileActivity.prof.setContactNames(names);
+        ActivityContainingProfile parentActivity = (ActivityContainingProfile) getActivity();
+        Profile prof = parentActivity.getProfile();
+
+        prof.setPhoneNumbers(numbers);
+        prof.setContactNames(names);
     }
 }

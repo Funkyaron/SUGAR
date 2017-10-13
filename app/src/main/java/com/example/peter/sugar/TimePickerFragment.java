@@ -1,6 +1,5 @@
 package com.example.peter.sugar;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
@@ -34,10 +33,13 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
 
         TimeObject time;
 
+        ActivityContainingProfile parentActitivty = (ActivityContainingProfile) getActivity();
+        Profile prof = parentActitivty.getProfile();
+
         if(isStart) {
-            time = EditProfileActivity.prof.getStart()[index];
+            time = prof.getStart()[index];
         } else {
-            time = EditProfileActivity.prof.getEnd()[index];
+            time = prof.getEnd()[index];
         }
         return new TimePickerDialog(getActivity(),this,
                 time.getHour(),time.getMinute(), DateFormat.is24HourFormat(getActivity()));
@@ -45,14 +47,17 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
 
     public void onTimeSet(TimePicker view, int hourOfDay, int minute)
     {
+        ActivityContainingProfile parentActivity = (ActivityContainingProfile) getActivity();
+        Profile prof = parentActivity.getProfile();
+
         boolean isValid = true;
         TimeObject startTime;
         TimeObject endTime;
         if(isStart) {
             startTime = new TimeObject(hourOfDay, minute);
-            endTime = EditProfileActivity.prof.getEnd()[index];
+            endTime = prof.getEnd()[index];
         } else {
-            startTime = EditProfileActivity.prof.getStart()[index];
+            startTime = prof.getStart()[index];
             endTime = new TimeObject(hourOfDay, minute);
         }
         isValid = startTime.earlierThan(endTime);
@@ -62,18 +67,17 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
 
         TimeObject modifiedTime;
         if(isStart) {
-            TimeObject[] modified = EditProfileActivity.prof.getStart();
+            TimeObject[] modified = prof.getStart();
             modified[index] = new TimeObject(hourOfDay, minute);
             modifiedTime = modified[index];
-            EditProfileActivity.prof.setStart(modified);
+            prof.setStart(modified);
         } else {
-            TimeObject[] modified = EditProfileActivity.prof.getEnd();
+            TimeObject[] modified = prof.getEnd();
             modified[index] = new TimeObject(hourOfDay, minute);
             modifiedTime = modified[index];
-            EditProfileActivity.prof.setEnd(modified);
+            prof.setEnd(modified);
         }
 
-        Activity parentActivity = (Activity) getContext();
         TableRow row;
         if(isStart)
             row = (TableRow) parentActivity.findViewById(R.id.start_time_row);
@@ -82,5 +86,10 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
 
         TextView modifiedView = (TextView) row.getChildAt(index);
         modifiedView.setText(modifiedTime.toString());
+
+        if(prof.isActive()) {
+            TimeManager mgr = new TimeManager(parentActivity);
+            mgr.initProfile(prof);
+        }
     }
 }
