@@ -19,4 +19,7 @@
     <dimen name="grand_vertical_margin">80dp</dimen>
     <dimen name="paddingForIcons">35dp</dimen>
     <dimen name="paddingForProfilesList">5dp</dimen>
+    <dimen name="marginForProfilesList">10dp</dimen>
+    <dimen name="marginLeftListItem">25dp</dimen>
+    <dimen name="marginRightListItem">25dp</dimen>
 </resources>

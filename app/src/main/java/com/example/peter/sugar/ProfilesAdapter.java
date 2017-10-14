@@ -56,6 +56,23 @@ public class ProfilesAdapter extends ArrayAdapter<Profile> {
         final TextView profileStartTime = (TextView) result.findViewById(R.id.profile_start);
         final TextView profileEndTime = (TextView) result.findViewById(R.id.profile_end);
         final ImageView profileImage = (ImageView) result.findViewById(R.id.profile_icon);
+        if( prof.isActive() )
+        {
+            profileImage.setImageResource(R.mipmap.power_on);
+        } else {
+            profileImage.setImageResource(R.mipmap.power_off);
+        }
+        profileImage.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v)
+            {
+                if( prof.isActive())
+                {
+                    profileImage.setImageResource(R.mipmap.power_off);
+                } else if ( !prof.isActive() ) {
+                    profileImage.setImageResource(R.mipmap.power_on);
+                }
+            }
+        });
         profileName.setText(name);
         profileStartTime.setText("Anfang : " + startTime.toString());
         profileEndTime.setText("Ende : " + endTime.toString());
@@ -63,7 +80,7 @@ public class ProfilesAdapter extends ArrayAdapter<Profile> {
         clickableView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
             {
-                Intent moveToEditProfileActivity = new Intent(context,EditProfileActivity.class);
+                Intent moveToEditProfileActivity = new Intent(context,EditProfileActivityModern.class);
                 Bundle passedBundle = new Bundle();
                 passedBundle.putString("profileName",name);
                 moveToEditProfileActivity.putExtras(passedBundle);

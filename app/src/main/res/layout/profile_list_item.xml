@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/list_item_background"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingLeft="25dp"
+    android:paddingRight="25dp"
+    android:paddingBottom="@dimen/paddingForProfilesList"
     android:orientation="horizontal"
     android:weightSum="7">
     <ImageView
@@ -15,7 +19,6 @@
         android:layout_weight="2"/>
     <RelativeLayout
         android:id="@+id/textArea"
-        android:background="@drawable/gradient_blue"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="5">
