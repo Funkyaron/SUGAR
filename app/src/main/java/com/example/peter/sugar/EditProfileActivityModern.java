@@ -1,5 +1,6 @@
 package com.example.peter.sugar;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +22,7 @@ public class EditProfileActivityModern extends AppCompatActivity
 
     private NumberPicker editTimeSpinner;
     private Profile chosenProfile;
+    private char beginOrEnd;
     TextView mondayView;
     TextView tuesdayView;
     TextView wednesdayView;
@@ -28,17 +30,22 @@ public class EditProfileActivityModern extends AppCompatActivity
     TextView fridayView;
     TextView saturdayView;
     TextView sundayView;
+    TextView weekDayRow[];
     private CheckBox startQuestion;
     private CheckBox endQuestion;
+    private Button confirmUpdatedTime;
     private NumberPicker chooseHour;
     private NumberPicker chooseMinute;
-    private String selectedDay = "Monday";
+    private int selectedDay = 1;
+    private Context activityContext;
 
     @Override
     public void onCreate(Bundle savedInstances)
     {
         super.onCreate(savedInstances);
         setContentView(R.layout.edit_profile_modern);
+        activityContext = this;
+        confirmUpdatedTime = (Button) findViewById(R.id.adjust_time);
         startQuestion = (CheckBox) findViewById(R.id.checkBoxStart);
         endQuestion = (CheckBox) findViewById(R.id.checkBoxEnd);
         mondayView = (TextView) findViewById(R.id.mondayRectangle);
@@ -48,6 +55,7 @@ public class EditProfileActivityModern extends AppCompatActivity
         fridayView = (TextView) findViewById(R.id.fridayRectangle);
         saturdayView = (TextView) findViewById(R.id.saturdayRectangle);
         sundayView = (TextView) findViewById(R.id.sundayRectangle);
+        weekDayRow = new TextView[]{mondayView,tuesdayView,wednesdayView,thursdayView,fridayView,saturdayView,sundayView};
         chooseHour = (NumberPicker) findViewById(R.id.hourPicker);
         chooseMinute = (NumberPicker) findViewById(R.id.minutePicker);
         chooseHour.setMinValue(0);
@@ -62,158 +70,89 @@ public class EditProfileActivityModern extends AppCompatActivity
             e.printStackTrace();
         }
         registerWeekDayListener();
+        registerCheckBoxListener();
+        registerButtonListener();
         mondayView.setBackgroundResource(R.drawable.weekday_activated);
+    }
+
+    public void registerCheckBoxListener() {
+        startQuestion.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked)
+            {
+                if( isChecked && !endQuestion.isChecked() )
+                {
+                    beginOrEnd = 's';
+                } else if ( isChecked && endQuestion.isChecked() ) {
+                    beginOrEnd = 'n';
+                }
+            }
+        });
+        endQuestion.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton compundButton,boolean isChecked)
+            {
+                if( isChecked && !startQuestion.isChecked() )
+                {
+                    beginOrEnd = 'e';
+                } else if ( isChecked && startQuestion.isChecked() ) {
+                    beginOrEnd = 'n';
+                }
+            }
+        });
+    }
+
+    public void registerButtonListener()
+    {
+        confirmUpdatedTime.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v)
+            {
+                int selectedHour = chooseHour.getValue();
+                int selectedMinute = chooseMinute.getValue();
+                TimeObject updatedTime = new TimeObject(selectedHour,selectedMinute);
+
+                    if( beginOrEnd == 's' )
+                    {
+                        chosenProfile.setStartForDay(selectedDay,updatedTime);
+                        Log.d(MainActivity.LOG_TAG,"You have changed the time to " + chosenProfile.getStart()[selectedDay].toString());
+                        try {
+                            chosenProfile.saveProfile(activityContext);
+                        } catch ( Exception e ) {
+                            e.printStackTrace();
+                        }
+                    } else if ( beginOrEnd == 'e' ) {
+                        chosenProfile.setEndForDay(selectedDay, updatedTime);
+                        try {
+                            chosenProfile.saveProfile(activityContext);
+                        } catch ( Exception e ) {
+                            e.printStackTrace();
+                        }
+                    }
+
+            }
+        });
     }
 
     public void registerWeekDayListener()
     {
-        mondayView.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v)
-            {
-                selectedDay="Monday";
-                v.setBackgroundResource(R.drawable.weekday_activated);
-                tuesdayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                wednesdayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                thursdayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                fridayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                saturdayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                sundayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                if( startQuestion.isChecked() && !endQuestion.isChecked() )
-                {
-                    chooseHour.setValue(chosenProfile.getStart()[0].getHour());
-                    chooseMinute.setValue(chosenProfile.getStart()[0].getMinute());
-                } else if ( !startQuestion.isChecked() && endQuestion.isChecked() ) {
-                    chooseHour.setValue(chosenProfile.getEnd()[0].getHour());
-                    chooseMinute.setValue(chosenProfile.getEnd()[0].getMinute());
-                }
-            }
-        });
-        tuesdayView.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v)
-            {
-                selectedDay="Tuesday";
-                v.setBackgroundResource(R.drawable.weekday_activated);
-                mondayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                wednesdayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                thursdayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                fridayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                mondayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                sundayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                if( startQuestion.isChecked() && !endQuestion.isChecked() )
-                {
-                    chooseHour.setValue(chosenProfile.getStart()[1].getHour());
-                    chooseMinute.setValue(chosenProfile.getStart()[1].getMinute());
-                } else if ( !startQuestion.isChecked() && endQuestion.isChecked() ) {
-                    chooseHour.setValue(chosenProfile.getEnd()[1].getHour());
-                    chooseMinute.setValue(chosenProfile.getEnd()[1].getMinute());
-                }
-            }
-        });
-        wednesdayView.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v)
-            {
-                selectedDay="Wednesday";
-                v.setBackgroundResource(R.drawable.weekday_activated);
-                tuesdayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                mondayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                thursdayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                fridayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                mondayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                sundayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                if( startQuestion.isChecked() && !endQuestion.isChecked() )
-                {
-                    chooseHour.setValue(chosenProfile.getStart()[2].getHour());
-                    chooseMinute.setValue(chosenProfile.getStart()[2].getMinute());
-                } else if ( !startQuestion.isChecked() && endQuestion.isChecked() ) {
-                    chooseHour.setValue(chosenProfile.getEnd()[2].getHour());
-                    chooseMinute.setValue(chosenProfile.getEnd()[2].getMinute());
-                }
-            }
-        });
-        thursdayView.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v)
-            {
-                selectedDay="Thursday";
-                v.setBackgroundResource(R.drawable.weekday_activated);
-                tuesdayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                wednesdayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                mondayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                fridayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                mondayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                sundayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                if( startQuestion.isChecked() && !endQuestion.isChecked() )
-                {
-                    chooseHour.setValue(chosenProfile.getStart()[3].getHour());
-                    chooseMinute.setValue(chosenProfile.getStart()[3].getMinute());
-                } else if ( !startQuestion.isChecked() && endQuestion.isChecked() ) {
-                    chooseHour.setValue(chosenProfile.getEnd()[3].getHour());
-                    chooseMinute.setValue(chosenProfile.getEnd()[3].getMinute());
-                }
-            }
-        });
-        fridayView.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v)
-            {
-                selectedDay="Friday";
-                v.setBackgroundResource(R.drawable.weekday_activated);
-                tuesdayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                wednesdayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                thursdayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                mondayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                mondayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                sundayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                if( startQuestion.isChecked() && !endQuestion.isChecked() )
-                {
-                    chooseHour.setValue(chosenProfile.getStart()[4].getHour());
-                    chooseMinute.setValue(chosenProfile.getStart()[4].getMinute());
-                } else if ( !startQuestion.isChecked() && endQuestion.isChecked() ) {
-                    chooseHour.setValue(chosenProfile.getEnd()[4].getHour());
-                    chooseMinute.setValue(chosenProfile.getEnd()[4].getMinute());
-                }
-            }
-        });
-        saturdayView.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v)
-            {
-                selectedDay="Saturday";
-                v.setBackgroundResource(R.drawable.weekday_activated);
-                tuesdayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                wednesdayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                thursdayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                fridayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                mondayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                sundayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                if( startQuestion.isChecked() && !endQuestion.isChecked() )
-                {
-                    chooseHour.setValue(chosenProfile.getStart()[5].getHour());
-                    chooseMinute.setValue(chosenProfile.getStart()[5].getMinute());
-                } else if ( !startQuestion.isChecked() && endQuestion.isChecked() ) {
-                    chooseHour.setValue(chosenProfile.getEnd()[5].getHour());
-                    chooseMinute.setValue(chosenProfile.getEnd()[5].getMinute());
-                }
-            }
-        });
-        sundayView.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v)
-            {
-                selectedDay="Sunday";
-                v.setBackgroundResource(R.drawable.weekday_activated);
-                tuesdayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                wednesdayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                thursdayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                fridayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                saturdayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                mondayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                if( startQuestion.isChecked() && !endQuestion.isChecked() )
-                {
-                    chooseHour.setValue(chosenProfile.getStart()[6].getHour());
-                    chooseMinute.setValue(chosenProfile.getStart()[6].getMinute());
-                } else if ( !startQuestion.isChecked() && endQuestion.isChecked() ) {
-                    chooseHour.setValue(chosenProfile.getEnd()[6].getHour());
-                    chooseMinute.setValue(chosenProfile.getEnd()[6].getMinute());
-                }
-            }
-        });
+        for(int currentWeekDay = 0; currentWeekDay < weekDayRow.length; currentWeekDay++ )
+        {
+            final int currDay = currentWeekDay;
+            weekDayRow[currentWeekDay].setOnClickListener(new View.OnClickListener() {
+               public void onClick(View weekDayView)
+               {
+                   selectedDay = currDay;
+                   Log.d(MainActivity.LOG_TAG,"You have selected the day " + selectedDay);
+                   weekDayView.setBackgroundResource(R.drawable.weekday_activated);
+                   for( int anyOtherWeekDay = 0; anyOtherWeekDay < weekDayRow.length; anyOtherWeekDay++ )
+                   {
+                       if( anyOtherWeekDay != currDay )
+                       {
+                           weekDayRow[anyOtherWeekDay].setBackgroundResource(R.drawable.weekday_deactivated);
+                       }
+                   }
+               }
+            });
+        }
     }
 
 }

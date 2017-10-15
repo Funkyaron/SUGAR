@@ -222,5 +222,65 @@
                 android:textSize="25dp"
                 android:text="Kontakte auswählen"/>
         </LinearLayout>
+        <LinearLayout
+            android:id="@+id/mode_section"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:paddingBottom="10dp"
+            android:background="@drawable/list_item_background"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/descriptionModes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sperrmodus"
+                android:gravity="center"
+                android:textSize="25dp"/>
+            <LinearLayout
+                android:id="@+id/mode_selected_calls_block"
+                android:layout_marginLeft="25dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/nophone"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ausgewählte Anrufe blockieren"/>
+                <Switch
+                    android:id="@+id/switchToBlockingChosenNumbers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/mode_selected_calls_allow"
+                android:layout_marginLeft="25dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/callanswer"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ausgewählte Anrufe blockieren"/>
+                <Switch
+                    android:id="@+id/switchToAllowChosenNumbers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </LinearLayout>
         </LinearLayout>
 </ScrollView>

@@ -297,6 +297,18 @@ class Profile implements Serializable
         startTime = updatedStart;
     }
 
+    public void setStartForDay(int selectedDay,TimeObject updatedStart)
+    {
+        startTime[selectedDay].setHour(updatedStart.getHour());
+        startTime[selectedDay].setMinute(updatedStart.getMinute());
+    }
+
+    public void setEndForDay(int selectedDay,TimeObject updatedEnd)
+    {
+        endTime[selectedDay].setHour(updatedEnd.getHour());
+        endTime[selectedDay].setMinute(updatedEnd.getMinute());
+    }
+
     public void setEnd( TimeObject[] updatedEnd )
     {
         endTime = updatedEnd;
