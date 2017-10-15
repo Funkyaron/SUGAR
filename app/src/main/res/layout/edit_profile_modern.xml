@@ -6,20 +6,30 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     <LinearLayout
+        android:id="@+id/entire_section"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+    <LinearLayout
         android:id="@+id/time_section"
+        android:background="@drawable/list_item_background"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"
         android:orientation="vertical">
         <TextView
             android:id="@+id/timeDescription"
-            android:background="@drawable/list_item_background"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:text="Uhrzeiten einstellen"
-            android:textSize="20dp"
+            android:textSize="25dp"
             android:gravity="center"/>
         <LinearLayout
             android:id="@+id/startOrEnd"
@@ -29,7 +39,6 @@
             android:orientation="horizontal">
             <LinearLayout
                 android:id="@+id/startTime_question"
-                android:background="@drawable/start_time_background"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
@@ -42,7 +51,6 @@
                     android:id="@+id/startDescription"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/white"
                     android:text="Startzeit"
                     android:textSize="25dp"
                     android:layout_marginTop="5dp"/>
@@ -50,12 +58,12 @@
                     android:id="@+id/checkBoxStart"
                     android:layout_width="wrap_content"
                     android:layout_height="25dp"
+                    android:buttonTint="@color/black"
                     android:layout_marginLeft="10dp"
-                    android:checked="false" />
+                    android:checked="true" />
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/endTime_question"
-                android:background="@drawable/start_time_background"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
@@ -68,7 +76,6 @@
                     android:id="@+id/endDescription"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/white"
                     android:text="Endzeit"
                     android:textSize="25dp"
                     android:layout_marginTop="5dp"/>
@@ -76,9 +83,144 @@
                     android:id="@+id/checkBoxEnd"
                     android:layout_width="wrap_content"
                     android:layout_height="25dp"
+                    android:buttonTint="@color/black"
                     android:layout_marginLeft="10dp"
                     android:checked="false" />
             </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/chooseWeekDay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:orientation="horizontal"
+            android:weightSum="7">
+            <TextView
+                android:id="@+id/mondayRectangle"
+                android:background="@drawable/weekday_background"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="MO"
+                android:textSize="25dp"/>
+            <TextView
+                android:id="@+id/tuesdayRectangle"
+                android:background="@drawable/weekday_background"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="DI"
+                android:textSize="25dp"
+                android:gravity="center"/>
+            <TextView
+                android:id="@+id/wednesdayRectangle"
+                android:background="@drawable/weekday_background"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="MI"
+                android:textSize="25dp"
+                android:gravity="center"/>
+            <TextView
+                android:id="@+id/thursdayRectangle"
+                android:background="@drawable/weekday_background"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="DO"
+                android:textSize="25dp"
+                android:gravity="center"/>
+            <TextView
+                android:id="@+id/fridayRectangle"
+                android:background="@drawable/weekday_background"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="FR"
+                android:textSize="25dp"
+                android:gravity="center"/>
+            <TextView
+                android:id="@+id/saturdayRectangle"
+                android:background="@drawable/weekday_background"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="SA"
+                android:textSize="25dp"
+                android:gravity="center"/>
+            <TextView
+                android:id="@+id/sundayRectangle"
+                android:background="@drawable/weekday_background"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="SO"
+                android:textSize="25dp"
+                android:gravity="center"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/timePickerSegment"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <NumberPicker
+                android:id="@+id/hourPicker"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="80dp"
+                android:layout_marginRight="30dp"
+                android:scaleX="1"
+                android:scaleY="1"/>
+            <NumberPicker
+                android:id="@+id/minutePicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleX="1"
+                android:scaleY="1"/>
+        </LinearLayout>
+        <Button
+            android:id="@+id/adjust_time"
+            android:background="@color/black"
+            android:textColor="@color/white"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Uhrzeit einstellen"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/contactsSection"
+            android:background="@drawable/list_item_background"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/contactsSectionDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="25dp"
+                android:text="Kontakte auswählen"/>
+            <Button
+                android:id="@+id/determineContacts"
+                android:background="@drawable/gradient_blue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:textSize="25dp"
+                android:text="Kontakte auswählen"/>
+        </LinearLayout>
+        </LinearLayout>
 </ScrollView>

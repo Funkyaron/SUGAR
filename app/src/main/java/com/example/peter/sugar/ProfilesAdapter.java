@@ -68,8 +68,20 @@ public class ProfilesAdapter extends ArrayAdapter<Profile> {
                 if( prof.isActive())
                 {
                     profileImage.setImageResource(R.mipmap.power_off);
+                    prof.setActive(false);
+                    try {
+                        prof.saveProfile(context);
+                    } catch ( Exception e) {
+                        e.printStackTrace();
+                    }
                 } else if ( !prof.isActive() ) {
                     profileImage.setImageResource(R.mipmap.power_on);
+                    prof.setActive(true);
+                    try {
+                        prof.saveProfile(context);
+                    } catch ( Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
