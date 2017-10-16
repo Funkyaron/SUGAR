@@ -93,4 +93,26 @@ public class ClosingTimeDisplayActivity extends AppCompatActivity {
         return table;
     }
 
+    /* mondayButton = find...
+     * ..
+     * sundayButton = find...
+     *
+     * Button[] allDays = ...
+     *
+     * for(int i = 0; i < 7; i++) {
+     *  siehe oben (69-83)
+     * }
+     */
+
+    /* <button
+     *  android:text="@string/mondayPlusTime"
+     *  />
+     *
+     *  strings.xml:
+     *  <string name="mondayPlusTime">Montag\n%s</string>
+     *
+     *  Activity:
+     *  getString(R.string.mondayPlusTime, timeObject.toString());
+     */
+
 }
