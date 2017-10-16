@@ -35,6 +35,7 @@ public class EditProfileActivityModern extends AppCompatActivity
     TextView saturdayView;
     TextView sundayView;
     TextView weekDayRow[];
+    private Button selectContacts;
     private CheckBox startQuestion;
     private CheckBox endQuestion;
     private Button confirmUpdatedTime;
@@ -57,6 +58,7 @@ public class EditProfileActivityModern extends AppCompatActivity
         beginOrEnd = 's';
         selectedWeekDayIndex = -1;
         activityContext = this;
+        selectContacts = (Button) findViewById(R.id.determineContacts);
         confirmUpdatedTime = (Button) findViewById(R.id.adjust_time);
         startQuestion = (CheckBox) findViewById(R.id.checkBoxStart);
         endQuestion = (CheckBox) findViewById(R.id.checkBoxEnd);
@@ -184,6 +186,7 @@ public class EditProfileActivityModern extends AppCompatActivity
                                     e.printStackTrace();
                                 }
                             } else if( chosenProfile.getStart()[selectedWeekDayIndex].getHour() == -1 ){
+                                Log.d(MainActivity.LOG_TAG,"Dieser Bereich sollte geladen werden!");
                                 Toast.makeText(activityContext, "Leider ist dieser Tag blockiert!", Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -198,11 +201,19 @@ public class EditProfileActivityModern extends AppCompatActivity
                                     e.printStackTrace();
                                 }
                             } else if(chosenProfile.getEnd()[selectedWeekDayIndex].getHour() == -1){
+                                Log.d(MainActivity.LOG_TAG,"Dieser Bereich sollte geladen werden!");
                                 Toast.makeText(activityContext, "Leider ist dieser Tag blockiert!", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
 
+            }
+        });
+
+        selectContacts.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View contactsButton)
+            {
+                new ContactsDialogFragment().show(getFragmentManager(), "cont");
             }
         });
     }
@@ -280,12 +291,12 @@ public class EditProfileActivityModern extends AppCompatActivity
                         }
                        for (int anyOtherWeekDay = 0; anyOtherWeekDay < weekDayRow.length; anyOtherWeekDay++) {
                            if ( chosenProfile.getStart()[currDay].getHour() == -1 ) {
+                               selectedWeekDayIndex = currDay;
                                if(selectedWeekDayIndex >= 0) {
                                    if( chosenProfile.getStart()[selectedWeekDayIndex].getHour() >= 0 ) {
                                        weekDayRow[selectedWeekDayIndex].setBackgroundResource(R.drawable.weekday_deactivated);
                                    }
                                    weekDayRow[currDay].setBackgroundResource(R.drawable.weekday_blocked);
-                                   selectedWeekDayIndex = currDay;
                                }
                                chooseHour.setValue(0);
                                chooseMinute.setValue(0);

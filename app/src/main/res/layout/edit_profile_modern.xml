@@ -189,7 +189,7 @@
             <Button
                 android:id="@+id/adjust_time"
                 android:background="@drawable/gradient_green"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
                 android:layout_width="match_parent"
@@ -208,6 +208,7 @@
             <Button
                 android:id="@+id/determineContacts"
                 android:background="@drawable/gradient_blue"
+                android:textColor="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
