@@ -41,7 +41,7 @@ public class EditProfileActivityModern extends AppCompatActivity
     private NumberPicker chooseMinute;
     private int selectedDay = 1;
     private Context activityContext;
-    private int[] blockedWeekDays;
+    private int selectedWeekDayIndex;
 
     @Override
     public void onCreate(Bundle savedInstances)
@@ -49,7 +49,7 @@ public class EditProfileActivityModern extends AppCompatActivity
         super.onCreate(savedInstances);
         setContentView(R.layout.edit_profile_modern);
         beginOrEnd = 's';
-        blockedWeekDays = new int[]{-1,-1,-1,-1,-1,-1,-1};
+        selectedWeekDayIndex = -1;
         activityContext = this;
         confirmUpdatedTime = (Button) findViewById(R.id.adjust_time);
         startQuestion = (CheckBox) findViewById(R.id.checkBoxStart);
@@ -154,10 +154,9 @@ public class EditProfileActivityModern extends AppCompatActivity
             final int currDay = currentWeekDay;
             weekDayRow[currentWeekDay].setOnLongClickListener(new View.OnLongClickListener() {
                 public boolean onLongClick(View weekDayView) {
-                    for (int blockedWeekDay = 0; blockedWeekDay < blockedWeekDays.length; blockedWeekDay++) {
+                    for (int blockedWeekDay = 0; blockedWeekDay < 7; blockedWeekDay++) {
                         if (chosenProfile.getStart()[currDay].getHour() != -1) {
                             Log.d(MainActivity.LOG_TAG,"This weekDay should now be blocked!");
-                            blockedWeekDays[blockedWeekDay] = currDay;
                             weekDayView.setBackgroundResource(R.drawable.weekday_blocked);
                             chosenProfile.setStartForDay(currDay,new TimeObject(-1,-1));
                             chosenProfile.setEndForDay(currDay,new TimeObject(-1,-1));
@@ -170,9 +169,8 @@ public class EditProfileActivityModern extends AppCompatActivity
                         } else if ( chosenProfile.getStart()[currDay].getHour() == -1){
                             Log.d(MainActivity.LOG_TAG,"This weekDay is now unblocked!");
                             weekDayView.setBackgroundResource(R.drawable.weekday_deactivated);
-                            blockedWeekDays[blockedWeekDay] = -1;
-                            chosenProfile.setStartForDay(currDay,new TimeObject(0,0));
-                            chosenProfile.setEndForDay(currDay,new TimeObject(0,0));
+                            chosenProfile.setStartForDay(currDay,new TimeObject(23,59));
+                            chosenProfile.setEndForDay(currDay,new TimeObject(23,59));
                             try {
                                 chosenProfile.saveProfile(activityContext);
                             } catch ( Exception e ) {
@@ -196,15 +194,21 @@ public class EditProfileActivityModern extends AppCompatActivity
                public void onClick(View weekDayView)
                {
                    selectedDay = currDay;
-                   if( !Arrays.asList(blockedWeekDays).contains(currDay) ) {
                        Log.d(MainActivity.LOG_TAG, "You have selected the day " + selectedDay);
                        weekDayView.setBackgroundResource(R.drawable.weekday_activated);
+                       chooseHour.setValue(chosenProfile.getStart()[currDay].getHour());
+                       chooseMinute.setValue(chosenProfile.getStart()[currDay].getMinute());
                        for (int anyOtherWeekDay = 0; anyOtherWeekDay < weekDayRow.length; anyOtherWeekDay++) {
-                           if (anyOtherWeekDay != currDay) {
-                               weekDayRow[anyOtherWeekDay].setBackgroundResource(R.drawable.weekday_deactivated);
+                           if ( chosenProfile.getStart()[currDay].getHour() == -1 ) {
+                               weekDayRow[currDay].setBackgroundResource(R.drawable.weekday_blocked);
+                           } else if ( chosenProfile.getStart()[currDay].getHour() >= 0 ) {
+                               if( selectedWeekDayIndex >= 0) {
+                                   weekDayRow[selectedWeekDayIndex].setBackgroundResource(R.drawable.weekday_deactivated);
+                               }
+                               weekDayRow[currDay].setBackgroundResource(R.drawable.weekday_activated);
+                               selectedWeekDayIndex = currDay;
                            }
                        }
-                   }
                }
             });
         }
