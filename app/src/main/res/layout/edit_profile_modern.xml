@@ -7,28 +7,30 @@
     android:orientation="vertical">
     <LinearLayout
         android:id="@+id/entire_section"
+        android:background="@drawable/list_item_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:orientation="vertical">
     <LinearLayout
         android:id="@+id/time_section"
-        android:background="@drawable/list_item_background"
         android:layout_marginRight="15dp"
         android:layout_marginLeft="15dp"
         android:paddingTop="15dp"
-        android:paddingBottom="20dp"
+        android:paddingBottom="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="10dp"
         android:orientation="vertical">
         <TextView
-            android:id="@+id/timeDescription"
+            android:id="@+id/generalDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:text="Uhrzeiten einstellen"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="Profileinstellungen"
             android:textSize="25dp"
             android:gravity="center"/>
         <LinearLayout
@@ -59,7 +61,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="25dp"
                     android:buttonTint="@color/black"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="5dp"
                     android:checked="true" />
             </LinearLayout>
             <LinearLayout
@@ -84,7 +86,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="25dp"
                     android:buttonTint="@color/black"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="5dp"
                     android:checked="false" />
             </LinearLayout>
         </LinearLayout>
@@ -93,8 +95,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:orientation="horizontal"
             android:weightSum="7">
             <TextView
@@ -164,7 +166,7 @@
         <LinearLayout
             android:id="@+id/timePickerSegment"
             android:layout_marginTop="30dp"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="15dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -184,57 +186,33 @@
                 android:scaleX="1"
                 android:scaleY="1"/>
         </LinearLayout>
-        <LinearLayout
-            android:id="@+id/buttonPanel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="6">
-            <Button
-                android:id="@+id/blockWeekDay"
-                android:background="@drawable/gradient_red"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_weight="3"
-                android:text="Blocken" />
             <Button
                 android:id="@+id/adjust_time"
                 android:background="@drawable/gradient_green"
                 android:textColor="@color/black"
-                android:layout_weight="3"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Umstellen"/>
-        </LinearLayout>
+                android:text="Zeit umstellen"/>
         </LinearLayout>
         <LinearLayout
             android:id="@+id/contactsSection"
-            android:background="@drawable/list_item_background"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="20dp"
+            android:paddingTop="10dp"
             android:paddingBottom="20dp"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:orientation="vertical">
-            <TextView
-                android:id="@+id/contactsSectionDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textSize="25dp"
-                android:text="Kontakte auswählen"/>
             <Button
                 android:id="@+id/determineContacts"
                 android:background="@drawable/gradient_blue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="25dp"
-                android:layout_marginRight="25dp"
-                android:textSize="25dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:textSize="15dp"
                 android:text="Kontakte auswählen"/>
         </LinearLayout>
         <LinearLayout
@@ -243,17 +221,9 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:paddingBottom="10dp"
-            android:background="@drawable/list_item_background"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <TextView
-                android:id="@+id/descriptionModes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Sperrmodus"
-                android:gravity="center"
-                android:textSize="25dp"/>
             <LinearLayout
                 android:id="@+id/mode_selected_calls_block"
                 android:layout_marginLeft="25dp"
