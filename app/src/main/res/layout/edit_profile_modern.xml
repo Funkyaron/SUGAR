@@ -184,16 +184,31 @@
                 android:scaleX="1"
                 android:scaleY="1"/>
         </LinearLayout>
-        <Button
-            android:id="@+id/adjust_time"
-            android:background="@color/black"
-            android:textColor="@color/white"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
+        <LinearLayout
+            android:id="@+id/buttonPanel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Uhrzeit einstellen"/>
+            android:orientation="horizontal"
+            android:weightSum="6">
+            <Button
+                android:id="@+id/blockWeekDay"
+                android:background="@drawable/gradient_red"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_weight="3"
+                android:text="Blocken" />
+            <Button
+                android:id="@+id/adjust_time"
+                android:background="@drawable/gradient_green"
+                android:textColor="@color/black"
+                android:layout_weight="3"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="15dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Umstellen"/>
+        </LinearLayout>
         </LinearLayout>
         <LinearLayout
             android:id="@+id/contactsSection"

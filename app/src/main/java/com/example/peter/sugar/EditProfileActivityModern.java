@@ -13,6 +13,9 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+
 /**
  * Created by SHK on 14.10.17.
  */
@@ -38,12 +41,15 @@ public class EditProfileActivityModern extends AppCompatActivity
     private NumberPicker chooseMinute;
     private int selectedDay = 1;
     private Context activityContext;
+    private int[] blockedWeekDays;
 
     @Override
     public void onCreate(Bundle savedInstances)
     {
         super.onCreate(savedInstances);
         setContentView(R.layout.edit_profile_modern);
+        beginOrEnd = 's';
+        blockedWeekDays = new int[]{-1,-1,-1,-1,-1,-1,-1};
         activityContext = this;
         confirmUpdatedTime = (Button) findViewById(R.id.adjust_time);
         startQuestion = (CheckBox) findViewById(R.id.checkBoxStart);
@@ -69,10 +75,19 @@ public class EditProfileActivityModern extends AppCompatActivity
         } catch ( Exception e ) {
             e.printStackTrace();
         }
+        for( int currWeekDay = 0; currWeekDay < weekDayRow.length; currWeekDay++ )
+        {
+            if( chosenProfile.getStart()[currWeekDay].getHour() == -1  )
+            {
+                weekDayRow[currWeekDay].setBackgroundResource(R.drawable.weekday_blocked);
+            } else {
+                weekDayRow[currWeekDay].setBackgroundResource(R.drawable.weekday_deactivated);
+            }
+        }
         registerWeekDayListener();
+        registerWeekDayLongClickListener();
         registerCheckBoxListener();
         registerButtonListener();
-        mondayView.setBackgroundResource(R.drawable.weekday_activated);
     }
 
     public void registerCheckBoxListener() {
@@ -132,6 +147,46 @@ public class EditProfileActivityModern extends AppCompatActivity
         });
     }
 
+    public void registerWeekDayLongClickListener()
+    {
+        for(int currentWeekDay = 0; currentWeekDay < weekDayRow.length; currentWeekDay++ )
+        {
+            final int currDay = currentWeekDay;
+            weekDayRow[currentWeekDay].setOnLongClickListener(new View.OnLongClickListener() {
+                public boolean onLongClick(View weekDayView) {
+                    for (int blockedWeekDay = 0; blockedWeekDay < blockedWeekDays.length; blockedWeekDay++) {
+                        if (chosenProfile.getStart()[currDay].getHour() != -1) {
+                            Log.d(MainActivity.LOG_TAG,"This weekDay should now be blocked!");
+                            blockedWeekDays[blockedWeekDay] = currDay;
+                            weekDayView.setBackgroundResource(R.drawable.weekday_blocked);
+                            chosenProfile.setStartForDay(currDay,new TimeObject(-1,-1));
+                            chosenProfile.setEndForDay(currDay,new TimeObject(-1,-1));
+                            try {
+                                chosenProfile.saveProfile(activityContext);
+                            } catch ( Exception e ) {
+                                e.printStackTrace();
+                            }
+                            return true;
+                        } else if ( chosenProfile.getStart()[currDay].getHour() == -1){
+                            Log.d(MainActivity.LOG_TAG,"This weekDay is now unblocked!");
+                            weekDayView.setBackgroundResource(R.drawable.weekday_deactivated);
+                            blockedWeekDays[blockedWeekDay] = -1;
+                            chosenProfile.setStartForDay(currDay,new TimeObject(0,0));
+                            chosenProfile.setEndForDay(currDay,new TimeObject(0,0));
+                            try {
+                                chosenProfile.saveProfile(activityContext);
+                            } catch ( Exception e ) {
+                                e.printStackTrace();
+                            }
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            });
+        }
+    }
+
     public void registerWeekDayListener()
     {
         for(int currentWeekDay = 0; currentWeekDay < weekDayRow.length; currentWeekDay++ )
@@ -141,13 +196,13 @@ public class EditProfileActivityModern extends AppCompatActivity
                public void onClick(View weekDayView)
                {
                    selectedDay = currDay;
-                   Log.d(MainActivity.LOG_TAG,"You have selected the day " + selectedDay);
-                   weekDayView.setBackgroundResource(R.drawable.weekday_activated);
-                   for( int anyOtherWeekDay = 0; anyOtherWeekDay < weekDayRow.length; anyOtherWeekDay++ )
-                   {
-                       if( anyOtherWeekDay != currDay )
-                       {
-                           weekDayRow[anyOtherWeekDay].setBackgroundResource(R.drawable.weekday_deactivated);
+                   if( !Arrays.asList(blockedWeekDays).contains(currDay) ) {
+                       Log.d(MainActivity.LOG_TAG, "You have selected the day " + selectedDay);
+                       weekDayView.setBackgroundResource(R.drawable.weekday_activated);
+                       for (int anyOtherWeekDay = 0; anyOtherWeekDay < weekDayRow.length; anyOtherWeekDay++) {
+                           if (anyOtherWeekDay != currDay) {
+                               weekDayRow[anyOtherWeekDay].setBackgroundResource(R.drawable.weekday_deactivated);
+                           }
                        }
                    }
                }

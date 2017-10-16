@@ -86,8 +86,13 @@ public class ProfilesAdapter extends ArrayAdapter<Profile> {
             }
         });
         profileName.setText(name);
-        profileStartTime.setText("Anfang : " + startTime.toString());
-        profileEndTime.setText("Ende : " + endTime.toString());
+        if(prof.getStart()[currentWeekDay].getHour() > -1 && prof.getStart()[currentWeekDay].getMinute() > -1) {
+            profileStartTime.setText("Anfang : " + startTime.toString());
+            profileEndTime.setText("Ende : " + endTime.toString());
+        } else if( prof.getStart()[currentWeekDay].getHour() == -1 && prof.getStart()[currentWeekDay].getMinute() == -1){
+            profileStartTime.setText("Anfang : Nicht aktiv");
+            profileEndTime.setText("Ende : Nicht aktiv");
+        }
         RelativeLayout clickableView = (RelativeLayout) result.findViewById(R.id.textArea);
         clickableView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
