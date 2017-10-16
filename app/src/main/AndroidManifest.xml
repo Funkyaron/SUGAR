@@ -71,6 +71,7 @@
         <activity android:name=".DisplayProfileActivityAlt" />
         <activity android:name=".ListProfilesActivity" />
         <activity android:name=".ClosingTimeDisplayActivity" />
+        <activity android:name=".EditProfileActivityModern"/>
 
         <receiver
             android:name=".ClosingTimeReceiver"
