@@ -6,6 +6,7 @@ import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -49,44 +50,42 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     {
         ActivityContainingProfile parentActivity = (ActivityContainingProfile) getActivity();
         Profile prof = parentActivity.getProfile();
+        TimeObject modifiedTime = new TimeObject(hourOfDay, minute);
 
+        // Check if start time is earlier than end time.
+        // Otherwise the selection by the user is not valid and will not take effect.
         boolean isValid = true;
         TimeObject startTime;
         TimeObject endTime;
         if(isStart) {
-            startTime = new TimeObject(hourOfDay, minute);
+            startTime = modifiedTime;
             endTime = prof.getEnd()[index];
         } else {
             startTime = prof.getStart()[index];
-            endTime = new TimeObject(hourOfDay, minute);
+            endTime = modifiedTime;
         }
         isValid = startTime.earlierThan(endTime);
         if(!isValid) {
             return;
         }
 
-        TimeObject modifiedTime;
+        // Modify the time of the selected day in the corresponding profile.
         if(isStart) {
-            TimeObject[] modified = prof.getStart();
-            modified[index] = new TimeObject(hourOfDay, minute);
-            modifiedTime = modified[index];
-            prof.setStart(modified);
+            prof.setStartForDay(index, modifiedTime);
         } else {
-            TimeObject[] modified = prof.getEnd();
-            modified[index] = new TimeObject(hourOfDay, minute);
-            modifiedTime = modified[index];
-            prof.setEnd(modified);
+            prof.setEndForDay(index, modifiedTime);
         }
 
-        TableRow row;
-        if(isStart)
-            row = (TableRow) parentActivity.findViewById(R.id.start_time_row);
-        else
-            row = (TableRow) parentActivity.findViewById(R.id.end_time_row);
+        // Set the relevant text in the parent Activity.
+        if(isStart) {
+            Button startTimeButton = (Button) parentActivity.findViewById(R.id.start_time_button);
+            startTimeButton.setText(parentActivity.getString(R.string.from_plus_time, modifiedTime));
+        } else {
+            Button endTimeButton = (Button) parentActivity.findViewById(R.id.end_time_button);
+            endTimeButton.setText(parentActivity.getString(R.string.to_plus_time, modifiedTime));
+        }
 
-        TextView modifiedView = (TextView) row.getChildAt(index);
-        modifiedView.setText(modifiedTime.toString());
-
+        // Update the profile status in case its active.
         if(prof.isActive()) {
             TimeManager mgr = new TimeManager(parentActivity);
             mgr.initProfile(prof);

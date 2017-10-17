@@ -225,9 +225,9 @@ class Profile implements Serializable
             }
         }
         if(active)
-            builder.append("Active");
+            builder.append("Active\n");
         else
-            builder.append("Inactive");
+            builder.append("Inactive\n");
 
         if(allowed)
             builder.append("Calls allowed\n");
@@ -299,14 +299,12 @@ class Profile implements Serializable
 
     public void setStartForDay(int selectedDay,TimeObject updatedStart)
     {
-        startTime[selectedDay].setHour(updatedStart.getHour());
-        startTime[selectedDay].setMinute(updatedStart.getMinute());
+        startTime[selectedDay] = updatedStart;
     }
 
     public void setEndForDay(int selectedDay,TimeObject updatedEnd)
     {
-        endTime[selectedDay].setHour(updatedEnd.getHour());
-        endTime[selectedDay].setMinute(updatedEnd.getMinute());
+        endTime[selectedDay] = updatedEnd;
     }
 
     public void setEnd( TimeObject[] updatedEnd )
@@ -316,6 +314,8 @@ class Profile implements Serializable
 
     public void setActive(boolean active) {
         this.active = active;
+        if(!active)
+            setAllowed(true);
     }
 
     public void setAllowed(boolean allowed) {

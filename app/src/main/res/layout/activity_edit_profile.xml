@@ -4,132 +4,130 @@
     android:id="@+id/edit_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:weightSum="10">
+    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+    android:layout_marginRight="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="@dimen/activity_vertical_margin"
+    android:layout_marginBottom="@dimen/activity_vertical_margin"
+    android:orientation="vertical">
+
+    <!--This "section", i.e. a TextView, displays the profile name-->
+    <!--TODO: Add the icon that displays whether the Profile currently allows calls or not.-->
     <TextView
-        android:id="@+id/profile_name"
+        android:id="@+id/profile_name_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/grand_vertical_margin"
         android:gravity="center"
-        android:layout_weight="2"
-        android:textSize="@dimen/genericTextSize"/>
+        android:textSize="@dimen/profile_name_text_size" />
 
+    <!--This section, the TableLayout, displays the days of week. Every TextView will be clickable.
+        When you click on it, the Buttons below will be updated.-->
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/grand_vertical_margin"
         android:stretchColumns="*">
         <TableRow
-            android:id="@+id/days_row"
-            android:paddingTop="@dimen/list_item_vertical_margin"
-            android:paddingBottom="@dimen/list_item_vertical_margin">
+            android:id="@+id/days_row">
             <TextView
+                android:id="@+id/monday_view"
+                android:background="@drawable/weekday_background"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:text="@string/monday_short"/>
+                android:textSize="@dimen/genericTextSize"
+                android:text="@string/monday_short" />
             <TextView
+                android:id="@+id/tuesday_view"
+                android:background="@drawable/weekday_background"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:text="@string/tuesday_short"/>
+                android:textSize="@dimen/genericTextSize"
+                android:text="@string/tuesday_short" />
             <TextView
+                android:id="@+id/wednesday_view"
+                android:background="@drawable/weekday_background"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:text="@string/wednesday_short"/>
+                android:textSize="@dimen/genericTextSize"
+                android:text="@string/wednesday_short" />
             <TextView
+                android:id="@+id/thursday_view"
+                android:background="@drawable/weekday_background"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:text="@string/thursday_short"/>
+                android:textSize="@dimen/genericTextSize"
+                android:text="@string/thursday_short" />
             <TextView
+                android:id="@+id/friday_view"
+                android:background="@drawable/weekday_background"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:text="@string/friday_short"/>
+                android:textSize="@dimen/genericTextSize"
+                android:text="@string/friday_short" />
             <TextView
+                android:id="@+id/saturday_view"
+                android:background="@drawable/weekday_background"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:text="@string/saturday_short"/>
+                android:textSize="@dimen/genericTextSize"
+                android:text="@string/saturday_short" />
             <TextView
+                android:id="@+id/sunday_view"
+                android:background="@drawable/weekday_background"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:text="@string/sunday_short"/>
-        </TableRow>
-        <TableRow
-            android:id="@+id/start_time_row"
-            android:paddingTop="@dimen/list_item_vertical_margin"
-            android:paddingBottom="@dimen/list_item_vertical_margin">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"/>
-        </TableRow>
-        <TableRow
-            android:id="@+id/end_time_row"
-            android:paddingTop="@dimen/list_item_vertical_margin"
-            android:paddingBottom="@dimen/list_item_vertical_margin">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"/>
+                android:textSize="@dimen/genericTextSize"
+                android:text="@string/sunday_short" />
         </TableRow>
     </TableLayout>
-    <Button
-        android:id="@+id/choose_contacts_button"
+
+    <!--This section, the RelativeLayout, holds Buttons for both the start time and end time for the
+        selected weekday. Clicking on them will open the TimePickerFragment.-->
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/grand_vertical_margin"
+        android:layout_gravity="center_horizontal">
+        <Button
+            android:id="@+id/start_time_button"
+            android:background="@drawable/startactivity_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/horizontalMargin" />
+        <Button
+            android:id="@+id/end_time_button"
+            android:background="@drawable/startactivity_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/start_time_button" />
+    </RelativeLayout>
+
+    <!--This is the Button used for selecting the contacts associated with the profile.-->
+    <Button
+        android:id="@+id/choose_contacts_button"
+        android:background="@drawable/startactivity_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/grand_vertical_margin"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/horizontalMargin"
         android:text="@string/choosecontacts"/>
+
+    <!--TODO: Add a Button for selecting the mode.-->
+
+    <!--This Button is intended to finish the Activity.-->
+    <Button
+        android:id="@+id/finish_button"
+        android:background="@drawable/startactivity_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/finish"/>
+
 </LinearLayout>

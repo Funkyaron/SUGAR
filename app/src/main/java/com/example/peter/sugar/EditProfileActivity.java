@@ -13,31 +13,112 @@ import android.widget.TextView;
 
 public class EditProfileActivity extends ActivityContainingProfile {
 
+    private TextView profileNameView;
+
+    private TextView[] allDays;
+
+    private Button startTimeButton;
+    private Button endTimeButton;
+
+    private Button chooseContactsButton;
+    private Button finishButton;
+
+    //Used to detect which day of week is selected
+    private int index;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
-        final String passedName = getIntent().getExtras().getString("profileName");
-        try {
-            setProfile(Profile.readProfileFromXmlFile(passedName, this));
-        } catch(Exception e) {
-            Log.e(MainActivity.LOG_TAG, e.toString());
-            finish();
-            return;
+
+        //Initialize Views
+        profileNameView = (TextView) findViewById(R.id.profile_name_view);
+
+        TableRow daysRow = (TableRow) findViewById(R.id.days_row);
+        allDays = new TextView[7];
+        for(int i = 0; i < 7; i++) {
+            allDays[i] = (TextView) daysRow.getChildAt(i);
         }
 
-        final boolean[] days = prof.getDays();
+        startTimeButton = (Button) findViewById(R.id.start_time_button);
+        endTimeButton = (Button) findViewById(R.id.end_time_button);
+
+        chooseContactsButton = (Button) findViewById(R.id.choose_contacts_button);
+        finishButton = (Button) findViewById(R.id.finish_button);
+
+
+        //Extract information from the passed profile and set up the Views.
+        Profile prof = getProfile();
+        final String profileName = prof.getName();
         final TimeObject[] startTimes = prof.getStart();
         final TimeObject[] endTimes = prof.getEnd();
 
-        TextView profileNameView = (TextView) findViewById(R.id.profile_name);
+        profileNameView.setText(profileName);
+        index = 0;
+        allDays[index].setBackground(getResources().getDrawable(R.drawable.weekday_activated, null));
+        startTimeButton.setText(getString(R.string.from_plus_time, startTimes[index].toString()));
+        endTimeButton.setText(getString(R.string.to_plus_time, endTimes[index].toString()));
+
+
+        //Implement functionality
+        for(int i = 0; i < 7; i++) {
+            final int ind = i;
+            allDays[ind].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    index = ind;
+                    for(int j = 0; j < 7; j++) {
+                        if(j == ind) {
+                            allDays[j].setBackground(getResources().getDrawable(R.drawable.weekday_activated, null));
+                        } else {
+                            allDays[j].setBackground(getResources().getDrawable(R.drawable.weekday_deactivated, null));
+                        }
+                    }
+                    startTimeButton.setText(getString(R.string.from_plus_time, startTimes[ind].toString()));
+                    endTimeButton.setText(getString(R.string.to_plus_time, endTimes[ind].toString()));
+                }
+            });
+        }
+
+        startTimeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pickTime(profileName, index, true);
+            }
+        });
+
+        endTimeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pickTime(profileName, index, false);
+            }
+        });
+
+        chooseContactsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new ContactsDialogFragment().show(getFragmentManager(), "cont");
+            }
+        });
+
+        finishButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        /*
+        final String passedName = getIntent().getExtras().getString("profileName");
+
+
+        final boolean[] days = prof.getDays();
+
 
         final TableRow daysRow = (TableRow) findViewById(R.id.days_row);
         final TableRow startTimeRow = (TableRow) findViewById(R.id.start_time_row);
         final TableRow endTimeRow = (TableRow) findViewById(R.id.end_time_row);
-
-        profileNameView.setText(passedName);
 
         for(int i = 0; i < daysRow.getChildCount(); i++) {
             TextView v = (TextView) daysRow.getChildAt(i);
@@ -133,20 +214,7 @@ public class EditProfileActivity extends ActivityContainingProfile {
                 new ContactsDialogFragment().show(getFragmentManager(), "cont");
             }
         });
-    }
-
-    @Override
-    public void onDestroy() {
-        try {
-            prof.saveProfile(this);
-        } catch(Exception e) {
-            Log.e(MainActivity.LOG_TAG, e.toString());
-        }
-        if(prof.isActive()) {
-            TimeManager mgr = new TimeManager(this);
-            mgr.initProfile(prof);
-        }
-        super.onDestroy();
+        */
     }
 
     private void pickTime(String passedName, int index, boolean isStart) {
