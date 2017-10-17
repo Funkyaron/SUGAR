@@ -15,15 +15,14 @@ public class ListProfilesActivity extends AppCompatActivity
 
     private Profile profiles[];
     private ListView profilesList;
+
     @Override
     public void onResume()
     {
         super.onResume();
         profiles = Profile.readAllProfiles(this);
-
-        ProfilesAdapter adapter = new ProfilesAdapter(this, profiles);
+        ProfilesAdapter adapter = new ProfilesAdapter(this,profiles);
         profilesList = (ListView) findViewById(R.id.profiles_list);
-        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this,R.layout.profile_list_item,R.id.profile_name,new String[]{"A","B","C"});
         profilesList.setAdapter(adapter);
     }
 
@@ -37,7 +36,6 @@ public class ListProfilesActivity extends AppCompatActivity
 
         ProfilesAdapter adapter = new ProfilesAdapter(this, profiles);
         profilesList = (ListView) findViewById(R.id.profiles_list);
-        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this,R.layout.profile_list_item,R.id.profile_name,new String[]{"A","B","C"});
         profilesList.setAdapter(adapter);
     }
 }

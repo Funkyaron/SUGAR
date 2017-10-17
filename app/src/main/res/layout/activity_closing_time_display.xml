@@ -37,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="MO : "
+                android:text="Montag : "
                 android:textSize="15dp"/>
         </LinearLayout>
     <LinearLayout
@@ -61,7 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="DI : "
+            android:text="Dienstag : "
             android:textSize="15dp"/>
     </LinearLayout>
     <LinearLayout
@@ -85,7 +85,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="MI : "
+            android:text="Mittwoch : "
             android:textSize="15dp"/>
     </LinearLayout>
     <LinearLayout
@@ -109,7 +109,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="DO : "
+            android:text="Donnerstag : "
             android:textSize="15dp"/>
     </LinearLayout>
     <LinearLayout
@@ -133,7 +133,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="FR : "
+            android:text="Freitag : "
             android:textSize="15dp"/>
     </LinearLayout>
     <LinearLayout
@@ -157,7 +157,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="SA : "
+            android:text="Samstag : "
             android:textSize="15dp"/>
     </LinearLayout>
     <LinearLayout
@@ -181,7 +181,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="SO : "
+            android:text="Sonntag : "
             android:textSize="15dp"/>
     </LinearLayout>
     </LinearLayout>

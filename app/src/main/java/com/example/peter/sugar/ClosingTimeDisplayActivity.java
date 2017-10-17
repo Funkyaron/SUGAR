@@ -27,7 +27,6 @@ public class ClosingTimeDisplayActivity extends AppCompatActivity {
     };
 
     private TimeObject[] closingTimes;
-
     private TableLayout table;
     TextView[] timeViews;
 
@@ -35,6 +34,14 @@ public class ClosingTimeDisplayActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_closing_time_display);
+
+        timeViews = new TextView[]{ (TextView) findViewById(R.id.monday_closing_time_weekday),
+                                    (TextView) findViewById(R.id.tuesday_closing_time_weekday),
+                                    (TextView) findViewById(R.id.wednesday_closing_time_weekday),
+                                    (TextView) findViewById(R.id.thursday_closing_time_weekday),
+                                    (TextView) findViewById(R.id.friday_closing_time_weekday),
+                                    (TextView) findViewById(R.id.saturday_closing_time_weekday),
+                                    (TextView) findViewById(R.id.sunday_closing_time_weekday)};
 
         Log.d(MainActivity.LOG_TAG, "Before opening SharedPreferences");
         closingTimes = new TimeObject[7];
@@ -50,11 +57,7 @@ public class ClosingTimeDisplayActivity extends AppCompatActivity {
 
         Log.d(MainActivity.LOG_TAG, "Before initializing Views");
         try {
-            table = (TableLayout) findViewById(R.id.closing_time_table);
-            timeViews = new TextView[table.getChildCount()];
             for (int i = 0; i < table.getChildCount(); i++) {
-                TableRow row = (TableRow) table.getChildAt(i);
-                timeViews[i] = (TextView) row.getChildAt(1);
                 if (closingTimes[i] != null) {
                     timeViews[i].setText(closingTimes[i].toString());
                 } else {
@@ -92,6 +95,8 @@ public class ClosingTimeDisplayActivity extends AppCompatActivity {
     public TableLayout getTable() {
         return table;
     }
+
+    public TextView[] getWeekDayViews() { return timeViews; }
 
     /* mondayButton = find...
      * ..

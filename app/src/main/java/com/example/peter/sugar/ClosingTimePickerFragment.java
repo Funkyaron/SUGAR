@@ -22,6 +22,7 @@ public class ClosingTimePickerFragment extends DialogFragment
         implements TimePickerDialog.OnTimeSetListener {
 
     private int index;
+    private final String[] weekDayLiterals = {"Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"};
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -64,9 +65,10 @@ public class ClosingTimePickerFragment extends DialogFragment
         ClosingTimeDisplayActivity parentActivity = (ClosingTimeDisplayActivity) getActivity();
         parentActivity.setClosingTime(index, time);
 
-        TableRow row = (TableRow) parentActivity.getTable().getChildAt(index);
-        TextView timeView = (TextView) row.getChildAt(1);
-        timeView.setText(time.toString());
+        //TableRow row = (TableRow) parentActivity.getTable().getChildAt(index);
+        TextView[] timeViews = parentActivity.getWeekDayViews();
+        TextView timeView = (TextView) timeViews[index];
+        timeView.setText(weekDayLiterals[index] + " : " + time.toString());
 
         SharedPreferences savedTimes = parentActivity.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = savedTimes.edit();
