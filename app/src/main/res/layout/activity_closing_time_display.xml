@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Important note : Due to the lack of borders or anything similar to that, I had to create two drawables which
-     could be applied two two cells.Simply speaking, the first one is called "cell_border.xml" and shall be the
-     background for a table cell which is displaying a certain weekday. The second one is used to highlight the
-     times which are noted as closing times for the user. -->
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.example.peter.sugar.ClosingTimeDisplayActivity">
     <TextView
         android:id="@+id/label_closing_time"
@@ -19,6 +16,175 @@
         android:gravity="center"
         android:text="@string/closing_time_announcment"
         android:textSize="@dimen/genericTextSize"/>
+        <LinearLayout
+            android:background="@drawable/list_item_background"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:id="@+id/monday_closing_time_section"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_marginRight="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/sleepyworker"/>
+            <TextView
+                android:id="@+id/monday_closing_time_weekday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="MO : "
+                android:textSize="15dp"/>
+        </LinearLayout>
+    <LinearLayout
+        android:id="@+id/tuesday_closing_time_section"
+        android:background="@drawable/list_item_background"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_marginRight="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/sleepyworker"/>
+        <TextView
+            android:id="@+id/tuesday_closing_time_weekday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="DI : "
+            android:textSize="15dp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/wednesday_closing_time_section"
+        android:background="@drawable/list_item_background"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_marginRight="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/sleepyworker"/>
+        <TextView
+            android:id="@+id/wednesday_closing_time_weekday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="MI : "
+            android:textSize="15dp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/thursday_closing_time_section"
+        android:background="@drawable/list_item_background"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_marginRight="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/sleepyworker"/>
+        <TextView
+            android:id="@+id/thursday_closing_time_weekday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="DO : "
+            android:textSize="15dp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/friday_closing_time_section"
+        android:background="@drawable/list_item_background"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_marginRight="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/sleepyworker"/>
+        <TextView
+            android:id="@+id/friday_closing_time_weekday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="FR : "
+            android:textSize="15dp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/saturday_closing_time_section"
+        android:background="@drawable/list_item_background"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_marginRight="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/sleepyworker"/>
+        <TextView
+            android:id="@+id/saturday_closing_time_weekday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="SA : "
+            android:textSize="15dp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/sunday_closing_time_section"
+        android:background="@drawable/list_item_background"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_marginRight="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/sleepyworker"/>
+        <TextView
+            android:id="@+id/sunday_closing_time_weekday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="SO : "
+            android:textSize="15dp"/>
+    </LinearLayout>
+    </LinearLayout>
     <!--
     <TableLayout
         android:id="@+id/closing_time_table"
@@ -221,7 +387,7 @@
         </TableRow>
     </TableLayout>
     -->
-
+    <!--
     <TableLayout
         android:id="@+id/closing_time_table"
         android:layout_width="match_parent"
@@ -293,5 +459,4 @@
                 android:textSize="@dimen/genericTextSize"/>
         </TableRow>
     </TableLayout>
-
-</RelativeLayout>
+    -->
