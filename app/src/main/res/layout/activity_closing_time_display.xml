@@ -10,7 +10,7 @@
         android:id="@+id/label_closing_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/verticalMargin"
+        android:layout_marginTop="10dp"
         android:layout_marginLeft="@dimen/horizontalMargin"
         android:layout_marginRight="@dimen/horizontalMargin"
         android:gravity="center"
@@ -18,171 +18,139 @@
         android:textSize="@dimen/genericTextSize"/>
         <LinearLayout
             android:background="@drawable/list_item_background"
-            android:paddingLeft="20dp"
+            android:paddingLeft="45dp"
             android:paddingRight="20dp"
             android:id="@+id/monday_closing_time_section"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="40dp"
             android:layout_marginBottom="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:orientation="horizontal">
-            <ImageView
-                android:layout_marginRight="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/sleepyworker"/>
             <TextView
                 android:id="@+id/monday_closing_time_weekday"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_marginRight="10dp"
+                android:gravity="center"
                 android:text="Montag : "
-                android:textSize="15dp"/>
+                android:textSize="25dp"/>
         </LinearLayout>
     <LinearLayout
         android:id="@+id/tuesday_closing_time_section"
         android:background="@drawable/list_item_background"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
+        android:paddingLeft="35dp"
+        android:paddingRight="24dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
-        <ImageView
-            android:layout_marginRight="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/sleepyworker"/>
         <TextView
             android:id="@+id/tuesday_closing_time_weekday"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:gravity="center"
             android:text="Dienstag : "
-            android:textSize="15dp"/>
+            android:textSize="25dp"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/wednesday_closing_time_section"
         android:background="@drawable/list_item_background"
-        android:paddingLeft="20dp"
+        android:paddingLeft="35dp"
         android:paddingRight="20dp"
+        android:gravity="center"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:orientation="horizontal">
-        <ImageView
-            android:layout_marginRight="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/sleepyworker"/>
         <TextView
             android:id="@+id/wednesday_closing_time_weekday"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Mittwoch : "
-            android:textSize="15dp"/>
-    </LinearLayout>
+            android:textSize="25dp"/>
+        </LinearLayout>
     <LinearLayout
         android:id="@+id/thursday_closing_time_section"
         android:background="@drawable/list_item_background"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:orientation="horizontal">
-        <ImageView
-            android:layout_marginRight="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/sleepyworker"/>
         <TextView
             android:id="@+id/thursday_closing_time_weekday"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Donnerstag : "
-            android:textSize="15dp"/>
+            android:textSize="25dp"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/friday_closing_time_section"
         android:background="@drawable/list_item_background"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
+        android:paddingLeft="50dp"
+        android:paddingRight="25dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
+        android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
         android:orientation="horizontal">
-        <ImageView
-            android:layout_marginRight="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/sleepyworker"/>
         <TextView
             android:id="@+id/friday_closing_time_weekday"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_marginRight="10dp"
+            android:gravity="center"
             android:text="Freitag : "
-            android:textSize="15dp"/>
+            android:textSize="25dp"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/saturday_closing_time_section"
         android:background="@drawable/list_item_background"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
+        android:paddingLeft="40dp"
+        android:paddingRight="25dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:orientation="horizontal">
-        <ImageView
-            android:layout_marginRight="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/sleepyworker"/>
         <TextView
             android:id="@+id/saturday_closing_time_weekday"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:gravity="center"
             android:text="Samstag : "
-            android:textSize="15dp"/>
+            android:textSize="25dp"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/sunday_closing_time_section"
         android:background="@drawable/list_item_background"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
+        android:paddingLeft="45dp"
+        android:paddingRight="25dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:orientation="horizontal">
-        <ImageView
-            android:layout_marginRight="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/sleepyworker"/>
         <TextView
             android:id="@+id/sunday_closing_time_weekday"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:gravity="center"
             android:text="Sonntag : "
-            android:textSize="15dp"/>
+            android:textSize="25dp"/>
     </LinearLayout>
     </LinearLayout>
     <!--
