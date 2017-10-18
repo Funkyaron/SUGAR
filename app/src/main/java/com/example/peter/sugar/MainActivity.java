@@ -96,17 +96,12 @@ public class MainActivity extends AppCompatActivity
         rootLayout.setOnTouchListener(new View.OnTouchListener() {
            public boolean onTouch(View v,MotionEvent event)
            {
-               Toast onTouchMessage;
                if( event.getActionMasked() == MotionEvent.ACTION_DOWN )
                {
                    Random colorGenerator = new Random();
                    rootLayout.setBackgroundColor(Color.argb(255,colorGenerator.nextInt(256),colorGenerator.nextInt(256),colorGenerator.nextInt(256)));
-                   onTouchMessage = Toast.makeText(getApplicationContext(),"Boop :)",Toast.LENGTH_LONG);
-                   onTouchMessage.show();
                    return true;
                } else if ( event.getActionMasked() == MotionEvent.ACTION_UP ) {
-                   onTouchMessage = Toast.makeText(getApplicationContext(),"Boop :(",Toast.LENGTH_LONG);
-                   onTouchMessage.show();
                    return true;
                }
                return false;
