@@ -92,10 +92,8 @@ public class ProfilesAdapter extends ArrayAdapter<Profile> {
         clickableView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
             {
-                Intent moveToEditProfileActivity = new Intent(context,EditProfileActivityModern.class);
-                Bundle passedBundle = new Bundle();
-                passedBundle.putString("profileName",name);
-                moveToEditProfileActivity.putExtras(passedBundle);
+                Intent moveToEditProfileActivity = new Intent(context,EditProfileActivity.class);
+                moveToEditProfileActivity.putExtra(MainActivity.EXTRA_PROFILE_NAME,name);
                 context.startActivity(moveToEditProfileActivity);
             }
         });

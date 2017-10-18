@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -55,8 +56,8 @@ public class DoNotDisturbActivity extends AppCompatActivity {
 
     private TextView countDownView;
     private TextView doNotDisturbDisplay;
-    private Button startCountDownButton;
-    private Button stopCountDownButton;
+    private ImageButton startCountDownButton;
+    private ImageButton stopCountDownButton;
     private RelativeLayout timeAmountView;
     private NumberPicker hourPicker;
     private NumberPicker minutePicker;
@@ -129,8 +130,8 @@ public class DoNotDisturbActivity extends AppCompatActivity {
     private void prepareViews() {
         countDownView = (TextView) findViewById(R.id.count_down_view);
         doNotDisturbDisplay = (TextView) findViewById(R.id.do_not_disturb_display);
-        startCountDownButton = (Button) findViewById(R.id.start_count_down_button);
-        stopCountDownButton = (Button) findViewById(R.id.stop_count_down_button);
+        startCountDownButton = (ImageButton) findViewById(R.id.start_count_down_button);
+        stopCountDownButton = (ImageButton) findViewById(R.id.stop_count_down_button);
         timeAmountView = (RelativeLayout) findViewById(R.id.time_amount_view);
         hourPicker = (NumberPicker) findViewById(R.id.hour_picker);
         minutePicker = (NumberPicker) findViewById(R.id.minute_picker);

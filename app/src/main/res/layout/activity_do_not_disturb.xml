@@ -60,23 +60,33 @@
         android:visibility="gone"
         android:textSize="@dimen/genericTextSize"/>
 
-    <Button
+    <ImageButton
         android:id="@+id/start_count_down_button"
-        android:layout_width="wrap_content"
+        android:background="@drawable/list_item_background"
+        android:layout_width="match_parent"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="@dimen/grand_vertical_margin"
-        android:text="@string/start"/>
+        android:src="@mipmap/play"/>
 
-    <Button
+    <ImageButton
         android:id="@+id/stop_count_down_button"
-        android:layout_width="wrap_content"
+        android:background="@drawable/list_item_background"
+        android:layout_width="match_parent"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="@dimen/grand_vertical_margin"
         android:visibility="gone"
-        android:text="@string/cancel"/>
+        android:src="@mipmap/stop"/>
 
 </RelativeLayout>
