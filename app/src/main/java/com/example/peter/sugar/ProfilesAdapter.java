@@ -41,27 +41,20 @@ public class ProfilesAdapter extends ArrayAdapter<Profile> {
 
         final Profile prof = getItem(position);
         final int currentWeekDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
-        TimeObject startTime = new TimeObject(0,0);
-        TimeObject endTime = new TimeObject(0,0);
-        if( currentWeekDay == 1 )
-        {
-            startTime = prof.getStart()[6];
-            endTime = prof.getEnd()[6];
-        } else if( currentWeekDay > 1 ){
-            startTime = prof.getStart()[currentWeekDay-2];
-            endTime = prof.getEnd()[currentWeekDay-2];
-        }
+        TimeObject startTime = prof.getStart()[TimeManager.toIndex(currentWeekDay)];
+        TimeObject endTime = prof.getEnd()[TimeManager.toIndex(currentWeekDay)];
         final String name = prof.getName();
+
         final TextView profileName= (TextView) result.findViewById(R.id.profile_name);
         final TextView profileStartTime = (TextView) result.findViewById(R.id.profile_start);
         final TextView profileEndTime = (TextView) result.findViewById(R.id.profile_end);
         final ImageView profileImage = (ImageView) result.findViewById(R.id.profile_icon);
-        if( prof.isActive() )
-        {
+        if( prof.isActive() ) {
             profileImage.setImageResource(R.mipmap.power_on);
         } else {
             profileImage.setImageResource(R.mipmap.power_off);
         }
+
         profileImage.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
             {
@@ -79,15 +72,28 @@ public class ProfilesAdapter extends ArrayAdapter<Profile> {
                     prof.setActive(true);
                     try {
                         prof.saveProfile(context);
+                        TimeManager mgr = new TimeManager(context);
+                        mgr.initProfile(prof);
                     } catch ( Exception e) {
                         e.printStackTrace();
                     }
                 }
+                if(prof.isAllowed()) {
+                    profileStartTime.setText(R.string.calls_allowed);
+                } else {
+                    profileStartTime.setText(R.string.calls_forbidden);
+                }
             }
         });
+
         profileName.setText(name);
-        profileStartTime.setText("Anfang : " + startTime.toString());
-        profileEndTime.setText("Ende : " + endTime.toString());
+        if(prof.isAllowed()) {
+            profileStartTime.setText(R.string.calls_allowed);
+        } else {
+            profileStartTime.setText(R.string.calls_forbidden);
+        }
+        /*profileStartTime.setText("Anfang : " + startTime.toString());
+        profileEndTime.setText("Ende : " + endTime.toString());*/
         RelativeLayout clickableView = (RelativeLayout) result.findViewById(R.id.textArea);
         clickableView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)

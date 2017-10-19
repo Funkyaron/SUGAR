@@ -70,8 +70,7 @@ public class TimeManager {
 
         long targetTime = getTargetTime(days, start);
 
-        AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(targetTime, null);
-        mAlarmManager.setAlarmClock(info, pending);
+        mAlarmManager.setExact(AlarmManager.RTC_WAKEUP, targetTime, pending);
     }
 
 
@@ -111,8 +110,7 @@ public class TimeManager {
 
         long targetTime = getTargetTime(days, end);
 
-        AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(targetTime, null);
-        mAlarmManager.setAlarmClock(info, pending);
+        mAlarmManager.setExact(AlarmManager.RTC_WAKEUP, targetTime, pending);
     }
 
 
@@ -141,8 +139,7 @@ public class TimeManager {
         PendingIntent pending = PendingIntent.getBroadcast(context,
                 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(targetTime, null);
-        mAlarmManager.setAlarmClock(info, pending);
+        mAlarmManager.setExact(AlarmManager.RTC_WAKEUP, targetTime, pending);
     }
 
 
@@ -397,7 +394,7 @@ public class TimeManager {
      * @param calendarDay Constant field value from java.util.Calendar
      * @return Index that can be used for an array, beginning from monday
      */
-    private int toIndex(int calendarDay) {
+    public static int toIndex(int calendarDay) {
         switch(calendarDay) {
             case Calendar.MONDAY:
                 return 0;
@@ -418,7 +415,7 @@ public class TimeManager {
         }
     }
 
-    private int toCalendarDay(int index) {
+    public static int toCalendarDay(int index) {
         switch(index) {
             case 0:
                 return Calendar.MONDAY;

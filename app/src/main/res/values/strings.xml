@@ -3,20 +3,19 @@
     <string name="finish">Fertig</string>
     <string name="cancel">Abbrechen</string>
     <string name="on_cancel">Vorgang abgebrochen</string>
-    <string name="start_contacts_activity_button_text">Kontakte</string>
     <string name="prompt_select_contacts">Kontakte auswählen</string>
     <string name="read_contacts_failed">Kontakte konnten nicht gelesen werden</string>
     <string name="calls_allowed">Anrufe sind jetzt erlaubt</string>
     <string name="calls_forbidden">Anrufe sind jetzt verboten</string>
     <string name="title_activity_display_profile">DisplayProfileActivity</string>
     <string name="callService">Dieser Dienst stellt sicher,dass deine geblockten Anrufe auch geblockt werden.</string>
-    <string name="monday">Montag</string>
-    <string name="tuesday">Dienstag</string>
-    <string name="wednesday">Mittwoch</string>
-    <string name="thursday">Donnerstag</string>
-    <string name="friday">Freitag</string>
-    <string name="saturday">Samstag</string>
-    <string name="sunday">Sontag</string>
+    <string name="monday">Montag: %s</string>
+    <string name="tuesday">Dienstag: %s</string>
+    <string name="wednesday">Mittwoch: %s</string>
+    <string name="thursday">Donnerstag: %s</string>
+    <string name="friday">Freitag: %s</string>
+    <string name="saturday">Samstag: %s</string>
+    <string name="sunday">Sontag: %s</string>
     <string name="monday_short">MO</string>
     <string name="tuesday_short">DI</string>
     <string name="wednesday_short">MI</string>
@@ -47,4 +46,9 @@
     <string name="remove">Entfernen</string>
     <string name="closing_time_title">Feierabend!</string>
     <string name="closing_time_text">Mach mal Pause</string>
+    <string name="prompt_edit_profile">Wann möchten Sie erreichbar sein?</string>
+    <string name="save_and_close">Speichern und schließen</string>
+    <string name="profile_saved">Profil gespeichert</string>
+    <string name="profile_not_saved">Profile konnte nicht gespeichert werden</string>
+    <string name="choose_mode">Modus wählen</string>
 </resources>

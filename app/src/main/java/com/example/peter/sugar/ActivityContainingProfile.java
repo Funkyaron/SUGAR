@@ -41,8 +41,10 @@ public class ActivityContainingProfile extends AppCompatActivity {
     protected void onDestroy() {
         try {
             prof.saveProfile(this);
+            Toast.makeText(this, R.string.profile_saved, Toast.LENGTH_LONG).show();
         } catch(Exception e) {
             Log.e(MainActivity.LOG_TAG, e.toString());
+            Toast.makeText(this, R.string.profile_not_saved, Toast.LENGTH_LONG).show();
         }
 
         Log.d(MainActivity.LOG_TAG, "ActivityContainigProfile: onDestroy()");

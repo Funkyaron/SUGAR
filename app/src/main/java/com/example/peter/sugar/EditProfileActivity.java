@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -15,7 +17,8 @@ public class EditProfileActivity extends ActivityContainingProfile {
 
     private TextView profileNameView;
 
-    private TextView[] allDays;
+    private TextView[] dayViews;
+    private CheckBox[] dayCheckboxes;
 
     private Button startTimeButton;
     private Button endTimeButton;
@@ -36,9 +39,14 @@ public class EditProfileActivity extends ActivityContainingProfile {
         profileNameView = (TextView) findViewById(R.id.profile_name_view);
 
         TableRow daysRow = (TableRow) findViewById(R.id.days_row);
-        allDays = new TextView[7];
+        dayViews = new TextView[7];
         for(int i = 0; i < 7; i++) {
-            allDays[i] = (TextView) daysRow.getChildAt(i);
+            dayViews[i] = (TextView) daysRow.getChildAt(i);
+        }
+        TableRow checkboxesRow = (TableRow) findViewById(R.id.days_checkboxes);
+        dayCheckboxes = new CheckBox[7];
+        for(int i = 0; i < 7; i++) {
+            dayCheckboxes[i] = (CheckBox) checkboxesRow.getChildAt(i);
         }
 
         startTimeButton = (Button) findViewById(R.id.start_time_button);
@@ -49,34 +57,69 @@ public class EditProfileActivity extends ActivityContainingProfile {
 
 
         //Extract information from the passed profile and set up the Views.
-        Profile prof = getProfile();
+        final Profile prof = getProfile();
         final String profileName = prof.getName();
+        final boolean[] days = prof.getDays();
         final TimeObject[] startTimes = prof.getStart();
         final TimeObject[] endTimes = prof.getEnd();
 
         profileNameView.setText(profileName);
         index = 0;
-        allDays[index].setBackground(getResources().getDrawable(R.drawable.weekday_activated, null));
+        dayViews[index].setBackground(getResources().getDrawable(R.drawable.weekday_activated, null));
+        for(int i = 0; i < 7; i++) {
+            dayCheckboxes[i].setChecked(days[i]);
+        }
+
         startTimeButton.setText(getString(R.string.from_plus_time, startTimes[index].toString()));
         endTimeButton.setText(getString(R.string.to_plus_time, endTimes[index].toString()));
+        if(!days[index]) {
+            startTimeButton.setVisibility(View.INVISIBLE);
+            endTimeButton.setVisibility(View.INVISIBLE);
+        }
 
 
         //Implement functionality
         for(int i = 0; i < 7; i++) {
             final int ind = i;
-            allDays[ind].setOnClickListener(new View.OnClickListener() {
+            dayViews[ind].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     index = ind;
                     for(int j = 0; j < 7; j++) {
                         if(j == ind) {
-                            allDays[j].setBackground(getResources().getDrawable(R.drawable.weekday_activated, null));
+                            dayViews[j].setBackground(getResources().getDrawable(R.drawable.weekday_activated, null));
                         } else {
-                            allDays[j].setBackground(getResources().getDrawable(R.drawable.weekday_deactivated, null));
+                            dayViews[j].setBackground(getResources().getDrawable(R.drawable.weekday_deactivated, null));
                         }
                     }
                     startTimeButton.setText(getString(R.string.from_plus_time, startTimes[ind].toString()));
                     endTimeButton.setText(getString(R.string.to_plus_time, endTimes[ind].toString()));
+                    if(days[index]) {
+                        startTimeButton.setVisibility(View.VISIBLE);
+                        endTimeButton.setVisibility(View.VISIBLE);
+                    } else {
+                        startTimeButton.setVisibility(View.INVISIBLE);
+                        endTimeButton.setVisibility(View.INVISIBLE);
+                    }
+                }
+            });
+        }
+
+        for(int i = 0; i < 7; i++) {
+            final int ind = i;
+            dayCheckboxes[ind].setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                    days[ind] = isChecked;
+                    if(ind == index) {
+                        if (isChecked) {
+                            startTimeButton.setVisibility(View.VISIBLE);
+                            endTimeButton.setVisibility(View.VISIBLE);
+                        } else {
+                            startTimeButton.setVisibility(View.INVISIBLE);
+                            endTimeButton.setVisibility(View.INVISIBLE);
+                        }
+                    }
                 }
             });
         }
@@ -105,6 +148,10 @@ public class EditProfileActivity extends ActivityContainingProfile {
         finishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(prof.isActive()) {
+                    TimeManager mgr = new TimeManager(EditProfileActivity.this);
+                    mgr.initProfile(prof);
+                }
                 finish();
             }
         });

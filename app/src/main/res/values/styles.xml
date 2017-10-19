@@ -35,6 +35,10 @@
         <item name="android:scaleY">0.75</item>
     </style>
 
+    <style name="CheckBoxTheme" parent = "Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">#404040</item>
+    </style>
+
     <style name = "customListStyle" parent="android:Widget.TextView">
         <item name="android:background">@drawable/list_item_background</item>
         <item name="android:textColor">@color/black</item>

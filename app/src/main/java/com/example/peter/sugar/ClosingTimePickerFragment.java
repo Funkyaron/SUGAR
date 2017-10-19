@@ -22,7 +22,6 @@ public class ClosingTimePickerFragment extends DialogFragment
         implements TimePickerDialog.OnTimeSetListener {
 
     private int index;
-    private final String[] weekDayLiterals = {"Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"};
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -32,7 +31,7 @@ public class ClosingTimePickerFragment extends DialogFragment
         index = args.getInt(MainActivity.EXTRA_INDEX);
 
         AlertDialog dialog = new TimePickerDialog(getActivity(), this, hourOfDay,
-                minute, DateFormat.is24HourFormat(getActivity()));
+                minute, true);
 
         dialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.remove),
                 new DialogInterface.OnClickListener() {
@@ -41,13 +40,12 @@ public class ClosingTimePickerFragment extends DialogFragment
                         ClosingTimeDisplayActivity parentActivity = (ClosingTimeDisplayActivity) getActivity();
                         parentActivity.setClosingTime(index, null);
 
-                        TableRow row = (TableRow) parentActivity.getTable().getChildAt(index);
-                        TextView timeView = (TextView) row.getChildAt(1);
-                        timeView.setText("-");
+                        TextView timeView = parentActivity.getWeekDayViews()[index];
+                        timeView.setText(toDayString(index, ""));
 
                         SharedPreferences savedTimes = parentActivity.getPreferences(Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = savedTimes.edit();
-                        editor.putString(parentActivity.weekdays[index], "-");
+                        editor.putString(parentActivity.WEEKDAYS[index], "-");
                         editor.apply();
 
                         TimeManager mgr = new TimeManager(getContext());
@@ -65,17 +63,36 @@ public class ClosingTimePickerFragment extends DialogFragment
         ClosingTimeDisplayActivity parentActivity = (ClosingTimeDisplayActivity) getActivity();
         parentActivity.setClosingTime(index, time);
 
-        //TableRow row = (TableRow) parentActivity.getTable().getChildAt(index);
-        TextView[] timeViews = parentActivity.getWeekDayViews();
-        TextView timeView = (TextView) timeViews[index];
-        timeView.setText(weekDayLiterals[index] + " : " + time.toString());
+        TextView timeView = parentActivity.getWeekDayViews()[index];
+        timeView.setText(toDayString(index, time.toString()));
 
         SharedPreferences savedTimes = parentActivity.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = savedTimes.edit();
-        editor.putString(parentActivity.weekdays[index], time.toString());
+        editor.putString(parentActivity.WEEKDAYS[index], time.toString());
         editor.apply();
 
         TimeManager mgr = new TimeManager(getContext());
         mgr.setNextClosingTime(index, time);
+    }
+
+    private String toDayString(int index, String timeString) {
+        switch(index) {
+            case 0:
+                return getString(R.string.monday, timeString);
+            case 1:
+                return getString(R.string.tuesday, timeString);
+            case 2:
+                return getString(R.string.wednesday, timeString);
+            case 3:
+                return getString(R.string.thursday, timeString);
+            case 4:
+                return getString(R.string.friday, timeString);
+            case 5:
+                return getString(R.string.saturday, timeString);
+            case 6:
+                return getString(R.string.sunday, timeString);
+            default:
+                return "";
+        }
     }
 }

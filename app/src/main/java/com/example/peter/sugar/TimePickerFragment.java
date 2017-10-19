@@ -43,7 +43,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
             time = prof.getEnd()[index];
         }
         return new TimePickerDialog(getActivity(),this,
-                time.getHour(),time.getMinute(), DateFormat.is24HourFormat(getActivity()));
+                time.getHour(),time.getMinute(), true);
     }
 
     public void onTimeSet(TimePicker view, int hourOfDay, int minute)
@@ -85,10 +85,6 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
             endTimeButton.setText(parentActivity.getString(R.string.to_plus_time, modifiedTime));
         }
 
-        // Update the profile status in case its active.
-        if(prof.isActive()) {
-            TimeManager mgr = new TimeManager(parentActivity);
-            mgr.initProfile(prof);
-        }
+
     }
 }

@@ -21,14 +21,13 @@ import java.util.ArrayList;
 
 public class ClosingTimeDisplayActivity extends AppCompatActivity {
 
-    final String[] weekdays = {
+    final String[] WEEKDAYS = {
             "Monday", "Tuesday", "Wednesday", "Thursday",
             "Friday", "Staurday", "Sunday"
     };
 
     private TimeObject[] closingTimes;
-    private TableLayout table;
-    TextView[] timeViews;
+    private TextView[] timeViews;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +45,8 @@ public class ClosingTimeDisplayActivity extends AppCompatActivity {
         Log.d(MainActivity.LOG_TAG, "Before opening SharedPreferences");
         closingTimes = new TimeObject[7];
         SharedPreferences savedTimes = getPreferences(Context.MODE_PRIVATE);
-        for(int i = 0; i < weekdays.length; i++) {
-            String str = savedTimes.getString(weekdays[i], "-");
+        for(int i = 0; i < WEEKDAYS.length; i++) {
+            String str = savedTimes.getString(WEEKDAYS[i], "-");
             if(str.equals("-")) {
                 closingTimes[i] = null;
             } else {
@@ -55,18 +54,6 @@ public class ClosingTimeDisplayActivity extends AppCompatActivity {
             }
         }
 
-        Log.d(MainActivity.LOG_TAG, "Before initializing Views");
-        try {
-            for (int i = 0; i < table.getChildCount(); i++) {
-                if (closingTimes[i] != null) {
-                    timeViews[i].setText(closingTimes[i].toString());
-                } else {
-                    timeViews[i].setText("-");
-                }
-            }
-        } catch(Exception e) {
-            Log.e(MainActivity.LOG_TAG, e.toString());
-        }
 
         for(int i = 0; i < timeViews.length; i++) {
             final int index = i;
@@ -90,10 +77,6 @@ public class ClosingTimeDisplayActivity extends AppCompatActivity {
 
     public void setClosingTime(int index, TimeObject time) {
         closingTimes[index] = time;
-    }
-
-    public TableLayout getTable() {
-        return table;
     }
 
     public TextView[] getWeekDayViews() { return timeViews; }
