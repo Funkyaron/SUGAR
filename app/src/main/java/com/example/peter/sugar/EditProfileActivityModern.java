@@ -81,7 +81,7 @@ public class EditProfileActivityModern extends ActivityContainingProfile
         endChooseMinute.setMinValue(0);
         endChooseMinute.setMaxValue(59);
         String passedProfileName = getIntent().getExtras().getString("profileName");
-        chosenProfile = null;
+        chosenProfile = getProfile();
         try {
             chosenProfile = Profile.readProfileFromXmlFile(passedProfileName, this);
         } catch ( Exception e ) {
