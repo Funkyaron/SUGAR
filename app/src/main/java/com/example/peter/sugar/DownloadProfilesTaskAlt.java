@@ -103,5 +103,6 @@ class DownloadProfilesTaskAlt extends AsyncTask<String,Void,Boolean>
 
 
     protected void onPostExecute(Boolean isSuccessful) {
+        Log.d(MainActivity.LOG_TAG, "DownloadProfilesBlah ist fertig" + isSuccessful);
     }
 }

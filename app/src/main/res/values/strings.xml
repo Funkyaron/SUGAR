@@ -3,6 +3,7 @@
     <string name="finish">Fertig</string>
     <string name="cancel">Abbrechen</string>
     <string name="on_cancel">Vorgang abgebrochen</string>
+    <string name="contacts_on_cancel">Kontakte wurden nicht aktualisiert</string>
     <string name="prompt_select_contacts">Kontakte auswählen</string>
     <string name="read_contacts_failed">Kontakte konnten nicht gelesen werden</string>
     <string name="calls_allowed">Anrufe sind jetzt erlaubt</string>

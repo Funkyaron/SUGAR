@@ -21,7 +21,7 @@
         android:layout_marginRight="@dimen/horizontalMargin"
         android:gravity="center"
         android:text="@string/closing_time_announcment"
-        android:textSize="@dimen/genericTextSize"/>
+        android:textSize="@dimen/text_medium"/>
     <TextView
         android:id="@+id/monday_closing_time_weekday"
         android:background="@drawable/list_item_background"
@@ -32,8 +32,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:gravity="center"
-        android:text="Montag : "
-        android:textSize="25dp"/>
+        android:textSize="@dimen/text_large"/>
     <TextView
         android:id="@+id/tuesday_closing_time_weekday"
         android:background="@drawable/list_item_background"
@@ -44,8 +43,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:gravity="center"
-        android:text="Dienstag : "
-        android:textSize="25dp"/>
+        android:textSize="@dimen/text_large"/>
     <TextView
         android:id="@+id/wednesday_closing_time_weekday"
         android:background="@drawable/list_item_background"
@@ -56,8 +54,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:gravity="center"
-        android:text="Mittwoch : "
-        android:textSize="25dp"/>
+        android:textSize="@dimen/text_large"/>
     <TextView
         android:id="@+id/thursday_closing_time_weekday"
         android:background="@drawable/list_item_background"
@@ -68,8 +65,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:gravity="center"
-        android:text="Donnerstag : "
-        android:textSize="25dp"/>
+        android:textSize="@dimen/text_large"/>
     <TextView
         android:id="@+id/friday_closing_time_weekday"
         android:background="@drawable/list_item_background"
@@ -80,8 +76,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:gravity="center"
-        android:text="Freitag : "
-        android:textSize="25dp"/>
+        android:textSize="@dimen/text_large"/>
     <TextView
         android:id="@+id/saturday_closing_time_weekday"
         android:background="@drawable/list_item_background"
@@ -92,8 +87,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:gravity="center"
-        android:text="Samstag : "
-        android:textSize="25dp"/>
+        android:textSize="@dimen/text_large"/>
     <TextView
         android:id="@+id/sunday_closing_time_weekday"
         android:background="@drawable/list_item_background"
@@ -104,6 +98,5 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:gravity="center"
-        android:text="Sonntag : "
-        android:textSize="25dp"/>
+        android:textSize="@dimen/text_large"/>
     </LinearLayout>

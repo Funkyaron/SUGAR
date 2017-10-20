@@ -71,6 +71,7 @@ class ProfileParser {
             switch (name) {
                 case "name":
                 {
+                    Log.d(MainActivity.LOG_TAG, "name-tag");
                     profileName = readProfileName(parser);
                     break;
                 }
@@ -101,6 +102,7 @@ class ProfileParser {
                 }
                 case "mode":
                 {
+                    Log.d(MainActivity.LOG_TAG, "mode-tag");
                     mode = readMode(parser);
                     break;
                 }
@@ -112,6 +114,7 @@ class ProfileParser {
                 case "contactNames":
                 {
                     contactNames = readContactNames(parser);
+                    break;
                 }
             }
         }
@@ -124,6 +127,7 @@ class ProfileParser {
         parser.require(XmlPullParser.START_TAG,ns,"name");
         String name = readText(parser);
         parser.require(XmlPullParser.END_TAG,ns,"name");
+        Log.d(MainActivity.LOG_TAG, "Name: " + name);
         return name;
     }
 
@@ -199,9 +203,11 @@ class ProfileParser {
     }
 
     private int readMode(XmlPullParser parser) throws XmlPullParserException, IOException {
+        Log.d(MainActivity.LOG_TAG, "ProfileParser: readMode()");
         parser.require(XmlPullParser.START_TAG, ns, "mode");
         String resultText = readText(parser);
         parser.require(XmlPullParser.END_TAG, ns, "mode");
+        Log.d(MainActivity.LOG_TAG, "Mode: " + resultText);
 
         return Integer.parseInt(resultText);
     }

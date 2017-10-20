@@ -117,7 +117,7 @@ public class ContactsDialogFragment extends DialogFragment {
     public void onCancel(DialogInterface dialog) {
         super.onCancel(dialog);
         Log.d(MainActivity.LOG_TAG, "CDF: onCancel()");
-        Toast.makeText(getActivity(), R.string.on_cancel, Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), R.string.contacts_on_cancel, Toast.LENGTH_LONG).show();
     }
 
 

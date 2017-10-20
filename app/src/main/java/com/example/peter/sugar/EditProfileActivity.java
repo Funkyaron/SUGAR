@@ -12,6 +12,7 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class EditProfileActivity extends ActivityContainingProfile {
 
@@ -148,9 +149,16 @@ public class EditProfileActivity extends ActivityContainingProfile {
         finishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(prof.isActive()) {
-                    TimeManager mgr = new TimeManager(EditProfileActivity.this);
-                    mgr.initProfile(prof);
+                try {
+                    prof.saveProfile(EditProfileActivity.this);
+                    Toast.makeText(EditProfileActivity.this, R.string.profile_saved, Toast.LENGTH_LONG).show();
+                    if(prof.isActive()) {
+                        TimeManager mgr = new TimeManager(EditProfileActivity.this);
+                        mgr.initProfile(prof);
+                    }
+                } catch(Exception e) {
+                    Log.e(MainActivity.LOG_TAG, e.toString());
+                    Toast.makeText(EditProfileActivity.this, R.string.profile_not_saved, Toast.LENGTH_LONG).show();
                 }
                 finish();
             }

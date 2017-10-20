@@ -71,20 +71,33 @@ public class InCallServiceImpl extends InCallService {
 
     // Self-made ;)
     private boolean shouldBlock(String number) {
-        if(shouldBlockAbsolutely)
+        Log.d(MainActivity.LOG_TAG, "InCallServiceImpl: shouldBlock()");
+        if(shouldBlockAbsolutely) {
+            Log.d(MainActivity.LOG_TAG, "DoNotDisturb applies");
             return true;
+        }
 
         Profile[] allProfiles = Profile.readAllProfiles(this);
         for(Profile prof : allProfiles) {
+            Log.d(MainActivity.LOG_TAG, prof.toString());
             if(!(prof.isAllowed())) {
-                if(prof.getMode() == Profile.MODE_BLOCK_ALL)
+                Log.d(MainActivity.LOG_TAG, "Profile does not allow. Checking for numbers");
+                Log.d(MainActivity.LOG_TAG, "Mode: " + prof.getMode());
+                if(prof.getMode() == Profile.MODE_BLOCK_ALL) {
+                    Log.d(MainActivity.LOG_TAG, "Profile should block + MODE_BLOCK_ALL");
                     return true;
-                else if(prof.getMode() == Profile.MODE_BLOCK_SELECTED && prof.getPhoneNumbers().contains(number))
+                }
+                else if(prof.getMode() == Profile.MODE_BLOCK_SELECTED && prof.getPhoneNumbers().contains(number)) {
+                    Log.d(MainActivity.LOG_TAG, "Profile should block + MODE_BLOCK_SELECTED");
                     return true;
-                else if(prof.getMode() == Profile.MODE_BLOCK_NOT_SELECTED && !(prof.getPhoneNumbers().contains(number)))
+                }
+                else if(prof.getMode() == Profile.MODE_BLOCK_NOT_SELECTED && !(prof.getPhoneNumbers().contains(number))) {
+                    Log.d(MainActivity.LOG_TAG, "Profile should block + MODE_BLOCK_NOT_SELECTED");
                     return true;
+                }
             }
         }
+        Log.d(MainActivity.LOG_TAG, "Everything's fine -> Call allowed");
         return false;
     }
 

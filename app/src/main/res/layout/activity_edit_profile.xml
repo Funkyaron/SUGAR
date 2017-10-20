@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/medium_vertical_margin"
         android:gravity="center"
-        android:textSize="@dimen/text_large" />
+        android:textSize="@dimen/text_very_large" />
 
 
 
@@ -176,14 +176,14 @@
 
 
     <!--TODO: Add a Button for selecting the mode.-->
-    <Button
+    <!--<Button
         android:id="@+id/choose_mode_button"
         android:background="@drawable/startactivity_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/verticalMargin"
         android:layout_gravity="center_horizontal"
-        android:text="@string/choose_mode"/>
+        android:text="@string/choose_mode"/>-->
 
 
 

@@ -56,6 +56,7 @@ public class ClosingTimeDisplayActivity extends AppCompatActivity {
 
 
         for(int i = 0; i < timeViews.length; i++) {
+            timeViews[i].setText(toDayString(i, closingTimes[i] == null ? "" : closingTimes[i].toString()));
             final int index = i;
             timeViews[i].setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -80,6 +81,27 @@ public class ClosingTimeDisplayActivity extends AppCompatActivity {
     }
 
     public TextView[] getWeekDayViews() { return timeViews; }
+
+    public String toDayString(int index, String timeString) {
+        switch(index) {
+            case 0:
+                return getString(R.string.monday, timeString);
+            case 1:
+                return getString(R.string.tuesday, timeString);
+            case 2:
+                return getString(R.string.wednesday, timeString);
+            case 3:
+                return getString(R.string.thursday, timeString);
+            case 4:
+                return getString(R.string.friday, timeString);
+            case 5:
+                return getString(R.string.saturday, timeString);
+            case 6:
+                return getString(R.string.sunday, timeString);
+            default:
+                return "";
+        }
+    }
 
     /* mondayButton = find...
      * ..

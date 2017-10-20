@@ -41,7 +41,7 @@ public class ClosingTimePickerFragment extends DialogFragment
                         parentActivity.setClosingTime(index, null);
 
                         TextView timeView = parentActivity.getWeekDayViews()[index];
-                        timeView.setText(toDayString(index, ""));
+                        timeView.setText(parentActivity.toDayString(index, ""));
 
                         SharedPreferences savedTimes = parentActivity.getPreferences(Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = savedTimes.edit();
@@ -64,7 +64,7 @@ public class ClosingTimePickerFragment extends DialogFragment
         parentActivity.setClosingTime(index, time);
 
         TextView timeView = parentActivity.getWeekDayViews()[index];
-        timeView.setText(toDayString(index, time.toString()));
+        timeView.setText(parentActivity.toDayString(index, time.toString()));
 
         SharedPreferences savedTimes = parentActivity.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = savedTimes.edit();
@@ -75,24 +75,5 @@ public class ClosingTimePickerFragment extends DialogFragment
         mgr.setNextClosingTime(index, time);
     }
 
-    private String toDayString(int index, String timeString) {
-        switch(index) {
-            case 0:
-                return getString(R.string.monday, timeString);
-            case 1:
-                return getString(R.string.tuesday, timeString);
-            case 2:
-                return getString(R.string.wednesday, timeString);
-            case 3:
-                return getString(R.string.thursday, timeString);
-            case 4:
-                return getString(R.string.friday, timeString);
-            case 5:
-                return getString(R.string.saturday, timeString);
-            case 6:
-                return getString(R.string.sunday, timeString);
-            default:
-                return "";
-        }
-    }
+
 }
