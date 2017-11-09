@@ -113,7 +113,7 @@ public class DoNotDisturbActivity extends AppCompatActivity {
         if(timerIsRunning) {
             Log.d(MainActivity.LOG_TAG, "setContent(): timer is running");
             doNotDisturbDisplay.setText(getString(R.string.time_remaining));
-            timeAmountView.setVisibility(View.GONE);
+            //timeAmountView.setVisibility(View.INVISIBLE);
             countDownView.setVisibility(View.VISIBLE);
             startCountDownButton.setVisibility(View.GONE);
             stopCountDownButton.setVisibility(View.VISIBLE);

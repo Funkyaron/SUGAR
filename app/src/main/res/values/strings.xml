@@ -34,7 +34,7 @@
     <string name="error">Ein Fehler ist aufgetreten</string>
     <string name="profile_inactive">Profil inaktiv</string>
     <string name="all">Alle</string>
-    <string name="greetings">Herzlich wilkommen!</string>
+    <string name="greetings">Herzlich wilkommen!\nWas möchten Sie tun?</string>
     <string name="greetings2">Was möchten Sie tun?</string>
     <string name="greetings_edit">Profile anzeigen</string>
     <string name="greetings_disturb">Ungestört arbeiten</string>
@@ -52,4 +52,6 @@
     <string name="profile_saved">Profil gespeichert</string>
     <string name="profile_not_saved">Profile konnte nicht gespeichert werden</string>
     <string name="choose_mode">Modus wählen</string>
+    <string name="reject_message">Wir haben dem angerufenen Gesprächsteilnehmer eine Pause eingeräumt. Liebe Grüße,
+    das SUGAR Team.</string>
 </resources>
