@@ -14,87 +14,91 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class CreateProfileActivity extends Activity {
-
-    private String inputName;
-    private boolean inputDays[];
-    private TimeObject inputStartTime[];
-    private TimeObject inputEndTime[];
-
-    private EditText nameInput;
-    private TextView[] dayViews;
-    private CheckBox[] dayCheckboxes;
-    private Button startTimeButton;
-    private Button endTimeButton;
+public class CreateProfileActivity extends ActivityCreatingProfile
+{
+    private int selectedWeekDay;
+    private Profile passedProfile;
+    private TextView[] weekdayViews;
+    private CheckBox[] weekdayCheckboxes;
+    private Button editStartTimeButton;
+    private Button editEndTimeButton;
     private Button finishButton;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreate(Bundle savedInstances)
+    {
+        super.onCreate(savedInstances);
         setContentView(R.layout.activity_create_profile);
 
-        nameInput = (EditText) findViewById(R.id.edit_profile_name);
-        TableRow daysRow = (TableRow) findViewById(R.id.days_row);
-        dayViews = new TextView[7];
-        for(int i = 0; i < 7; i++) {
-            dayViews[i] = (TextView) daysRow.getChildAt(i);
-        }
-        TableRow checkboxesRow = (TableRow) findViewById(R.id.days_checkboxes);
-        dayCheckboxes = new CheckBox[7];
-        for(int i = 0; i < 7; i++) {
-            dayCheckboxes[i] = (CheckBox) checkboxesRow.getChildAt(i);
-        }
-        startTimeButton = (Button) findViewById(R.id.start_time_button);
-        endTimeButton = (Button) findViewById(R.id.end_time_button);
-        finishButton = (Button) findViewById(R.id.finish_button);
+        passedProfile = getProfile();
+        weekdayViews = new TextView[7];
 
-
-
-        for( int currDay = 0; currDay < dayViews.length; currDay++ )
+        /* Assign a TextView to each entry of 'weekdayViews' */
+        for(int currDay = 0; currDay < 7; currDay++ )
         {
             final int selectedDay = currDay;
-            dayViews[currDay].setOnClickListener(new View.OnClickListener() {
+            weekdayViews[currDay] = new TextView(this);
+            weekdayViews[currDay].setOnClickListener(new View.OnClickListener() {
                public void onClick(View v)
                {
-                   dayViews[selectedDay].setBackgroundResource(R.color.green);
-                   if( inputDays[selectedDay] )
+                   selectedWeekDay = selectedDay;
+                   weekdayViews[selectedDay].setBackgroundResource(R.drawable.weekday_activated);
+                   for( int currDay = 0; currDay < 7; currDay++ )
                    {
-                       startTimeButton.setText("Ab : \n 0:00");
-                       endTimeButton.setText("Ab : \n 0:00");
-                   } else {
-                       // Do nothing
+                       if( currDay != selectedDay )
+                           weekdayViews[selectedDay].setBackgroundResource(R.drawable.weekday_deactivated);
+                   }
+                   if( weekdayCheckboxes[selectedDay].isChecked() )
+                   {
+                       editStartTimeButton.setText("Ab : \n " + passedProfile.getStart()[selectedDay].toString());
+                       editEndTimeButton.setText("Bis : \n " + passedProfile.getEnd()[selectedDay].toString());
+                       editStartTimeButton.setVisibility(View.VISIBLE);
+                       editEndTimeButton.setVisibility(View.VISIBLE);
+                   } else if ( !weekdayCheckboxes[selectedDay].isChecked() ) {
+                       editStartTimeButton.setText("");
+                       editEndTimeButton.setText("");
+                       editStartTimeButton.setVisibility(View.GONE);
+                       editEndTimeButton.setVisibility(View.GONE);
                    }
                }
             });
         }
 
-        for( int currDay = 0; currDay < dayCheckboxes.length; currDay++ )
+        weekdayCheckboxes = new CheckBox[7];
+
+        /* Assign a Checkbox to each entry of 'weekdayCheckboxes' */
+        for(int currDay = 0; currDay < 7; currDay++ )
         {
-            final int selectedDay = currDay;
-            dayCheckboxes[currDay].setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            final int selectedCheckBox = currDay;
+            weekdayCheckboxes[currDay] = new CheckBox(this);
+            weekdayCheckboxes[currDay].setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                    inputDays[selectedDay] = isChecked;
-                    if( isChecked )
+                public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked)
+                {
+                    if(isChecked && selectedCheckBox == selectedWeekDay )
                     {
-                        startTimeButton.setVisibility(View.VISIBLE);
-                        endTimeButton.setVisibility(View.VISIBLE);
-                    } else if ( !isChecked ) {
-                        startTimeButton.setVisibility(View.INVISIBLE);
-                        endTimeButton.setVisibility(View.INVISIBLE);
+                        editStartTimeButton.setVisibility(View.VISIBLE);
+                        editEndTimeButton.setVisibility(View.VISIBLE);
+                    } else if (!isChecked ) {
+                        editStartTimeButton.setVisibility(View.GONE);
+                        editEndTimeButton.setVisibility(View.GONE);
                     }
                 }
             });
         }
 
-        startTimeButton.setOnClickListener(new View.OnClickListener() {
+        editStartTimeButton = (Button) findViewById(R.id.start_time_button);
+        editStartTimeButton.setOnClickListener(new View.OnClickListener() {
+           public void onClick(View v)
+           {
+           }
+        });
+        editEndTimeButton = (Button) findViewById(R.id.end_time_button);
+        editEndTimeButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
             {
-
             }
         });
+        finishButton = (Button) findViewById(R.id.finish_button);
     }
-
-
-
 }

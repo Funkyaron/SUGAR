@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         rootLayout = (RelativeLayout) findViewById(R.id.root_layout);
+        /*
         rootLayout.setOnTouchListener(new View.OnTouchListener() {
            public boolean onTouch(View v,MotionEvent event)
            {
@@ -107,7 +108,7 @@ public class MainActivity extends AppCompatActivity
                }
                return false;
            }
-        });
+        }); */
 
         Intent changeDialer = new Intent(TelecomManager.ACTION_CHANGE_DEFAULT_DIALER);
         changeDialer.putExtra(TelecomManager.EXTRA_CHANGE_DEFAULT_DIALER_PACKAGE_NAME, getPackageName());

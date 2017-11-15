@@ -18,7 +18,7 @@ public class ListProfilesActivity extends AppCompatActivity
     private ListView profilesList;
     private ProfilesAdapter adapter;
     private TextView addProfilePseudoButton;
-    private Intent toCreateProfileActivity;
+    //private Intent toCreateProfileActivity;
 
     @Override
     public void onResume()
@@ -42,6 +42,7 @@ public class ListProfilesActivity extends AppCompatActivity
         profilesList = (ListView) findViewById(R.id.profiles_list);
         profilesList.setAdapter(adapter);
 
+        /*
         addProfilePseudoButton = (TextView) findViewById(R.id.add_profile_button);
         addProfilePseudoButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
@@ -49,6 +50,6 @@ public class ListProfilesActivity extends AppCompatActivity
                 toCreateProfileActivity = new Intent(getApplicationContext(),CreateProfileActivity.class);
                 startActivity(toCreateProfileActivity);
             }
-        });
+        }); */
     }
 }

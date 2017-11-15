@@ -61,6 +61,7 @@ public class DoNotDisturbActivity extends AppCompatActivity {
     private RelativeLayout timeAmountView;
     private NumberPicker hourPicker;
     private NumberPicker minutePicker;
+    private TextView dot;
 
     private static CustomCountDownTimer timer;
 
@@ -117,6 +118,10 @@ public class DoNotDisturbActivity extends AppCompatActivity {
             countDownView.setVisibility(View.VISIBLE);
             startCountDownButton.setVisibility(View.GONE);
             stopCountDownButton.setVisibility(View.VISIBLE);
+            hourPicker.setVisibility(View.GONE);
+            minutePicker.setVisibility(View.GONE);
+            dot.setVisibility(View.GONE);
+
         } else {
             Log.d(MainActivity.LOG_TAG, "setContent(): timer is not running");
             doNotDisturbDisplay.setText(getString(R.string.prompt_do_not_disturb));
@@ -124,6 +129,9 @@ public class DoNotDisturbActivity extends AppCompatActivity {
             timeAmountView.setVisibility(View.VISIBLE);
             stopCountDownButton.setVisibility(View.GONE);
             startCountDownButton.setVisibility(View.VISIBLE);
+            hourPicker.setVisibility(View.VISIBLE);
+            minutePicker.setVisibility(View.VISIBLE);
+            dot.setVisibility(View.VISIBLE);
         }
     }
 
@@ -135,6 +143,7 @@ public class DoNotDisturbActivity extends AppCompatActivity {
         timeAmountView = (RelativeLayout) findViewById(R.id.time_amount_view);
         hourPicker = (NumberPicker) findViewById(R.id.hour_picker);
         minutePicker = (NumberPicker) findViewById(R.id.minute_picker);
+        dot = (TextView) findViewById(R.id.dotdot);
 
         hourPicker.setMinValue(0);
         hourPicker.setMaxValue(23);
