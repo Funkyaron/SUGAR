@@ -26,7 +26,6 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     public Dialog onCreateDialog(Bundle savedInstance)
     {
         Bundle args = getArguments();
-
         index = args.getInt(MainActivity.EXTRA_INDEX);
         Log.d(MainActivity.LOG_TAG, "index is: " + index);
         isStart = args.getBoolean(MainActivity.EXTRA_IS_START);

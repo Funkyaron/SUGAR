@@ -3,6 +3,8 @@ package com.example.peter.sugar;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -39,8 +41,15 @@ public class CreateActivityTimePickerFragment extends DialogFragment implements 
             currentlySelectedTime = underlyingProfile.getEnd()[selectedWeekDay];
             Log.d(MainActivity.LOG_TAG,"Old end time is : " + currentlySelectedTime.toString());
         }
-
-        return new TimePickerDialog(getActivity(),this,currentlySelectedTime.getHour(),currentlySelectedTime.getMinute(),true);
+        final TimePickerDialog toResult = new TimePickerDialog(getActivity(),this,currentlySelectedTime.getHour(),currentlySelectedTime.getMinute(),true);
+        toResult.setOnShowListener(new DialogInterface.OnShowListener() {
+            public void onShow(DialogInterface inter)
+            {
+                toResult.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+                toResult.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
+            }
+        });
+        return toResult;
     }
 
     @Override

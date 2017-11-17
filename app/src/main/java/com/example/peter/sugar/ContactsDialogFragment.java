@@ -6,6 +6,7 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
@@ -102,7 +103,16 @@ public class ContactsDialogFragment extends DialogFragment {
                        getDialog().cancel();
                    }
                });
-        return builder.create();
+        final AlertDialog toReturn = builder.create();
+        toReturn.setOnShowListener(new DialogInterface.OnShowListener() {
+           @Override
+            public void onShow(DialogInterface dial)
+           {
+               toReturn.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+               toReturn.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK)
+;           }
+        });
+        return toReturn;
     }
 
     @Override
