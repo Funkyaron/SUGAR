@@ -54,4 +54,6 @@
     <string name="choose_mode">Modus wählen</string>
     <string name="reject_message">Wir haben dem angerufenen Gesprächsteilnehmer eine Pause eingeräumt. Liebe Grüße,
     das SUGAR Team.</string>
+    <string name="create_profile">Profil anlegen</string>
+    <string name="delete_profile">Profil löschen</string>
 </resources>
