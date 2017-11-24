@@ -41,7 +41,7 @@ public class ClosingTimePickerFragment extends DialogFragment
                         parentActivity.setClosingTime(index, null);
 
                         TextView timeView = parentActivity.getWeekDayViews()[index];
-                        timeView.setText(parentActivity.toDayString(index, ""));
+                        timeView.setText("");
 
                         SharedPreferences savedTimes = parentActivity.getPreferences(Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = savedTimes.edit();
@@ -64,7 +64,7 @@ public class ClosingTimePickerFragment extends DialogFragment
         parentActivity.setClosingTime(index, time);
 
         TextView timeView = parentActivity.getWeekDayViews()[index];
-        timeView.setText(parentActivity.toDayString(index, time.toString()));
+        timeView.setText(time.toString());
 
         SharedPreferences savedTimes = parentActivity.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = savedTimes.edit();

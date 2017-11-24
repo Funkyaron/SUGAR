@@ -34,13 +34,13 @@ public class ClosingTimeDisplayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_closing_time_display);
 
-        timeViews = new TextView[]{ (TextView) findViewById(R.id.monday_closing_time_weekday),
-                                    (TextView) findViewById(R.id.tuesday_closing_time_weekday),
-                                    (TextView) findViewById(R.id.wednesday_closing_time_weekday),
-                                    (TextView) findViewById(R.id.thursday_closing_time_weekday),
-                                    (TextView) findViewById(R.id.friday_closing_time_weekday),
-                                    (TextView) findViewById(R.id.saturday_closing_time_weekday),
-                                    (TextView) findViewById(R.id.sunday_closing_time_weekday)};
+        timeViews = new TextView[7];
+        TableLayout rootLayout = (TableLayout) findViewById(R.id.closing_times_view);
+
+        for(int i = 0; i < timeViews.length; i++) {
+            TableRow row = (TableRow) rootLayout.getChildAt(i);
+            timeViews[i] = (TextView) row.getChildAt(1);
+        }
 
         Log.d(MainActivity.LOG_TAG, "Before opening SharedPreferences");
         closingTimes = new TimeObject[7];
@@ -56,7 +56,7 @@ public class ClosingTimeDisplayActivity extends AppCompatActivity {
 
 
         for(int i = 0; i < timeViews.length; i++) {
-            timeViews[i].setText(toDayString(i, closingTimes[i] == null ? "" : closingTimes[i].toString()));
+            timeViews[i].setText(closingTimes[i] == null ? "" : closingTimes[i].toString());
             final int index = i;
             timeViews[i].setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -88,48 +88,6 @@ public class ClosingTimeDisplayActivity extends AppCompatActivity {
     }
 
     public TextView[] getWeekDayViews() { return timeViews; }
-
-    public String toDayString(int index, String timeString) {
-        switch(index) {
-            case 0:
-                return getString(R.string.monday, timeString);
-            case 1:
-                return getString(R.string.tuesday, timeString);
-            case 2:
-                return getString(R.string.wednesday, timeString);
-            case 3:
-                return getString(R.string.thursday, timeString);
-            case 4:
-                return getString(R.string.friday, timeString);
-            case 5:
-                return getString(R.string.saturday, timeString);
-            case 6:
-                return getString(R.string.sunday, timeString);
-            default:
-                return "";
-        }
-    }
-
-    /* mondayButton = find...
-     * ..
-     * sundayButton = find...
-     *
-     * Button[] allDays = ...
-     *
-     * for(int i = 0; i < 7; i++) {
-     *  siehe oben (69-83)
-     * }
-     */
-
-    /* <button
-     *  android:text="@string/mondayPlusTime"
-     *  />
-     *
-     *  strings.xml:
-     *  <string name="mondayPlusTime">Montag\n%s</string>
-     *
-     *  Activity:
-     *  getString(R.string.mondayPlusTime, timeObject.toString());
-     */
+    public TimeObject[] getClosingTimes() { return closingTimes; }
 
 }
