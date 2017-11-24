@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
@@ -54,6 +53,9 @@ public class DoNotDisturbActivity extends AppCompatActivity {
 
     }
 
+
+
+
     private TextView countDownView;
     private TextView doNotDisturbDisplay;
     private ImageButton startCountDownButton;
@@ -61,12 +63,14 @@ public class DoNotDisturbActivity extends AppCompatActivity {
     private RelativeLayout timeAmountView;
     private NumberPicker hourPicker;
     private NumberPicker minutePicker;
-    private TextView dot;
 
     private static CustomCountDownTimer timer;
 
     private static boolean isRunning;
     private static long millis;
+
+
+    // Lifecycle Callbacks
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,30 +112,45 @@ public class DoNotDisturbActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
 
+        outState.putInt("hour", hourPicker.getValue());
+        outState.putInt("minute", minutePicker.getValue());
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        hourPicker.setValue(savedInstanceState.getInt("hour"));
+        minutePicker.setValue(savedInstanceState.getInt("minute"));
+    }
+
+
+
+
+
+
+    // Helper methods
 
     private void setContent(boolean timerIsRunning) {
         if(timerIsRunning) {
             Log.d(MainActivity.LOG_TAG, "setContent(): timer is running");
             doNotDisturbDisplay.setText(getString(R.string.time_remaining));
-            //timeAmountView.setVisibility(View.INVISIBLE);
+            timeAmountView.setVisibility(View.INVISIBLE);
             countDownView.setVisibility(View.VISIBLE);
-            startCountDownButton.setVisibility(View.GONE);
+            startCountDownButton.setVisibility(View.INVISIBLE);
             stopCountDownButton.setVisibility(View.VISIBLE);
-            hourPicker.setVisibility(View.GONE);
-            minutePicker.setVisibility(View.GONE);
-            dot.setVisibility(View.GONE);
 
         } else {
             Log.d(MainActivity.LOG_TAG, "setContent(): timer is not running");
             doNotDisturbDisplay.setText(getString(R.string.prompt_do_not_disturb));
-            countDownView.setVisibility(View.GONE);
+            countDownView.setVisibility(View.INVISIBLE);
             timeAmountView.setVisibility(View.VISIBLE);
-            stopCountDownButton.setVisibility(View.GONE);
+            stopCountDownButton.setVisibility(View.INVISIBLE);
             startCountDownButton.setVisibility(View.VISIBLE);
-            hourPicker.setVisibility(View.VISIBLE);
-            minutePicker.setVisibility(View.VISIBLE);
-            dot.setVisibility(View.VISIBLE);
         }
     }
 
@@ -143,7 +162,6 @@ public class DoNotDisturbActivity extends AppCompatActivity {
         timeAmountView = (RelativeLayout) findViewById(R.id.time_amount_view);
         hourPicker = (NumberPicker) findViewById(R.id.hour_picker);
         minutePicker = (NumberPicker) findViewById(R.id.minute_picker);
-        dot = (TextView) findViewById(R.id.dotdot);
 
         hourPicker.setMinValue(0);
         hourPicker.setMaxValue(23);

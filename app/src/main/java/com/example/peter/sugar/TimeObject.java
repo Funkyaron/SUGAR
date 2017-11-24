@@ -60,13 +60,8 @@ public class TimeObject {
     }
 
     public String toString() {
-        if (hour >= 0 && minute >= 0) {
-            DecimalFormat form = new DecimalFormat("00");
-            return "" + hour + ":" + form.format(minute);
-        } else if ( hour == -1 && minute == -1 ) {
-            return "Nicht aktiv!";
-        }
-        return "";
+        DecimalFormat form = new DecimalFormat("00");
+        return hour + ":" + form.format(minute);
     }
 
     public boolean earlierThan(TimeObject other) {

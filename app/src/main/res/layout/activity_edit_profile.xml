@@ -21,15 +21,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/medium_vertical_margin"
-        android:gravity="center"
-        android:textSize="@dimen/text_very_large" />
+        android:gravity="center_horizontal"
+        android:textSize="@dimen/text_very_large"/>
 
 
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/verticalMargin"
+        android:gravity="center_horizontal"
         android:textSize="@dimen/text_small"
         android:text="@string/prompt_edit_profile"/>
 

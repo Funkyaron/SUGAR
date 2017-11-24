@@ -74,6 +74,13 @@ public class ClosingTimeDisplayActivity extends AppCompatActivity {
                 }
             });
         }
+
+        TimeManager mgr = new TimeManager(this);
+        for(int i = 0; i < closingTimes.length; i++) {
+            if(closingTimes[i] != null) {
+                mgr.setNextClosingTime(i, closingTimes[i]);
+            }
+        }
     }
 
     public void setClosingTime(int index, TimeObject time) {

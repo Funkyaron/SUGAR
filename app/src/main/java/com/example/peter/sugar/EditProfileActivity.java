@@ -27,8 +27,16 @@ public class EditProfileActivity extends ActivityContainingProfile {
     private Button chooseContactsButton;
     private Button finishButton;
 
-    //Used to detect which day of week is selected
-    private int index;
+    private Profile prof;
+    private String profileName;
+    private boolean[] days;
+    private TimeObject[] startTimes;
+    private TimeObject[] endTimes;
+
+    /**
+     * Used to detect which day of week is selected
+     */
+    private int dayIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,22 +66,22 @@ public class EditProfileActivity extends ActivityContainingProfile {
 
 
         //Extract information from the passed profile and set up the Views.
-        final Profile prof = getProfile();
-        final String profileName = prof.getName();
-        final boolean[] days = prof.getDays();
-        final TimeObject[] startTimes = prof.getStart();
-        final TimeObject[] endTimes = prof.getEnd();
+        prof = getProfile();
+        profileName = prof.getName();
+        days = prof.getDays();
+        startTimes = prof.getStart();
+        endTimes = prof.getEnd();
 
         profileNameView.setText(profileName);
-        index = 0;
-        dayViews[index].setBackground(getResources().getDrawable(R.drawable.weekday_activated, null));
+        dayIndex = 0;
+        dayViews[dayIndex].setBackground(getResources().getDrawable(R.drawable.weekday_activated, null));
         for(int i = 0; i < 7; i++) {
             dayCheckboxes[i].setChecked(days[i]);
         }
 
-        startTimeButton.setText(getString(R.string.from_plus_time, startTimes[index].toString()));
-        endTimeButton.setText(getString(R.string.to_plus_time, endTimes[index].toString()));
-        if(!days[index]) {
+        startTimeButton.setText(getString(R.string.from_plus_time, startTimes[dayIndex].toString()));
+        endTimeButton.setText(getString(R.string.to_plus_time, endTimes[dayIndex].toString()));
+        if(!days[dayIndex]) {
             startTimeButton.setVisibility(View.INVISIBLE);
             endTimeButton.setVisibility(View.INVISIBLE);
         }
@@ -85,7 +93,7 @@ public class EditProfileActivity extends ActivityContainingProfile {
             dayViews[ind].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    index = ind;
+                    dayIndex = ind;
                     for(int j = 0; j < 7; j++) {
                         if(j == ind) {
                             dayViews[j].setBackground(getResources().getDrawable(R.drawable.weekday_activated, null));
@@ -95,7 +103,7 @@ public class EditProfileActivity extends ActivityContainingProfile {
                     }
                     startTimeButton.setText(getString(R.string.from_plus_time, startTimes[ind].toString()));
                     endTimeButton.setText(getString(R.string.to_plus_time, endTimes[ind].toString()));
-                    if(days[index]) {
+                    if(days[dayIndex]) {
                         startTimeButton.setVisibility(View.VISIBLE);
                         endTimeButton.setVisibility(View.VISIBLE);
                     } else {
@@ -112,7 +120,7 @@ public class EditProfileActivity extends ActivityContainingProfile {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                     days[ind] = isChecked;
-                    if(ind == index) {
+                    if(ind == dayIndex) {
                         if (isChecked) {
                             startTimeButton.setVisibility(View.VISIBLE);
                             endTimeButton.setVisibility(View.VISIBLE);
@@ -128,14 +136,14 @@ public class EditProfileActivity extends ActivityContainingProfile {
         startTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                pickTime(profileName, index, true);
+                pickTime(profileName, dayIndex, true);
             }
         });
 
         endTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                pickTime(profileName, index, false);
+                pickTime(profileName, dayIndex, false);
             }
         });
 
@@ -163,114 +171,56 @@ public class EditProfileActivity extends ActivityContainingProfile {
                 finish();
             }
         });
-
-        /*
-        final String passedName = getIntent().getExtras().getString("profileName");
-
-
-        final boolean[] days = prof.getDays();
-
-
-        final TableRow daysRow = (TableRow) findViewById(R.id.days_row);
-        final TableRow startTimeRow = (TableRow) findViewById(R.id.start_time_row);
-        final TableRow endTimeRow = (TableRow) findViewById(R.id.end_time_row);
-
-        for(int i = 0; i < daysRow.getChildCount(); i++) {
-            TextView v = (TextView) daysRow.getChildAt(i);
-            if(days[i])
-                v.setBackgroundColor(Color.GREEN);
-            else
-                v.setBackgroundColor(Color.RED);
-            final Integer index = i;
-            v.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View view) {
-                    TextView dayView = (TextView) daysRow.getChildAt(index);
-                    TextView startTimeView = (TextView) startTimeRow.getChildAt(index);
-                    TextView endTimeView = (TextView) endTimeRow.getChildAt(index);
-
-                    days[index] = !days[index];
-
-                    if(days[index]) {
-                        dayView.setBackgroundColor(Color.GREEN);
-                        startTimeView.setBackgroundColor(Color.GREEN);
-                        startTimeView.setText(startTimes[index].toString());
-                        startTimeView.setOnClickListener(new View.OnClickListener(){
-                            @Override
-                            public void onClick(View v) {
-                                pickTime(passedName, index, true);
-                            }
-                        });
-                        endTimeView.setBackgroundColor(Color.GREEN);
-                        endTimeView.setText(endTimes[index].toString());
-                        endTimeView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                pickTime(passedName, index, false);
-                            }
-                        });
-                    } else {
-                        dayView.setBackgroundColor(Color.RED);
-                        startTimeView.setBackgroundColor(Color.RED);
-                        startTimeView.setText("");
-                        startTimeView.setOnClickListener(null);
-                        endTimeView.setBackgroundColor(Color.RED);
-                        endTimeView.setText("");
-                        endTimeView.setOnClickListener(null);
-                    }
-                }
-            });
-        }
-
-        Log.d(MainActivity.LOG_TAG, "Children of startTimeRow: " + startTimeRow.getChildCount());
-
-        for(int i = 0; i < startTimeRow.getChildCount(); i++) {
-            TextView v = (TextView) startTimeRow.getChildAt(i);
-            if(days[i]) {
-                v.setText(startTimes[i].toString());
-                v.setBackgroundColor(Color.GREEN);
-                final Integer index = i;
-                v.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        pickTime(passedName, index, true);
-                    }
-                });
-            } else {
-                v.setBackgroundColor(Color.RED);
-                v.setOnClickListener(null);
-            }
-
-        }
-
-        for(int i = 0; i < endTimeRow.getChildCount(); i++) {
-            TextView v = (TextView) endTimeRow.getChildAt(i);
-            if(days[i]) {
-                v.setText(endTimes[i].toString());
-                v.setBackgroundColor(Color.GREEN);
-                final Integer index = i;
-                v.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        pickTime(passedName, index, false);
-                    }
-                });
-            } else {
-                v.setBackgroundColor(Color.RED);
-                v.setOnClickListener(null);
-            }
-
-        }
-
-        Button chooseContactsButton = (Button) findViewById(R.id.choose_contacts_button);
-        chooseContactsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new ContactsDialogFragment().show(getFragmentManager(), "cont");
-            }
-        });
-        */
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt("dayIndex", dayIndex);
+        for(int i = 0; i < days.length; i++) {
+            outState.putBoolean("day" + i, days[i]);
+        }
+        for(int i = 0; i < startTimes.length; i++) {
+            outState.putString("startTime" + i, startTimes[i].toString());
+        }
+        for(int i = 0; i < endTimes.length; i++) {
+            outState.putString("endTime" + i, endTimes[i].toString());
+        }
+        outState.putStringArrayList("phoneNumbers", getProfile().getPhoneNumbers());
+        outState.putStringArrayList("contactNames", getProfile().getContactNames());
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        dayIndex = savedInstanceState.getInt("dayIndex");
+        for(int i = 0; i < days.length; i++) {
+            days[i] = savedInstanceState.getBoolean("day" + i);
+        }
+        for(int i = 0; i < startTimes.length; i++) {
+            startTimes[i] = new TimeObject(savedInstanceState.getString("startTime" + i));
+        }
+        for(int i = 0; i < endTimes.length; i++) {
+            endTimes[i] = new TimeObject(savedInstanceState.getString("endTime" + i));
+        }
+        getProfile().setPhoneNumbers(savedInstanceState.getStringArrayList("phoneNumbers"));
+        getProfile().setContactNames(savedInstanceState.getStringArrayList("contactNames"));
+
+        for(int i = 0; i < days.length; i++) {
+            dayCheckboxes[i].setChecked(days[i]);
+            if(i == dayIndex) {
+                dayViews[i].setBackground(getResources().getDrawable(R.drawable.weekday_activated, null));
+            } else {
+                dayViews[i].setBackground(getResources().getDrawable(R.drawable.weekday_deactivated, null));
+            }
+        }
+        startTimeButton.setText(getString(R.string.from_plus_time, startTimes[dayIndex].toString()));
+        endTimeButton.setText(getString(R.string.to_plus_time, endTimes[dayIndex].toString()));
+    }
+    
+
 
     private void pickTime(String passedName, int index, boolean isStart) {
         Bundle args = new Bundle();

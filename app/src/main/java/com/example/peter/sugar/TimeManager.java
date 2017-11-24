@@ -114,14 +114,14 @@ public class TimeManager {
     }
 
 
-    public void setNextClosingTime(int index, TimeObject time) {
+    public void setNextClosingTime(int dayIndex, TimeObject time) {
         Log.d(MainActivity.LOG_TAG, "TimeManager: setNextClosingTime");
 
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(System.currentTimeMillis());
         long currentTime = cal.getTimeInMillis();
 
-        cal.set(Calendar.DAY_OF_WEEK, toCalendarDay(index));
+        cal.set(Calendar.DAY_OF_WEEK, toCalendarDay(dayIndex));
         cal.set(Calendar.HOUR_OF_DAY, time.getHour());
         cal.set(Calendar.MINUTE, time.getMinute());
         long targetTime = cal.getTimeInMillis();
@@ -133,7 +133,7 @@ public class TimeManager {
         targetTime = cal.getTimeInMillis();
 
         Intent intent = new Intent(context, ClosingTimeReceiver.class);
-        intent.addCategory("" + index);
+        intent.addCategory("" + dayIndex);
         intent.putExtra(MainActivity.EXTRA_HOUR_OF_DAY, time.getHour());
         intent.putExtra(MainActivity.EXTRA_MINUTE, time.getMinute());
         PendingIntent pending = PendingIntent.getBroadcast(context,
