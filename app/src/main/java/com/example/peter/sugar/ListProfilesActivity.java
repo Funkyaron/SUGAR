@@ -1,21 +1,23 @@
 package com.example.peter.sugar;
 
+import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.PopupMenu;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class ListProfilesActivity extends AppCompatActivity implements DialogInterface.OnDismissListener
+public class ListProfilesActivity extends AppCompatActivity implements DownloadFragment.DownloadFragmentListener
 {
 
+    private String profileNames[];
     private Profile profiles[];
     private ListView profilesList;
     private ProfilesAdapter adapter;
@@ -23,13 +25,34 @@ public class ListProfilesActivity extends AppCompatActivity implements DialogInt
     private Intent toCreateProfileActivity;
 
     @Override
+    public void onDialogPositiveClick(DialogFragment dialog)
+    {
+        updateAdapterAfterChanges();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.list_profiles_activity_menu,menu);
+        return true;
+    }
+
+    @Override
     public void onResume()
     {
         super.onResume();
+        Log.d(MainActivity.LOG_TAG,"I changed something!");
         profiles = Profile.readAllProfiles(this);
         ProfilesAdapter adapter = new ProfilesAdapter(this,profiles);
         profilesList = (ListView) findViewById(R.id.profiles_list);
         profilesList.setAdapter(adapter);
+        profileNames = new String[profiles.length];
+
+        for( int currName = 0; currName < profiles.length; currName++ )
+        {
+            profileNames[currName] = profiles[currName].getName();
+            Log.d(MainActivity.LOG_TAG,"Current profile name : " + profileNames[currName]);
+        }
     }
 
     @Override
@@ -39,27 +62,67 @@ public class ListProfilesActivity extends AppCompatActivity implements DialogInt
         setContentView(R.layout.activity_list_profiles);
 
         profiles = Profile.readAllProfiles(this);
+        profileNames = new String[profiles.length];
+
+        for( int currName = 0; currName < profiles.length; currName++ )
+        {
+            profileNames[currName] = profiles[currName].getName();
+            Log.d(MainActivity.LOG_TAG,"Current profile name : " + profileNames[currName]);
+        }
 
         adapter = new ProfilesAdapter(this, profiles);
         profilesList = (ListView) findViewById(R.id.profiles_list);
         profilesList.setAdapter(adapter);
-
-        addProfilePseudoButton = (TextView) findViewById(R.id.add_profile_button);
-        addProfilePseudoButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v)
-            {
-                toCreateProfileActivity = new Intent(getApplicationContext(),CreateProfileActivity.class);
-                startActivity(toCreateProfileActivity);
-            }
-        });
     }
 
     @Override
-    public void onDismiss(DialogInterface dialogInterface)
+    public boolean onOptionsItemSelected(MenuItem item)
     {
+        switch(item.getItemId())
+        {
+
+            case R.id.addProfileItem :
+            {
+                Intent toAddProfilesActivity = new Intent(this,CreateProfileActivity.class);
+                startActivity(toAddProfilesActivity);
+                return true;
+            }
+
+            case R.id.removeProfileItem :
+            {
+                DialogFragment deleteDialog = new DeleteProfileDialogFragment();
+                Bundle deleteDialogBundle = new Bundle();
+                deleteDialogBundle.putStringArray("profNames",profileNames);
+                deleteDialog.setArguments(deleteDialogBundle);
+                deleteDialog.show(getFragmentManager(),"deleteSelectedProfiles");
+                return true;
+            }
+
+            case R.id.downloadProfiles :
+            {
+                DialogFragment downloadFragment = new DownloadFragment();
+                downloadFragment.show(getFragmentManager(),"downloadProfiles");
+                return true;
+            }
+
+        }
+        return false;
+    }
+
+    public void updateAdapterAfterChanges()
+    {
+        Log.d(MainActivity.LOG_TAG,"I changed something!");
         profiles = Profile.readAllProfiles(this);
         ProfilesAdapter adapter = new ProfilesAdapter(this,profiles);
         profilesList = (ListView) findViewById(R.id.profiles_list);
         profilesList.setAdapter(adapter);
+        profileNames = new String[profiles.length];
+
+        for( int currName = 0; currName < profiles.length; currName++ )
+        {
+            profileNames[currName] = profiles[currName].getName();
+            Log.d(MainActivity.LOG_TAG,"Current profile name : " + profileNames[currName]);
+        }
     }
+
 }

@@ -334,4 +334,14 @@ class Profile implements Serializable
         contactNames = names;
     }
 
+    public void setDayActiveForWeekDay(int selectedDay)
+    {
+        days[selectedDay] = true;
+    }
+
+    public void setDayInactiveForWeekDay(int selectedDay)
+    {
+        days[selectedDay] = false;
+    }
+
 }

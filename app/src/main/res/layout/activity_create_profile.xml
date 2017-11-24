@@ -39,9 +39,9 @@
         android:layout_marginBottom="@dimen/verticalMargin"
         android:stretchColumns="*">
         <TableRow
-            android:id="@+id/days_row">
+            android:id="@+id/daysRow">
             <TextView
-                android:id="@+id/monday_view"
+                android:id="@+id/mondayView"
                 android:background="@drawable/weekday_background"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
                 android:textSize="@dimen/text_medium"
                 android:text="@string/monday_short" />
             <TextView
-                android:id="@+id/tuesday_view"
+                android:id="@+id/tuesdayView"
                 android:background="@drawable/weekday_background"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -57,7 +57,7 @@
                 android:textSize="@dimen/text_medium"
                 android:text="@string/tuesday_short" />
             <TextView
-                android:id="@+id/wednesday_view"
+                android:id="@+id/wednesdayView"
                 android:background="@drawable/weekday_background"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -65,7 +65,7 @@
                 android:textSize="@dimen/text_medium"
                 android:text="@string/wednesday_short" />
             <TextView
-                android:id="@+id/thursday_view"
+                android:id="@+id/thursdayView"
                 android:background="@drawable/weekday_background"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -73,7 +73,7 @@
                 android:textSize="@dimen/text_medium"
                 android:text="@string/thursday_short" />
             <TextView
-                android:id="@+id/friday_view"
+                android:id="@+id/fridayView"
                 android:background="@drawable/weekday_background"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
                 android:textSize="@dimen/text_medium"
                 android:text="@string/friday_short" />
             <TextView
-                android:id="@+id/saturday_view"
+                android:id="@+id/saturdayView"
                 android:background="@drawable/weekday_background"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -89,7 +89,7 @@
                 android:textSize="@dimen/text_medium"
                 android:text="@string/saturday_short" />
             <TextView
-                android:id="@+id/sunday_view"
+                android:id="@+id/sundayView"
                 android:background="@drawable/weekday_background"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -98,7 +98,7 @@
                 android:text="@string/sunday_short" />
         </TableRow>
         <TableRow
-            android:id="@+id/days_checkboxes">
+            android:id="@+id/daysCheckboxes">
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

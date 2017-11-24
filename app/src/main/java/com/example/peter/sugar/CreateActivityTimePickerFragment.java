@@ -13,7 +13,6 @@ import android.widget.TimePicker;
 /**
  * Created by SHK on 14.11.17.
  */
-
 public class CreateActivityTimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener
 {
     private Profile profile;
@@ -61,10 +60,6 @@ public class CreateActivityTimePickerFragment extends DialogFragment implements 
         TimeObject endTime = profile.getEnd()[selectedWeekDay];
         TimeObject modifiedTime = new TimeObject(hourOfDay,minuteOfDay);
 
-        boolean isValid = startTime.earlierThan(endTime);
-        if(!isValid)
-            return;
-
         if(isStart)
         {
             startTime = modifiedTime;
@@ -80,7 +75,7 @@ public class CreateActivityTimePickerFragment extends DialogFragment implements 
             Log.d(MainActivity.LOG_TAG,"You have updated the start time of " + selectedWeekDay + " to " + profile.getStart()[selectedWeekDay].toString());
         } else if(!isStart) {
             profile.setEndForDay(selectedWeekDay,endTime);
-            Log.d(MainActivity.LOG_TAG,"You have updated the end time of " + selectedWeekDay + " to " + profile.getStart()[selectedWeekDay].toString());
+            Log.d(MainActivity.LOG_TAG,"You have updated the end time of " + selectedWeekDay + " to " + profile.getEnd()[selectedWeekDay].toString());
         }
 
         if(isStart)

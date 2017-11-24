@@ -56,4 +56,6 @@
     das SUGAR Team.</string>
     <string name="create_profile">Profil anlegen</string>
     <string name="delete_profile">Profil löschen</string>
+    <string name="add_profile_description">Profil erstellen</string>
+    <string name="remove_profile_description">Profil löschen</string>
 </resources>

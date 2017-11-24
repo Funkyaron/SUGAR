@@ -65,7 +65,7 @@ class DownloadProfilesTaskAlt extends AsyncTask<String,Void,Boolean>
                     }
                 }
                 if(!localMatchesServer) {
-                    localFiles[i].delete();
+                    // localFiles[i].delete();
                 }
             }
 
