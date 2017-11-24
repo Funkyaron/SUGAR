@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.example.peter.sugar.ClosingTimeDisplayActivity">
+    
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -182,81 +183,4 @@
         </TableRow>
     </TableLayout>
 
-    <!--<TextView
-        android:id="@+id/monday_closing_time_weekday"
-        android:background="@drawable/list_item_background"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:gravity="center"
-        android:textSize="@dimen/text_large"/>
-    <TextView
-        android:id="@+id/tuesday_closing_time_weekday"
-        android:background="@drawable/list_item_background"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:gravity="center"
-        android:textSize="@dimen/text_large"/>
-    <TextView
-        android:id="@+id/wednesday_closing_time_weekday"
-        android:background="@drawable/list_item_background"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:gravity="center"
-        android:textSize="@dimen/text_large"/>
-    <TextView
-        android:id="@+id/thursday_closing_time_weekday"
-        android:background="@drawable/list_item_background"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:gravity="center"
-        android:textSize="@dimen/text_large"/>
-    <TextView
-        android:id="@+id/friday_closing_time_weekday"
-        android:background="@drawable/list_item_background"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:gravity="center"
-        android:textSize="@dimen/text_large"/>
-    <TextView
-        android:id="@+id/saturday_closing_time_weekday"
-        android:background="@drawable/list_item_background"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:gravity="center"
-        android:textSize="@dimen/text_large"/>
-    <TextView
-        android:id="@+id/sunday_closing_time_weekday"
-        android:background="@drawable/list_item_background"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:gravity="center"
-        android:textSize="@dimen/text_large"/>-->
 </LinearLayout>
