@@ -126,7 +126,7 @@ public class TimeManager {
         cal.set(Calendar.MINUTE, time.getMinute());
         long targetTime = cal.getTimeInMillis();
 
-        if(targetTime < currentTime) {
+        if(targetTime <= currentTime) {
             cal.add(Calendar.WEEK_OF_YEAR, 1);
         }
 

@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by Funkyaron on 09.06.2017.
@@ -54,7 +55,16 @@ public class ContactsDialogFragment extends DialogFragment {
         // Now we have to reverse-engine the checked items, so we extract the RawContact IDs
         // from the data table using the list of numbers. Then we go through the RawContacts
         // query to identify the checked items using the IDs.
-        mRawContactIds = getIdsByNumbers(numbers, mDataCursor);
+        // Alternatively extract the ids from savedInstanceState (see onSaveInstanceState() below).
+        if(savedInstanceState == null) {
+            mRawContactIds = getIdsByNumbers(numbers, mDataCursor);
+        } else {
+            long[] ids = savedInstanceState.getLongArray("ids");
+            mRawContactIds = new ArrayList<>(ids.length);
+            for(Long id : ids) {
+                mRawContactIds.add(id);
+            }
+        }
         boolean[] checkedItems = getCheckedItemsByIds(mRawContactIds, mRawCursor);
 
         // Here we get the contact names which are displayed in the list out of the
@@ -128,6 +138,19 @@ public class ContactsDialogFragment extends DialogFragment {
         super.onCancel(dialog);
         Log.d(MainActivity.LOG_TAG, "CDF: onCancel()");
         Toast.makeText(getActivity(), R.string.contacts_on_cancel, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        // The essential part to save is the raw contact ids, because these are the only
+        // attributes changed when clicking on an item.
+        // Unfortunately we have to convert from Long[] to long[]... fuck Java
+        Long[] boxIds = mRawContactIds.toArray(new Long[0]);
+        long[] ids = new long[boxIds.length];
+        for(int i = 0; i < boxIds.length; i++) {
+            ids[i] = boxIds[i];
+        }
+        outState.putLongArray("ids", ids);
     }
 
 

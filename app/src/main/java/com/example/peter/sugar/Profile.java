@@ -13,7 +13,7 @@ import java.io.*;
 /**
  * @author Peter
  */
-class Profile implements Serializable
+class Profile
 {
     private String name;
     private boolean[] days;
@@ -30,6 +30,27 @@ class Profile implements Serializable
     public static final int MODE_BLOCK_ALL = 3;
 
     private final String[] weekDays = { "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
+
+    Profile() {
+        name = "";
+        days = new boolean[7];
+        for(int i = 0; i < 7; i++) {
+            days[i] = false;
+        }
+        startTime = new TimeObject[7];
+        for(int i = 0; i < 7; i++) {
+            startTime[i] = new TimeObject(0,0);
+        }
+        endTime = new TimeObject[7];
+        for(int i = 0; i < 7; i++) {
+            endTime[i] = new TimeObject(23, 59);
+        }
+        active = false;
+        allowed = true;
+        mode = MODE_BLOCK_NOT_SELECTED;
+        numbers = new ArrayList<>();
+        contactNames = new ArrayList<>();
+    }
 
     Profile(String name,
             boolean[] days,

@@ -2,6 +2,7 @@ package com.example.peter.sugar;
 
 import android.app.DialogFragment;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,6 +38,20 @@ public class EditProfileActivity extends ActivityContainingProfile {
      * Used to detect which day of week is selected
      */
     private int dayIndex;
+
+    @Override @NonNull
+    protected Profile createProfile() {
+        String profileName = getIntent().getStringExtra(MainActivity.EXTRA_PROFILE_NAME);
+
+        try {
+            return Profile.readProfileFromXmlFile(profileName, this);
+        } catch(Exception e) {
+            Log.e(MainActivity.LOG_TAG, e.toString());
+            Toast.makeText(this, R.string.error, Toast.LENGTH_LONG).show();
+            finish();
+        }
+        return new Profile();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

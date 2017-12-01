@@ -39,7 +39,8 @@
     <string name="greetings_edit">Profile anzeigen</string>
     <string name="greetings_disturb">Ungestört arbeiten</string>
     <string name="greetings_closingtime">Feierabend</string>
-    <string name="closing_time_announcment">Wann möchten Sie an den Feierabend erinnert werden?</string>
+    <string name="closing_time_announcement">Wann möchten Sie an den Feierabend erinnert werden?</string>
+    <string name="closing_time_announcement_lf">Wann möchten Sie\nan den Feierabend\nerinnert werden?</string>
     <string name="test_time">17:45</string>
     <string name="start">Starten</string>
     <string name="prompt_do_not_disturb">Wie lange möchten Sie nicht erreichbar sein?</string>

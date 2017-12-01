@@ -3,6 +3,7 @@ package com.example.peter.sugar;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -41,6 +42,11 @@ public class EditProfileActivityModern extends ActivityContainingProfile
     private NumberPicker endChooseMinute;
     private int selectedDay;
     private Context activityContext;
+
+    @Override @NonNull
+    protected Profile createProfile() {
+        return new Profile();
+    }
 
     /**
      * In this function every variable which is declared at the beginning of the file is given an inital value and crucial operations like

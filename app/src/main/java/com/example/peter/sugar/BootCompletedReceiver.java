@@ -10,7 +10,9 @@ public class BootCompletedReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(MainActivity.LOG_TAG, "BootCompletedReceiver: onReceive()");
-        TimeManager mgr = new TimeManager(context);
-        mgr.initProfiles();
+        if(intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
+            TimeManager mgr = new TimeManager(context);
+            mgr.initProfiles();
+        }
     }
 }

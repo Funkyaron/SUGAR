@@ -1,6 +1,7 @@
 package com.example.peter.sugar;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
@@ -16,22 +17,16 @@ import android.widget.Toast;
  * subclassing this one.
  */
 
-public class ActivityContainingProfile extends AppCompatActivity {
+public abstract class ActivityContainingProfile extends AppCompatActivity {
     private Profile prof;
+
+    @NonNull
+    protected abstract Profile createProfile();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        String profileName = getIntent().getStringExtra(MainActivity.EXTRA_PROFILE_NAME);
-
-        try {
-            prof = Profile.readProfileFromXmlFile(profileName, this);
-        } catch(Exception e) {
-            Log.e(MainActivity.LOG_TAG, e.toString());
-            Toast.makeText(this, R.string.error, Toast.LENGTH_LONG).show();
-            finish();
-        }
+        prof = createProfile();
 
         Log.d(MainActivity.LOG_TAG, "ActivityContainigProfile: onCreate()");
         Log.d(MainActivity.LOG_TAG, "Profile: " + prof.toString());
