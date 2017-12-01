@@ -25,7 +25,7 @@ public class ActivityCreatingProfile extends AppCompatActivity
     protected void onCreate(Bundle savedInstances)
     {
         super.onCreate(savedInstances);
-        name = "Insert profile name";
+        name = "";
         days = new boolean[7];
 
         /* Set everyday to 'false' inside the 'days' array */
@@ -47,12 +47,12 @@ public class ActivityCreatingProfile extends AppCompatActivity
         /* Fill every entry in 'endTimes' with a default TimeObject */
         for(int currDay = 0;currDay < 7; currDay++ )
         {
-            endTimes[currDay] = new TimeObject(0,0);
+            endTimes[currDay] = new TimeObject(23,59);
         }
 
         isActive = false;
         isAllowed = true;
-        mode = 2;
+        mode = Profile.MODE_BLOCK_NOT_SELECTED;
         phoneNumbers = new ArrayList<String>(0);
         contactsName = new ArrayList<String>(0);
         underlyingProfile = new Profile(name,days,startTimes,endTimes,isActive,isAllowed,mode,phoneNumbers,contactsName);

@@ -13,4 +13,7 @@
     <color name="lightblue">#33FFFF</color>
     <color name="yellow">#D5FF00</color>
     <color name="silver">#D3D3D3</color>
+    <color name="sugar_orange">#A6281D</color>
+    <color name="sugar_dark_blue">#1D0F5B</color>
+    <color name="sugar_green">#408724</color>
 </resources>

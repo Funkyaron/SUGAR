@@ -24,6 +24,7 @@ public class DeleteProfileDialogFragment extends DialogFragment
     @Override
     public Dialog onCreateDialog(Bundle savedInstances)
     {
+        setRetainInstance(true);
         itemNames = getArguments().getStringArray("profNames");
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),R.style.DeletionDialogTheme);
         builder.setTitle("Wählen Sie die zu löschenden Profile aus");
@@ -67,5 +68,17 @@ public class DeleteProfileDialogFragment extends DialogFragment
             }
         });
         return toReturn;
+    }
+
+    @Override
+    public void onDestroyView()
+    {
+        Dialog deleteProfilesDialog = getDialog();
+
+        if( deleteProfilesDialog != null && getRetainInstance() )
+        {
+            deleteProfilesDialog.setDismissMessage(null);
+        }
+        super.onDestroyView();
     }
 }

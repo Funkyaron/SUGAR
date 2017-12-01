@@ -50,6 +50,7 @@ public class DownloadFragment extends DialogFragment
     @Override
     public Dialog onCreateDialog(Bundle savedInstanced)
     {
+        setRetainInstance(true);
         hostAdress = "";
         userName = "";
         userPassword = "";
@@ -83,5 +84,17 @@ public class DownloadFragment extends DialogFragment
             }
         });
         return downloadDialogBuilder.create();
+    }
+
+    @Override
+    public void onDestroyView()
+    {
+        Dialog downloadDialogFragment = getDialog();
+
+        if( downloadDialogFragment != null && getRetainInstance() )
+        {
+            downloadDialogFragment.setDismissMessage(null);
+        }
+        super.onDestroyView();
     }
 }

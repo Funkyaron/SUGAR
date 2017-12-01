@@ -15,7 +15,7 @@ import android.widget.TimePicker;
  */
 public class CreateActivityTimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener
 {
-    private Profile profile;
+    private Profile underlyingProfile;
     private int selectedWeekDay;
     private boolean isStart;
 
@@ -29,8 +29,8 @@ public class CreateActivityTimePickerFragment extends DialogFragment implements 
         Log.d(MainActivity.LOG_TAG,"Your segment is start : " + isStart);
 
         TimeObject currentlySelectedTime = new TimeObject(0,0);
-        ActivityCreatingProfile underlyingActivity = (ActivityCreatingProfile) getActivity();
-        Profile underlyingProfile = underlyingActivity.getProfile();
+        CreateProfileActivity underlyingActivity = (CreateProfileActivity) getActivity();
+        underlyingProfile = underlyingActivity.getActivityProfile();
 
         if(isStart)
         {
@@ -55,27 +55,27 @@ public class CreateActivityTimePickerFragment extends DialogFragment implements 
     public void onTimeSet(TimePicker view,int hourOfDay,int minuteOfDay)
     {
         ActivityCreatingProfile underlyingActivity = (CreateProfileActivity) getActivity();
-        profile = underlyingActivity.getProfile();
-        TimeObject startTime = profile.getStart()[selectedWeekDay];
-        TimeObject endTime = profile.getEnd()[selectedWeekDay];
+        underlyingProfile = underlyingActivity.getProfile();
+        TimeObject startTime = underlyingProfile.getStart()[selectedWeekDay];
+        TimeObject endTime = underlyingProfile.getEnd()[selectedWeekDay];
         TimeObject modifiedTime = new TimeObject(hourOfDay,minuteOfDay);
 
         if(isStart)
         {
             startTime = modifiedTime;
-            endTime = profile.getEnd()[selectedWeekDay];
+            endTime = underlyingProfile.getEnd()[selectedWeekDay];
         } else if (!isStart) {
-            startTime = profile.getStart()[selectedWeekDay];
+            startTime = underlyingProfile.getStart()[selectedWeekDay];
             endTime = modifiedTime;
         }
 
         if(isStart)
         {
-            profile.setStartForDay(selectedWeekDay,startTime);
-            Log.d(MainActivity.LOG_TAG,"You have updated the start time of " + selectedWeekDay + " to " + profile.getStart()[selectedWeekDay].toString());
+            underlyingProfile.setStartForDay(selectedWeekDay,startTime);
+            Log.d(MainActivity.LOG_TAG,"You have updated the start time of " + selectedWeekDay + " to " + underlyingProfile.getStart()[selectedWeekDay].toString());
         } else if(!isStart) {
-            profile.setEndForDay(selectedWeekDay,endTime);
-            Log.d(MainActivity.LOG_TAG,"You have updated the end time of " + selectedWeekDay + " to " + profile.getEnd()[selectedWeekDay].toString());
+            underlyingProfile.setEndForDay(selectedWeekDay,endTime);
+            Log.d(MainActivity.LOG_TAG,"You have updated the end time of " + selectedWeekDay + " to " + underlyingProfile.getEnd()[selectedWeekDay].toString());
         }
 
         if(isStart)

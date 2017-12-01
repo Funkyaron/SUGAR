@@ -12,7 +12,7 @@
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:src="@mipmap/download_button"
-        android:background="@color/orange"
+        android:background="@color/sugar_orange"
         android:layout_gravity="center"/>
     <LinearLayout
         android:layout_width="match_parent"
