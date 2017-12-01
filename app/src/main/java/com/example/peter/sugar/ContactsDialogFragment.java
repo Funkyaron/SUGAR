@@ -144,7 +144,7 @@ public class ContactsDialogFragment extends DialogFragment {
     public void onSaveInstanceState(Bundle outState) {
         // The essential part to save is the raw contact ids, because these are the only
         // attributes changed when clicking on an item.
-        // Unfortunately we have to convert from Long[] to long[]... fuck Java
+        // Unfortunately we have to convert from Long[] to long[]
         Long[] boxIds = mRawContactIds.toArray(new Long[0]);
         long[] ids = new long[boxIds.length];
         for(int i = 0; i < boxIds.length; i++) {

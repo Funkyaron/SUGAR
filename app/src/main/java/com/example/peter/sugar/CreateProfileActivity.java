@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,7 +19,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.util.ArrayList;
 
-public class CreateProfileActivity extends ActivityCreatingProfile
+public class CreateProfileActivity extends ActivityContainingProfile
 {
     private int selectedWeekDay;
     private EditText profileNameInput;
@@ -38,6 +39,12 @@ public class CreateProfileActivity extends ActivityCreatingProfile
     private int mode;
     private ArrayList<String> phoneNumbers;
     private ArrayList<String> contactNames;
+
+    @Override @NonNull
+    protected Profile createProfile() {
+        return new Profile();
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstances)
@@ -135,7 +142,7 @@ public class CreateProfileActivity extends ActivityCreatingProfile
         editStartTimeButton.setOnClickListener(new View.OnClickListener() {
            public void onClick(View v)
            {
-               pickTime(selectedWeekDay,true);
+               pickTime(true);
            }
         });
         editEndTimeButton = (Button) findViewById(R.id.end_time_button);
@@ -143,7 +150,7 @@ public class CreateProfileActivity extends ActivityCreatingProfile
         editEndTimeButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
             {
-                pickTime(selectedWeekDay,false);
+                pickTime(false);
             }
         });
         finishButton = (Button) findViewById(R.id.finish_button);
@@ -228,12 +235,12 @@ public class CreateProfileActivity extends ActivityCreatingProfile
         contactNames = savedInstances.getStringArrayList("contactNames");
     }
 
-    private void pickTime(int index,boolean isStart)
+    private void pickTime(boolean isStart)
     {
-        DialogFragment timePickerFragment = new CreateActivityTimePickerFragment();
+        DialogFragment timePickerFragment = new TimePickerFragment();
         Bundle timePickerFragmentBundle = new Bundle();
-        timePickerFragmentBundle.putInt("selectedWeekDay",selectedWeekDay);
-        timePickerFragmentBundle.putBoolean("isStart",isStart);
+        timePickerFragmentBundle.putInt(MainActivity.EXTRA_INDEX, selectedWeekDay);
+        timePickerFragmentBundle.putBoolean(MainActivity.EXTRA_IS_START, isStart);
         timePickerFragment.setArguments(timePickerFragmentBundle);
         timePickerFragment.show(getFragmentManager(),"pickTime");
     }

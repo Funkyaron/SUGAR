@@ -54,7 +54,7 @@ public class CreateActivityTimePickerFragment extends DialogFragment implements 
     @Override
     public void onTimeSet(TimePicker view,int hourOfDay,int minuteOfDay)
     {
-        ActivityCreatingProfile underlyingActivity = (CreateProfileActivity) getActivity();
+        ActivityContainingProfile underlyingActivity = (ActivityContainingProfile) getActivity();
         underlyingProfile = underlyingActivity.getProfile();
         TimeObject startTime = underlyingProfile.getStart()[selectedWeekDay];
         TimeObject endTime = underlyingProfile.getEnd()[selectedWeekDay];

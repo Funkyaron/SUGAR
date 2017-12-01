@@ -151,14 +151,14 @@ public class EditProfileActivity extends ActivityContainingProfile {
         startTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                pickTime(profileName, dayIndex, true);
+                pickTime(true);
             }
         });
 
         endTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                pickTime(profileName, dayIndex, false);
+                pickTime(false);
             }
         });
 
@@ -237,13 +237,12 @@ public class EditProfileActivity extends ActivityContainingProfile {
     
 
 
-    private void pickTime(String passedName, int index, boolean isStart) {
+    private void pickTime(boolean isStart) {
         Bundle args = new Bundle();
-        args.putString(MainActivity.EXTRA_PROFILE_NAME, passedName);
-        args.putInt(MainActivity.EXTRA_INDEX, index);
+        args.putInt(MainActivity.EXTRA_INDEX, dayIndex);
         args.putBoolean(MainActivity.EXTRA_IS_START, isStart);
         DialogFragment newFragment = new TimePickerFragment();
         newFragment.setArguments(args);
-        newFragment.show(getFragmentManager(), "end" + index);
+        newFragment.show(getFragmentManager(), "end" + dayIndex);
     }
 }
