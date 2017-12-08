@@ -127,7 +127,7 @@ class ProfileParser {
         parser.require(XmlPullParser.START_TAG,ns,"name");
         String name = readText(parser);
         parser.require(XmlPullParser.END_TAG,ns,"name");
-        Log.d(MainActivity.LOG_TAG, "Name: " + name);
+        //Log.d(MainActivity.LOG_TAG, "Name: " + name);
         return name;
     }
 
@@ -207,7 +207,7 @@ class ProfileParser {
         parser.require(XmlPullParser.START_TAG, ns, "mode");
         String resultText = readText(parser);
         parser.require(XmlPullParser.END_TAG, ns, "mode");
-        Log.d(MainActivity.LOG_TAG, "Mode: " + resultText);
+        //Log.d(MainActivity.LOG_TAG, "Mode: " + resultText);
 
         return Integer.parseInt(resultText);
     }

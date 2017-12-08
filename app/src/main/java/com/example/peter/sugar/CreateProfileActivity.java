@@ -87,24 +87,22 @@ public class CreateProfileActivity extends ActivityContainingProfile
                 @Override
                 public void onClick(View v)
                 {
-                    weekdayViews[selectedWeekDay].setBackgroundResource(R.drawable.weekday_deactivated);
                     selectedWeekDay = selectDay;
-                    for( int currentWeekDay = 0; currentWeekDay < weekdayViews.length; currentWeekDay++ )
-                    {
-                        if( currentWeekDay == selectedWeekDay && !(weekdayCheckboxes[selectedWeekDay].isChecked()))
-                        {
-                            weekdayViews[selectedWeekDay].setBackgroundResource(R.drawable.weekday_activated);
-                            editStartTimeButton.setVisibility(View.INVISIBLE);
-                            editEndTimeButton.setVisibility(View.INVISIBLE);
-                        } else if( ( selectedWeekDay == selectDay ) && ( weekdayCheckboxes[currentWeekDay].isChecked() ) ) {
-                            weekdayViews[selectedWeekDay].setBackgroundResource(R.drawable.weekday_activated);
-                            editStartTimeButton.setText(CreateProfileActivity.this.getString(R.string.from_plus_time,startTimes[selectDay]));
-                            editEndTimeButton.setText(CreateProfileActivity.this.getString(R.string.to_plus_time,endTimes[selectDay]));
-                            editStartTimeButton.setVisibility(View.VISIBLE);
-                            editEndTimeButton.setVisibility(View.VISIBLE);
-                        } else if ( currentWeekDay != selectDay ) {
+                    for( int currentWeekDay = 0; currentWeekDay < weekdayViews.length; currentWeekDay++ ) {
+                        if( currentWeekDay == selectedWeekDay ) {
+                            weekdayViews[currentWeekDay].setBackgroundResource(R.drawable.weekday_activated);
+                        } else {
                             weekdayViews[currentWeekDay].setBackgroundResource(R.drawable.weekday_deactivated);
                         }
+                    }
+                    editStartTimeButton.setText(startTimes[selectedWeekDay].toString());
+                    editEndTimeButton.setText(endTimes[selectedWeekDay].toString());
+                    if(days[selectedWeekDay]) {
+                        editStartTimeButton.setVisibility(View.VISIBLE);
+                        editEndTimeButton.setVisibility(View.VISIBLE);
+                    } else {
+                        editStartTimeButton.setVisibility(View.INVISIBLE);
+                        editEndTimeButton.setVisibility(View.INVISIBLE);
                     }
                 }
             });
@@ -153,16 +151,18 @@ public class CreateProfileActivity extends ActivityContainingProfile
                 pickTime(false);
             }
         });
+
         finishButton = (Button) findViewById(R.id.finish_button);
         finishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
             {
                 name = profileNameInput.getText().toString();
+                if( name.isEmpty() ) {
+                    Toast.makeText(CreateProfileActivity.this, R.string.prompt_enter_profile_name, Toast.LENGTH_LONG).show();
+                    return;
+                }
                 prof.setName(name);
-                Log.d(MainActivity.LOG_TAG,"Current name : " + name);
-                if( name.isEmpty() )
-                    name = "NoName";
                 try {
                     prof.saveProfile(getApplicationContext());
                 } catch ( Exception e ) {
@@ -173,6 +173,14 @@ public class CreateProfileActivity extends ActivityContainingProfile
             }
         });
         weekdayViews[selectedWeekDay].setBackgroundResource(R.drawable.weekday_activated);
+
+        Button cancelButton = (Button) findViewById(R.id.cancel_button);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     @Override

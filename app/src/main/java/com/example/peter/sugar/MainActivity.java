@@ -4,6 +4,9 @@ import android.Manifest;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,6 +15,7 @@ import android.media.AudioManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBarActivity;
@@ -113,6 +117,22 @@ public class MainActivity extends AppCompatActivity
         Intent changeDialer = new Intent(TelecomManager.ACTION_CHANGE_DEFAULT_DIALER);
         changeDialer.putExtra(TelecomManager.EXTRA_CHANGE_DEFAULT_DIALER_PACKAGE_NAME, getPackageName());
         startActivity(changeDialer);
+
+        // Here we initialize the monitor for contacts database changes (see ContactsMonitorService).
+        // TODO: Add an option to enable or disable this feature.
+        final int JOB_ID = 1;
+        JobScheduler scheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+
+        JobInfo.Builder builder = new JobInfo.Builder(JOB_ID,
+                new ComponentName(getPackageName(), ContactsMonitorService.class.getName()));
+        builder.setPeriodic(1000 * 60 * 15)
+                .setPersisted(true);
+        JobInfo info = builder.build();
+
+        if(scheduler != null) {
+            scheduler.schedule(info);
+            Log.d(MainActivity.LOG_TAG, "All pending jobs: " + scheduler.getAllPendingJobs().toString());
+        }
     }
 
     // Handling runtime permissions

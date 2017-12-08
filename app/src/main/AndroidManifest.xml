@@ -80,7 +80,10 @@
             android:name=".ClosingTimeReceiver"
             android:enabled="true" />
 
-        <activity android:name=".ClosingTimeReminderActivity"></activity>
+        <activity android:name=".ClosingTimeReminderActivity"/>
+
+        <service android:name=".ContactsMonitorService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
 </manifest>

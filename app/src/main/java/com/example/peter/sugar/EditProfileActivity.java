@@ -103,21 +103,21 @@ public class EditProfileActivity extends ActivityContainingProfile {
 
 
         //Implement functionality
-        for(int i = 0; i < 7; i++) {
-            final int ind = i;
-            dayViews[ind].setOnClickListener(new View.OnClickListener() {
+        for(int currView = 0; currView < dayViews.length; currView++) {
+            final int selectDay = currView;
+            dayViews[currView].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    dayIndex = ind;
-                    for(int j = 0; j < 7; j++) {
-                        if(j == ind) {
-                            dayViews[j].setBackground(getResources().getDrawable(R.drawable.weekday_activated, null));
+                    dayIndex = selectDay;
+                    for(int viewIndex = 0; viewIndex < days.length; viewIndex++) {
+                        if(viewIndex == dayIndex) {
+                            dayViews[viewIndex].setBackgroundResource(R.drawable.weekday_activated);
                         } else {
-                            dayViews[j].setBackground(getResources().getDrawable(R.drawable.weekday_deactivated, null));
+                            dayViews[viewIndex].setBackgroundResource(R.drawable.weekday_deactivated);
                         }
                     }
-                    startTimeButton.setText(getString(R.string.from_plus_time, startTimes[ind].toString()));
-                    endTimeButton.setText(getString(R.string.to_plus_time, endTimes[ind].toString()));
+                    startTimeButton.setText(getString(R.string.from_plus_time, startTimes[dayIndex].toString()));
+                    endTimeButton.setText(getString(R.string.to_plus_time, endTimes[dayIndex].toString()));
                     if(days[dayIndex]) {
                         startTimeButton.setVisibility(View.VISIBLE);
                         endTimeButton.setVisibility(View.VISIBLE);

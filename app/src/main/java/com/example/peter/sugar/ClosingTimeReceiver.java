@@ -9,6 +9,12 @@ import android.content.Intent;
 import android.os.Vibrator;
 import android.util.Log;
 
+/**
+ * This Receiver fires when the user should be reminded of his closing time.
+ * For now, only a simple Notification is displayed.
+ *
+ * TODO: Providing different types of "reminders" and the option to choose one of them.
+ */
 public class ClosingTimeReceiver extends BroadcastReceiver {
 
     @Override
@@ -24,22 +30,14 @@ public class ClosingTimeReceiver extends BroadcastReceiver {
         TimeManager timeMgr = new TimeManager(context);
         timeMgr.setNextClosingTime(index, time);
 
-        Intent fullScreenIntent = new Intent(context, ClosingTimeReminderActivity.class);
-        //fullScreenIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent pending = PendingIntent.getActivity(context, 0,
-                fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        //context.startActivity(fullScreenIntent);
-
         Notification.Builder builder = new Notification.Builder(context);
 
         builder.setSmallIcon(R.mipmap.sugar)
                 .setContentTitle(context.getString(R.string.closing_time_title))
                 .setContentText(context.getString(R.string.closing_time_text))
-                //.setWhen(System.currentTimeMillis());
+                .setWhen(System.currentTimeMillis())
                 //.setPriority(Notification.PRIORITY_HIGH)
-                .setDefaults(Notification.DEFAULT_VIBRATE)
-                .setFullScreenIntent(pending, true);
+                .setDefaults(Notification.DEFAULT_VIBRATE);
 
         Notification noti = builder.build();
         NotificationManager notiMgr = (NotificationManager)

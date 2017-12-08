@@ -61,4 +61,5 @@
     <string name="remove_profile_description">Profil löschen</string>
     <string name="stop">Stop</string>
     <string name="enter_profile_name">Profilname&#8230;</string>
+    <string name="prompt_enter_profile_name">Bitte geben Sie einen Profilnamen ein.</string>
 </resources>

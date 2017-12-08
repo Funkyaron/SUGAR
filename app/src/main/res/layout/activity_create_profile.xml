@@ -186,7 +186,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/verticalMargin"
         android:text="@string/save_and_close"/>
+
+    <Button
+        android:id="@+id/cancel_button"
+        android:background="@drawable/startactivity_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/cancel"/>
 
 </LinearLayout>
 </ScrollView>
