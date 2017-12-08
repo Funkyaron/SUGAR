@@ -94,8 +94,8 @@ public class CreateProfileActivity extends ActivityContainingProfile
                         if( currentWeekDay == selectedWeekDay && !(weekdayCheckboxes[selectedWeekDay].isChecked()))
                         {
                             weekdayViews[selectedWeekDay].setBackgroundResource(R.drawable.weekday_activated);
-                            editStartTimeButton.setVisibility(View.GONE);
-                            editEndTimeButton.setVisibility(View.GONE);
+                            editStartTimeButton.setVisibility(View.INVISIBLE);
+                            editEndTimeButton.setVisibility(View.INVISIBLE);
                         } else if( ( selectedWeekDay == selectDay ) && ( weekdayCheckboxes[currentWeekDay].isChecked() ) ) {
                             weekdayViews[selectedWeekDay].setBackgroundResource(R.drawable.weekday_activated);
                             editStartTimeButton.setText(CreateProfileActivity.this.getString(R.string.from_plus_time,startTimes[selectDay]));

@@ -16,4 +16,5 @@
     <color name="sugar_orange">#A6281D</color>
     <color name="sugar_dark_blue">#1D0F5B</color>
     <color name="sugar_green">#408724</color>
+    <color name="textColorHint">#909090</color>
 </resources>

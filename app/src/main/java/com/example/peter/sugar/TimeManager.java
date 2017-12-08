@@ -136,6 +136,7 @@ public class TimeManager {
         intent.addCategory("" + dayIndex);
         intent.putExtra(MainActivity.EXTRA_HOUR_OF_DAY, time.getHour());
         intent.putExtra(MainActivity.EXTRA_MINUTE, time.getMinute());
+        intent.setFlags(Intent.FLAG_RECEIVER_FOREGROUND);
         PendingIntent pending = PendingIntent.getBroadcast(context,
                 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 

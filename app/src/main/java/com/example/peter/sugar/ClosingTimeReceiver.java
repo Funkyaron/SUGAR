@@ -2,9 +2,11 @@ package com.example.peter.sugar;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Vibrator;
 import android.util.Log;
 
 public class ClosingTimeReceiver extends BroadcastReceiver {
@@ -22,18 +24,28 @@ public class ClosingTimeReceiver extends BroadcastReceiver {
         TimeManager timeMgr = new TimeManager(context);
         timeMgr.setNextClosingTime(index, time);
 
+        Intent fullScreenIntent = new Intent(context, ClosingTimeReminderActivity.class);
+        //fullScreenIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent pending = PendingIntent.getActivity(context, 0,
+                fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        //context.startActivity(fullScreenIntent);
+
         Notification.Builder builder = new Notification.Builder(context);
 
         builder.setSmallIcon(R.mipmap.sugar)
                 .setContentTitle(context.getString(R.string.closing_time_title))
                 .setContentText(context.getString(R.string.closing_time_text))
-                .setWhen(System.currentTimeMillis())
-                .setPriority(Notification.PRIORITY_HIGH)
-                .setDefaults(Notification.DEFAULT_VIBRATE);
+                //.setWhen(System.currentTimeMillis());
+                //.setPriority(Notification.PRIORITY_HIGH)
+                .setDefaults(Notification.DEFAULT_VIBRATE)
+                .setFullScreenIntent(pending, true);
 
         Notification noti = builder.build();
         NotificationManager notiMgr = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notiMgr.notify(index, noti);
+        if(notiMgr != null) {
+            notiMgr.notify(index, noti);
+        }
     }
 }

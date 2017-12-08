@@ -72,12 +72,15 @@
         <activity android:name=".DisplayProfileActivityAlt" />
         <activity android:name=".ListProfilesActivity" />
         <activity android:name=".ClosingTimeDisplayActivity" />
-        <activity android:name=".EditProfileActivityModern"/>
-        <activity android:name=".CreateProfileActivity"/>
+        <activity android:name=".EditProfileActivityModern" />
+        <activity android:name=".CreateProfileActivity"
+            android:windowSoftInputMode="stateHidden"/>
 
         <receiver
             android:name=".ClosingTimeReceiver"
-            android:enabled="true"/>
+            android:enabled="true" />
+
+        <activity android:name=".ClosingTimeReminderActivity"></activity>
     </application>
 
 </manifest>

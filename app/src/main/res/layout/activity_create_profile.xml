@@ -11,23 +11,25 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
-    <!--This "section", i.e. a TextView, displays the profile name-->
-    <!--TODO: Add the icon that displays whether the Profile currently allows calls or not.-->
     <EditText
         android:id="@+id/edit_profile_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/medium_vertical_margin"
-        android:gravity="center"
-        android:textSize="@dimen/text_very_large" />
+        android:textSize="@dimen/text_very_large"
+        android:textAlignment="textStart"
+        android:inputType="textCapSentences"
+        android:hint="@string/enter_profile_name"
+        android:textColorHint="@color/textColorHint"/>
 
 
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/verticalMargin"
         android:textSize="@dimen/text_small"
+        android:textAlignment="center"
         android:text="@string/prompt_edit_profile"/>
 
 
