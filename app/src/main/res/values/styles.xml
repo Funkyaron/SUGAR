@@ -20,7 +20,7 @@
     <style name = "sugar" parent="Theme.AppCompat">
         <item name = "android:colorBackground">@color/white</item>
         <item name = "android:textColor">@color/black</item>
-        <item name = "colorPrimary">@color/sugar_orange</item>
+        <item name = "colorPrimary">@color/sugar_green</item>
         <item name = "android:colorButtonNormal">#006400</item>
         <item name = "android:textColorPrimary">@color/black</item>
         <item name = "colorPrimaryDark">@color/blue</item>

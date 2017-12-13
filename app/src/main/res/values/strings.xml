@@ -62,4 +62,5 @@
     <string name="stop">Stop</string>
     <string name="enter_profile_name">Profilname&#8230;</string>
     <string name="prompt_enter_profile_name">Bitte geben Sie einen Profilnamen ein.</string>
+    <string name="download_profile_description">Profile herunterladen</string>
 </resources>
