@@ -38,6 +38,8 @@ public class ContactsMonitorService extends JobService {
                 Cursor dataCursor = getDataCursor();
                 Cursor rawCursor = getRawCursor();
 
+                boolean needsReschedule = false;
+
                 Profile[] allProfiles = Profile.readAllProfiles(ContactsMonitorService.this);
 
                 for(Profile prof : allProfiles) {
@@ -114,16 +116,18 @@ public class ContactsMonitorService extends JobService {
                         prof.saveProfile(ContactsMonitorService.this);
                     } catch(Exception e) {
                         Log.e(MainActivity.LOG_TAG, e.toString());
+                        needsReschedule = true;
                     }
                 }
 
-                jobFinished((JobParameters) message.obj, false);
+                jobFinished((JobParameters) message.obj, needsReschedule);
                 return true;
             }
         });
 
         mJobHandler.sendMessage(Message.obtain(mJobHandler, 1, params));
-        return true;
+        boolean willTakeLonger = true;
+        return willTakeLonger;
     }
     @Override
     public boolean onStopJob(JobParameters params) {

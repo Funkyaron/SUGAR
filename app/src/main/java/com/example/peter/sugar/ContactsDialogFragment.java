@@ -176,9 +176,9 @@ public class ContactsDialogFragment extends DialogFragment {
      * Unfortunately the phone numbers are not saved in the RawContacts table, so we need to
      * do a 2nd query for the Data table. We can use the RawContact-IDs as a bridge between
      * these two tables - they are saved in both of them.
-     * We look for both the NUMBER and the NORMALIZED_NUMBER to make the blocklist more
+     * We look for both the NUMBER and the NORMALIZED_NUMBER to make the block more
      * secure when reading the phone number from an incoming call.
-     * We look for only those rows where actually a phone number is saved (MIMETYPE).
+     * We look for only those rows where there is actually a phone number (MIMETYPE).
      */
 
     private Cursor getDataCursor() {

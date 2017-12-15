@@ -6,21 +6,21 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Xml;
 import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import org.xmlpull.v1.XmlSerializer;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-
+/**
+ * This activity displays the user when he is reminded of his closing time by the app for each day.
+ * Provides the option of choosing a time or disable closing time reminder for each day separately.
+ */
 public class ClosingTimeDisplayActivity extends AppCompatActivity {
 
+    /**
+     * This String Array is used as tags for SharedPreferences to identify the
+     * closing time for the corresponding day of week.
+     */
     final String[] WEEKDAYS = {
             "Monday", "Tuesday", "Wednesday", "Thursday",
             "Friday", "Staurday", "Sunday"
@@ -34,51 +34,64 @@ public class ClosingTimeDisplayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_closing_time_display);
 
-        timeViews = new TextView[7];
-        TableLayout rootLayout = (TableLayout) findViewById(R.id.closing_times_view);
+        timeViews = new TextView[WEEKDAYS.length];
 
-        for(int i = 0; i < timeViews.length; i++) {
-            TableRow row = (TableRow) rootLayout.getChildAt(i);
-            timeViews[i] = (TextView) row.getChildAt(1);
+
+
+        // Initialize TimeObjects by extracting them from SharedPreferences. null if
+        // the current day is not active.
+        Log.d(MainActivity.LOG_TAG, "Before opening SharedPreferences");
+        closingTimes = new TimeObject[WEEKDAYS.length];
+        SharedPreferences savedTimes = getPreferences(Context.MODE_PRIVATE);
+        for(int currentDay = 0; currentDay < WEEKDAYS.length; currentDay++) {
+            String str = savedTimes.getString(WEEKDAYS[currentDay], "");
+            if(str.equals("")) {
+                closingTimes[currentDay] = null;
+            } else {
+                closingTimes[currentDay] = new TimeObject(str);
+            }
         }
 
-        Log.d(MainActivity.LOG_TAG, "Before opening SharedPreferences");
-        closingTimes = new TimeObject[7];
-        SharedPreferences savedTimes = getPreferences(Context.MODE_PRIVATE);
-        for(int i = 0; i < WEEKDAYS.length; i++) {
-            String str = savedTimes.getString(WEEKDAYS[i], "-");
-            if(str.equals("-")) {
-                closingTimes[i] = null;
+        // Initialize TextViews by extracting them from the TableLayout.
+        // Set texts properly.
+        TableLayout rootLayout = (TableLayout) findViewById(R.id.closing_times_view);
+        for(int currentDay = 0; currentDay < timeViews.length; currentDay++) {
+            TableRow row = (TableRow) rootLayout.getChildAt(currentDay);
+            timeViews[currentDay] = (TextView) row.getChildAt(1);
+            if(closingTimes[currentDay] == null) {
+                timeViews[currentDay].setText("");
             } else {
-                closingTimes[i] = new TimeObject(str);
+                timeViews[currentDay].setText(closingTimes[currentDay].toString());
             }
         }
 
 
-        for(int i = 0; i < timeViews.length; i++) {
-            timeViews[i].setText(closingTimes[i] == null ? "" : closingTimes[i].toString());
-            final int index = i;
-            timeViews[i].setOnClickListener(new View.OnClickListener() {
+        // Implement functionality of the text views -> Enabling or disabling closing time reminder.
+        for(int currentDay = 0; currentDay < timeViews.length; currentDay++) {
+            final int currDay = currentDay;
+
+            timeViews[currDay].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Bundle args = new Bundle();
-                    if(closingTimes[index] != null) {
-                        args.putInt(MainActivity.EXTRA_HOUR_OF_DAY, closingTimes[index].getHour());
-                        args.putInt(MainActivity.EXTRA_MINUTE, closingTimes[index].getMinute());
+                    if(closingTimes[currDay] != null) {
+                        args.putInt(MainActivity.EXTRA_HOUR_OF_DAY, closingTimes[currDay].getHour());
+                        args.putInt(MainActivity.EXTRA_MINUTE, closingTimes[currDay].getMinute());
                     }
-                    args.putInt(MainActivity.EXTRA_INDEX, index);
+                    args.putInt(MainActivity.EXTRA_INDEX, currDay);
 
                     DialogFragment newFragment = new ClosingTimePickerFragment();
                     newFragment.setArguments(args);
-                    newFragment.show(getFragmentManager(), "closing" + index);
+                    newFragment.show(getFragmentManager(), "closing" + currDay);
                 }
             });
         }
 
+        // Now set all alarms if there is one to be set.
         TimeManager mgr = new TimeManager(this);
-        for(int i = 0; i < closingTimes.length; i++) {
-            if(closingTimes[i] != null) {
-                mgr.setNextClosingTime(i, closingTimes[i]);
+        for(int currentDay = 0; currentDay < closingTimes.length; currentDay++) {
+            if(closingTimes[currentDay] != null) {
+                mgr.setNextClosingTime(currentDay, closingTimes[currentDay]);
             }
         }
     }
@@ -87,7 +100,8 @@ public class ClosingTimeDisplayActivity extends AppCompatActivity {
         closingTimes[index] = time;
     }
 
-    public TextView[] getWeekDayViews() { return timeViews; }
-    public TimeObject[] getClosingTimes() { return closingTimes; }
+    public TextView[] getWeekDayViews() {
+        return timeViews;
+    }
 
 }

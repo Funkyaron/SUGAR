@@ -58,12 +58,13 @@ public class EditProfileActivity extends ActivityContainingProfile {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
+        dayIndex = 0;
 
         //Initialize Views
         profileNameView = (TextView) findViewById(R.id.profile_name_view);
 
-        TableRow daysRow = (TableRow) findViewById(R.id.days_row);
         dayViews = new TextView[7];
+        TableRow daysRow = (TableRow) findViewById(R.id.days_row);
         for(int i = 0; i < 7; i++) {
             dayViews[i] = (TextView) daysRow.getChildAt(i);
         }
@@ -88,12 +89,10 @@ public class EditProfileActivity extends ActivityContainingProfile {
         endTimes = prof.getEnd();
 
         profileNameView.setText(profileName);
-        dayIndex = 0;
-        dayViews[dayIndex].setBackground(getResources().getDrawable(R.drawable.weekday_activated, null));
+        dayViews[dayIndex].setBackgroundResource(R.drawable.weekday_activated);
         for(int i = 0; i < 7; i++) {
             dayCheckboxes[i].setChecked(days[i]);
         }
-
         startTimeButton.setText(getString(R.string.from_plus_time, startTimes[dayIndex].toString()));
         endTimeButton.setText(getString(R.string.to_plus_time, endTimes[dayIndex].toString()));
         if(!days[dayIndex]) {

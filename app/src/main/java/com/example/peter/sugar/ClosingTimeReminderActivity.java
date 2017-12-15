@@ -7,6 +7,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+/**
+ * This activity realizes a type of reminder for closing times which is rather "aggressive".
+ *
+ * Until now (15.12.2017) it is not used.
+ */
 public class ClosingTimeReminderActivity extends AppCompatActivity {
 
     private Vibrator vib;

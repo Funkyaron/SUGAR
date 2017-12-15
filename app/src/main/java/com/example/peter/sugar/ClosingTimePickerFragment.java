@@ -1,6 +1,5 @@
 package com.example.peter.sugar;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -9,13 +8,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.format.DateFormat;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
 /**
  * Created by shk on 27.09.17.
+ *
+ * This Dialog lets the user choose the closing time for the corresponding day. If the user
+ * presses the negative button, the closing time will be removed and the reminder for this day
+ * disabled.
  */
 
 public class ClosingTimePickerFragment extends DialogFragment
@@ -45,7 +46,7 @@ public class ClosingTimePickerFragment extends DialogFragment
 
                         SharedPreferences savedTimes = parentActivity.getPreferences(Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = savedTimes.edit();
-                        editor.putString(parentActivity.WEEKDAYS[index], "-");
+                        editor.putString(parentActivity.WEEKDAYS[index], "");
                         editor.apply();
 
                         TimeManager mgr = new TimeManager(getContext());

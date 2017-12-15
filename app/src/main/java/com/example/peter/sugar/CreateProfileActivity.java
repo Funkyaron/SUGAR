@@ -1,10 +1,7 @@
 package com.example.peter.sugar;
 
 import android.app.DialogFragment;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
@@ -17,28 +14,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.util.ArrayList;
 
 public class CreateProfileActivity extends ActivityContainingProfile
 {
     private int selectedWeekDay;
+
     private EditText profileNameInput;
     private TextView[] weekdayViews;
     private CheckBox[] weekdayCheckboxes;
     private Button editStartTimeButton;
     private Button editEndTimeButton;
     private Button finishButton;
+    private Button cancelButton;
 
     private Profile prof;
     private String name;
     private boolean[] days;
     private TimeObject[] startTimes;
     private TimeObject[] endTimes;
-    private boolean active;
-    private boolean allowed;
-    private int mode;
-    private ArrayList<String> phoneNumbers;
-    private ArrayList<String> contactNames;
 
     @Override @NonNull
     protected Profile createProfile() {
@@ -53,32 +46,52 @@ public class CreateProfileActivity extends ActivityContainingProfile
         setContentView(R.layout.activity_create_profile);
 
         selectedWeekDay = 0;
+
+
+
+        // Initialize views
+        profileNameInput = (EditText) findViewById(R.id.edit_profile_name);
+
+        weekdayViews = new TextView[7];
+        TableRow viewRow = (TableRow) findViewById(R.id.days_row);
+        for(int currentDay = 0; currentDay < weekdayViews.length; currentDay++) {
+            weekdayViews[currentDay] = (TextView) viewRow.getChildAt(currentDay);
+        }
+
+        weekdayCheckboxes = new CheckBox[7];
+        TableRow checkBoxRow = (TableRow) findViewById(R.id.days_checkboxes);
+        for(int currentDay = 0; currentDay < weekdayCheckboxes.length; currentDay++) {
+            weekdayCheckboxes[currentDay] = (CheckBox) checkBoxRow.getChildAt(currentDay);
+        }
+
+        editStartTimeButton = (Button) findViewById(R.id.start_time_button);
+        editEndTimeButton = (Button) findViewById(R.id.end_time_button);
+        finishButton = (Button) findViewById(R.id.finish_button);
+        cancelButton = (Button) findViewById(R.id.cancel_button);
+
+
+
+        // Extract Information from Profile and set up the Views
         prof = getProfile();
         name = prof.getName();
         days = prof.getDays();
         startTimes = prof.getStart();
         endTimes = prof.getEnd();
-        active = prof.isActive();
-        allowed = prof.isAllowed();
-        mode = prof.getMode();
-        phoneNumbers = prof.getPhoneNumbers();
-        contactNames = prof.getContactNames();
 
-        profileNameInput = (EditText) findViewById(R.id.edit_profile_name);
-        weekdayViews = new TextView[7];
-        weekdayCheckboxes = new CheckBox[7];
-        TableRow viewRow = (TableRow) findViewById(R.id.daysRow);
-        TableRow checkBoxRow = (TableRow) findViewById(R.id.daysCheckboxes);
-
-        for( int currentWeekDay = 0; currentWeekDay < weekdayViews.length; currentWeekDay++ )
-        {
-            Log.d(MainActivity.LOG_TAG,"Parsing 'weekdayViews' ...");
-            weekdayViews[currentWeekDay] = (TextView) viewRow.getChildAt(currentWeekDay);
-            Log.d(MainActivity.LOG_TAG,"Text of current weekdayView : " + weekdayViews[currentWeekDay].getText().toString());
-            weekdayCheckboxes[currentWeekDay] = (CheckBox) checkBoxRow.getChildAt(currentWeekDay);
-            Log.d(MainActivity.LOG_TAG,"Is the current checkbox checked : " + weekdayCheckboxes[currentWeekDay].isChecked());
+        weekdayViews[selectedWeekDay].setBackgroundResource(R.drawable.weekday_activated);
+        for(int currentDay = 0; currentDay < weekdayCheckboxes.length; currentDay++) {
+            weekdayCheckboxes[currentDay].setChecked(days[currentDay]);
+        }
+        editStartTimeButton.setText(getString(R.string.from_plus_time, startTimes[selectedWeekDay]));
+        editEndTimeButton.setText(getString(R.string.to_plus_time, endTimes[selectedWeekDay]));
+        if(!days[selectedWeekDay]) {
+            editStartTimeButton.setVisibility(View.INVISIBLE);
+            editEndTimeButton.setVisibility(View.INVISIBLE);
         }
 
+
+
+        // Implement functionality
         /* Set OnClickListener for each TextView inside the array 'weekdayViews' */
         for( int currentWeekDay = 0; currentWeekDay < weekdayViews.length; currentWeekDay++ )
         {
@@ -108,6 +121,7 @@ public class CreateProfileActivity extends ActivityContainingProfile
             });
         }
 
+        // Set OnCLickListener for every checkbox.
         for( int currentWeekDay = 0; currentWeekDay < weekdayCheckboxes.length; currentWeekDay++ )
         {
             final int selectDay = currentWeekDay;
@@ -135,24 +149,19 @@ public class CreateProfileActivity extends ActivityContainingProfile
             });
         }
 
-        editStartTimeButton = (Button) findViewById(R.id.start_time_button);
-        editStartTimeButton.setVisibility(View.INVISIBLE);
+        // Set OnClickListeners for the other buttons.
         editStartTimeButton.setOnClickListener(new View.OnClickListener() {
            public void onClick(View v)
            {
                pickTime(true);
            }
         });
-        editEndTimeButton = (Button) findViewById(R.id.end_time_button);
-        editEndTimeButton.setVisibility(View.INVISIBLE);
         editEndTimeButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
             {
                 pickTime(false);
             }
         });
-
-        finishButton = (Button) findViewById(R.id.finish_button);
         finishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
@@ -172,9 +181,6 @@ public class CreateProfileActivity extends ActivityContainingProfile
                 finish();
             }
         });
-        weekdayViews[selectedWeekDay].setBackgroundResource(R.drawable.weekday_activated);
-
-        Button cancelButton = (Button) findViewById(R.id.cancel_button);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -184,47 +190,42 @@ public class CreateProfileActivity extends ActivityContainingProfile
     }
 
     @Override
-    public void onSaveInstanceState(Bundle savedInstances)
+    public void onSaveInstanceState(Bundle outState)
     {
-        super.onSaveInstanceState(savedInstances);
-        savedInstances.putInt("selectedWeekDay",selectedWeekDay);
-        savedInstances.putString("name",profileNameInput.getText().toString());
+        super.onSaveInstanceState(outState);
+        outState.putInt("selectedWeekDay",selectedWeekDay);
+        outState.putString("name",profileNameInput.getText().toString());
         for( int currDay = 0; currDay < days.length; currDay++ )
         {
-            savedInstances.putBoolean("day"+currDay,days[currDay]);
+            outState.putBoolean("day"+currDay,days[currDay]);
         }
         for( int currDay = 0; currDay < startTimes.length; currDay++ )
         {
-            savedInstances.putString("start"+currDay,startTimes[currDay].toString());
+            outState.putString("start"+currDay,startTimes[currDay].toString());
         }
         for( int currDay = 0; currDay < startTimes.length; currDay++ )
         {
-            savedInstances.putString("end"+currDay,endTimes[currDay].toString());
+            outState.putString("end"+currDay,endTimes[currDay].toString());
         }
-        savedInstances.putBoolean("isActive",active);
-        savedInstances.putBoolean("isAllowed",allowed);
-        savedInstances.putInt("mode",mode);
-        savedInstances.putStringArrayList("phoneNumbers",phoneNumbers);
-        savedInstances.putStringArrayList("contactNames",contactNames);
     }
 
     @Override
-    public void onRestoreInstanceState(Bundle savedInstances)
+    public void onRestoreInstanceState(Bundle savedInstanceState)
     {
-        super.onRestoreInstanceState(savedInstances);
-        selectedWeekDay = savedInstances.getInt("selectedWeekDay");
-        name = savedInstances.getString("name");
+        super.onRestoreInstanceState(savedInstanceState);
+        selectedWeekDay = savedInstanceState.getInt("selectedWeekDay");
+        name = savedInstanceState.getString("name");
         Log.d(MainActivity.LOG_TAG,"Content of 'name' :"+name);
         for( int currDay = 0; currDay < days.length; currDay++ )
         {
-            days[currDay] = savedInstances.getBoolean("day"+currDay);
+            days[currDay] = savedInstanceState.getBoolean("day"+currDay);
         }
         for( int currDay = 0; currDay < startTimes.length; currDay++ )
         {
-            startTimes[currDay] = new TimeObject(savedInstances.getString("start"+currDay));
+            startTimes[currDay] = new TimeObject(savedInstanceState.getString("start"+currDay));
         }
         for( int currDay = 0; currDay < endTimes.length; currDay++ ) {
-            endTimes[currDay] = new TimeObject(savedInstances.getString("end" + currDay));
+            endTimes[currDay] = new TimeObject(savedInstanceState.getString("end" + currDay));
         }
         for( int currDay = 0; currDay < weekdayViews.length; currDay++ )
         {
@@ -236,11 +237,6 @@ public class CreateProfileActivity extends ActivityContainingProfile
                 weekdayViews[currDay].setBackgroundResource(R.drawable.weekday_deactivated);
             }
         }
-        active = savedInstances.getBoolean("active");
-        allowed = savedInstances.getBoolean("allowed");
-        mode = savedInstances.getInt("mode");
-        phoneNumbers = savedInstances.getStringArrayList("phoneNumbers");
-        contactNames = savedInstances.getStringArrayList("contactNames");
     }
 
     private void pickTime(boolean isStart)
@@ -251,10 +247,5 @@ public class CreateProfileActivity extends ActivityContainingProfile
         timePickerFragmentBundle.putBoolean(MainActivity.EXTRA_IS_START, isStart);
         timePickerFragment.setArguments(timePickerFragmentBundle);
         timePickerFragment.show(getFragmentManager(),"pickTime");
-    }
-
-    public Profile getActivityProfile()
-    {
-        return prof;
     }
 }

@@ -2,11 +2,9 @@ package com.example.peter.sugar;
 
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Vibrator;
 import android.util.Log;
 
 /**
@@ -36,7 +34,6 @@ public class ClosingTimeReceiver extends BroadcastReceiver {
                 .setContentTitle(context.getString(R.string.closing_time_title))
                 .setContentText(context.getString(R.string.closing_time_text))
                 .setWhen(System.currentTimeMillis())
-                //.setPriority(Notification.PRIORITY_HIGH)
                 .setDefaults(Notification.DEFAULT_VIBRATE);
 
         Notification noti = builder.build();

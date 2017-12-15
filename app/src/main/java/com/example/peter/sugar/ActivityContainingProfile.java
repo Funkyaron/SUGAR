@@ -3,8 +3,6 @@ package com.example.peter.sugar;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.widget.Toast;
 
 /**
  * Created by shk on 13.10.17.
@@ -27,9 +25,6 @@ public abstract class ActivityContainingProfile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         prof = createProfile();
-
-        Log.d(MainActivity.LOG_TAG, "ActivityContainigProfile: onCreate()");
-        Log.d(MainActivity.LOG_TAG, "Profile: " + prof.toString());
     }
 
     public Profile getProfile() {

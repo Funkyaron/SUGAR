@@ -18,8 +18,7 @@
             android:layout_marginBottom="@dimen/verticalMargin"
             android:layout_centerHorizontal="true"
             android:textAlignment="center"
-            android:textSize="@dimen/text_very_large"
-            android:text="test"/>
+            android:textSize="@dimen/text_very_large"/>
         <TextView
             android:id="@+id/text_view"
             android:layout_width="wrap_content"
@@ -71,7 +70,6 @@
             <TableRow
                 android:id="@+id/days_row">
                 <TextView
-                    android:id="@+id/monday_view"
                     android:background="@drawable/weekday_background"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -79,7 +77,6 @@
                     android:textSize="@dimen/text_medium"
                     android:text="@string/monday_short" />
                 <TextView
-                    android:id="@+id/tuesday_view"
                     android:background="@drawable/weekday_background"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -87,7 +84,6 @@
                     android:textSize="@dimen/text_medium"
                     android:text="@string/tuesday_short" />
                 <TextView
-                    android:id="@+id/wednesday_view"
                     android:background="@drawable/weekday_background"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -95,7 +91,6 @@
                     android:textSize="@dimen/text_medium"
                     android:text="@string/wednesday_short" />
                 <TextView
-                    android:id="@+id/thursday_view"
                     android:background="@drawable/weekday_background"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -103,7 +98,6 @@
                     android:textSize="@dimen/text_medium"
                     android:text="@string/thursday_short" />
                 <TextView
-                    android:id="@+id/friday_view"
                     android:background="@drawable/weekday_background"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -111,7 +105,6 @@
                     android:textSize="@dimen/text_medium"
                     android:text="@string/friday_short" />
                 <TextView
-                    android:id="@+id/saturday_view"
                     android:background="@drawable/weekday_background"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -119,7 +112,6 @@
                     android:textSize="@dimen/text_medium"
                     android:text="@string/saturday_short" />
                 <TextView
-                    android:id="@+id/sunday_view"
                     android:background="@drawable/weekday_background"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -49,12 +49,13 @@ public class MainActivity extends AppCompatActivity
         implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     public static final String LOG_TAG = "SUGAR";
+
     public static final String EXTRA_PROFILE_NAME = "profile name";
     public static final String EXTRA_INDEX = "index";
     public static final String EXTRA_IS_START = "isStart";
     public static final String EXTRA_HOUR_OF_DAY = "hour";
     public static final String EXTRA_MINUTE = "minute";
-    String[] closingTimes = new String[7];
+
     /**
      * Request code to identify the request for contacts permissions.
      */
@@ -66,25 +67,12 @@ public class MainActivity extends AppCompatActivity
     private final String[] PERMISSION_CONTACTS = {Manifest.permission.READ_CONTACTS,
             Manifest.permission.WRITE_CONTACTS};
 
-    private TextView numbersView;
-    private RelativeLayout rootLayout;
-    private Profile mProfile;
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        // Inflate the menu items for the use in the action bar
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.simplemenu,menu);
-        return super.onCreateOptionsMenu(menu);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-       // numbersView = (TextView) findViewById(R.id.numbers_view)
         // Concerning runtime permission
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED
@@ -97,23 +85,8 @@ public class MainActivity extends AppCompatActivity
             Log.d(LOG_TAG, "Permissions granted");
         }
 
-        rootLayout = (RelativeLayout) findViewById(R.id.root_layout);
-        /*
-        rootLayout.setOnTouchListener(new View.OnTouchListener() {
-           public boolean onTouch(View v,MotionEvent event)
-           {
-               if( event.getActionMasked() == MotionEvent.ACTION_DOWN )
-               {
-                   Random colorGenerator = new Random();
-                   rootLayout.setBackgroundColor(Color.argb(255,colorGenerator.nextInt(256),colorGenerator.nextInt(256),colorGenerator.nextInt(256)));
-                   return true;
-               } else if ( event.getActionMasked() == MotionEvent.ACTION_UP ) {
-                   return true;
-               }
-               return false;
-           }
-        }); */
-
+        // Prompt the user to change the default dialer package to SUGAR. This is necessary to
+        // block phone calls.
         Intent changeDialer = new Intent(TelecomManager.ACTION_CHANGE_DEFAULT_DIALER);
         changeDialer.putExtra(TelecomManager.EXTRA_CHANGE_DEFAULT_DIALER_PACKAGE_NAME, getPackageName());
         startActivity(changeDialer);
@@ -141,40 +114,30 @@ public class MainActivity extends AppCompatActivity
                                            int[] grantResults)
     {
         Log.d(MainActivity.LOG_TAG, "ConAct: onRequestPermissionsResult()");
-        if (requestCode == REQUEST_CONTACTS)
-        {
+        if (requestCode == REQUEST_CONTACTS) {
             if(verifyPermissions(grantResults))
-                Toast.makeText(this, "Berechtigungen genehmigt", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.permissions_granted), Toast.LENGTH_LONG).show();
             else
-            {
-                Toast.makeText(this, "Berechtigungen nicht genehmigt", Toast.LENGTH_LONG).show();
-            }
+                Toast.makeText(this, getString(R.string.permissions_not_granted), Toast.LENGTH_LONG).show();
         }
         else
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    private boolean verifyPermissions(int[] grantResults)
-    {
+    private boolean verifyPermissions(int[] grantResults) {
         if (grantResults.length < 1)
             return false;
 
-        for (int result : grantResults)
-        {
+        for (int result : grantResults) {
             if (result != PackageManager.PERMISSION_GRANTED)
                 return false;
         }
-
         return true;
     }
 
     public void openClosingTimeActivity(View v)
     {
         Intent moveToClosingTimeActivity = new Intent(this,ClosingTimeDisplayActivity.class);
-        if( new File(this.getFilesDir()+"closingTimes.xml").exists())
-        {
-            Log.d(MainActivity.LOG_TAG,"Now reading all closing times ... \n");
-        }
         startActivity(moveToClosingTimeActivity);
     }
 
@@ -187,7 +150,6 @@ public class MainActivity extends AppCompatActivity
     public void openListProfilesActivity(View v)
     {
         Intent moveToListProfilesActivity = new Intent(this,ListProfilesActivity.class);
-        Log.d(MainActivity.LOG_TAG,"Opening ListProfilesActivity ...");
         startActivity(moveToListProfilesActivity);
     }
 }
