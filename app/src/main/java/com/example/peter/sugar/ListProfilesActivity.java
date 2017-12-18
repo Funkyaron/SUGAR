@@ -1,20 +1,17 @@
 package com.example.peter.sugar;
 
 import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class ListProfilesActivity extends AppCompatActivity implements DownloadFragment.DownloadFragmentListener
+public class ListProfilesActivity extends AppCompatActivity implements DownloadProfilesListener
 {
 
     private String profileNames[];
@@ -25,9 +22,13 @@ public class ListProfilesActivity extends AppCompatActivity implements DownloadF
     private Intent toCreateProfileActivity;
 
     @Override
-    public void onDialogPositiveClick(DialogFragment dialog)
+    public void onDownloadFinished(Boolean successful)
     {
         updateAdapterAfterChanges();
+        if(!successful) {
+            Toast.makeText(this, R.string.error, Toast.LENGTH_LONG).show();
+        }
+
     }
 
     @Override

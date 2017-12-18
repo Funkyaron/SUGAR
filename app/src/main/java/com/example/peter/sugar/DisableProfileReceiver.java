@@ -7,7 +7,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import java.util.ArrayList;
+/**
+ * This Receiver is called when a Profile should be disabled, that means calls are restricted
+ * for that Profile from now on. The Profile name has to be passed as an Intent category,
+ * because the Broadcast Intents must be different from each other for every Profile according
+ * to filterEquals()-method. In this method, Extras are ignored.
+ *
+ * Does nothing if the passed Profile is not active, so make sure you set allowed = true
+ * every time you deactivate a Profile.
+ */
 
 public class DisableProfileReceiver extends BroadcastReceiver {
 
@@ -49,6 +57,8 @@ public class DisableProfileReceiver extends BroadcastReceiver {
 
         NotificationManager notiMgr = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notiMgr.notify(name.hashCode(), noti);
+        if(notiMgr != null) {
+            notiMgr.notify(name.hashCode(), noti);
+        }
     }
 }

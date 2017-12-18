@@ -11,7 +11,23 @@ import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+
+/**
+ * In this Activity, the user can define a period of time in which all calls should be blocked.
+ * The period can be stopped by the user before it runs out.
+ *
+ * This is implemented with a CountDownTimer which keeps running, even if the Activity is destroyed,
+ * so it has to be static. The Timer actually takes effect on the views, so it has to be recreated
+ * every time the Activity is recreated, kind of binding to the Activity. Only if it is running.
+ *
+ * The state of the countdown (if the Timer is running and the elapsed time) is saved in static
+ * variables.
+ *
+ * The blocking of every calls is implemented with a static variable in InCallServiceImpl.
+ */
+
 public class DoNotDisturbActivity extends AppCompatActivity {
+
 
     private class CustomCountDownTimer extends CountDownTimer {
         private TimeObject time;
@@ -20,7 +36,6 @@ public class DoNotDisturbActivity extends AppCompatActivity {
         CustomCountDownTimer(TimeObject time) {
             super(time.getTimeInMillis(), 5000);
             millis = time.getTimeInMillis();
-            Log.d(MainActivity.LOG_TAG, "CustomCountDownTimer(): millis = " + millis);
             this.time = time;
         }
 
@@ -49,8 +64,6 @@ public class DoNotDisturbActivity extends AppCompatActivity {
             setContent(false);
             isRunning = false;
         }
-
-
     }
 
 
@@ -82,12 +95,12 @@ public class DoNotDisturbActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 InCallServiceImpl.shouldBlockAbsolutely = true;
-                TimeObject actualTime = new TimeObject(hourPicker.getValue(), minutePicker.getValue());
+                TimeObject currentTime = new TimeObject(hourPicker.getValue(), minutePicker.getValue());
 
-                countDownView.setText(actualTime.toString());
+                countDownView.setText(currentTime.toString());
                 setContent(true);
 
-                timer = new CustomCountDownTimer(actualTime);
+                timer = new CustomCountDownTimer(currentTime);
                 timer.start();
                 isRunning = true;
             }
@@ -137,7 +150,6 @@ public class DoNotDisturbActivity extends AppCompatActivity {
 
     private void setContent(boolean timerIsRunning) {
         if(timerIsRunning) {
-            Log.d(MainActivity.LOG_TAG, "setContent(): timer is running");
             doNotDisturbDisplay.setText(getString(R.string.time_remaining));
             timeAmountView.setVisibility(View.INVISIBLE);
             countDownView.setVisibility(View.VISIBLE);
@@ -145,7 +157,6 @@ public class DoNotDisturbActivity extends AppCompatActivity {
             stopCountDownButton.setVisibility(View.VISIBLE);
 
         } else {
-            Log.d(MainActivity.LOG_TAG, "setContent(): timer is not running");
             doNotDisturbDisplay.setText(getString(R.string.prompt_do_not_disturb));
             countDownView.setVisibility(View.INVISIBLE);
             timeAmountView.setVisibility(View.VISIBLE);
