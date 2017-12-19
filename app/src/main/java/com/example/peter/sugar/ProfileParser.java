@@ -220,10 +220,7 @@ class ProfileParser {
         String[] phoneNumbers = readText(parser).split(",");
         parser.require(XmlPullParser.END_TAG,ns,"numbers");
 
-        for(String number : phoneNumbers)
-        {
-            resultList.add(number);
-        }
+        resultList.addAll(Arrays.asList(phoneNumbers));
         return resultList;
     }
 
@@ -233,10 +230,7 @@ class ProfileParser {
         String[] contactNames = readText(parser).split(",");
         parser.require(XmlPullParser.END_TAG,ns,"contactNames");
 
-        for(String name : contactNames)
-        {
-            resultList.add(name);
-        }
+        resultList.addAll(Arrays.asList(contactNames));
         return resultList;
     }
 

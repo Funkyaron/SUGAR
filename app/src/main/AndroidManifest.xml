@@ -69,10 +69,8 @@
 
         <activity android:name=".DoNotDisturbActivity" />
         <activity android:name=".EditProfileActivity" />
-        <activity android:name=".DisplayProfileActivityAlt" />
         <activity android:name=".ListProfilesActivity" />
         <activity android:name=".ClosingTimeDisplayActivity" />
-        <activity android:name=".EditProfileActivityModern" />
         <activity android:name=".CreateProfileActivity"
             android:windowSoftInputMode="stateHidden"/>
 

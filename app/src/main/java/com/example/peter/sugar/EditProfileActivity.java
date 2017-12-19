@@ -1,16 +1,13 @@
 package com.example.peter.sugar;
 
 import android.app.DialogFragment;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.LinearLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,7 +34,7 @@ public class EditProfileActivity extends ActivityContainingProfile {
     /**
      * Used to detect which day of week is selected
      */
-    private int dayIndex;
+    private int selectedDay;
 
     @Override @NonNull
     protected Profile createProfile() {
@@ -58,20 +55,20 @@ public class EditProfileActivity extends ActivityContainingProfile {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
-        dayIndex = 0;
+        selectedDay = 0;
 
         //Initialize Views
         profileNameView = (TextView) findViewById(R.id.profile_name_view);
 
         dayViews = new TextView[7];
         TableRow daysRow = (TableRow) findViewById(R.id.days_row);
-        for(int i = 0; i < 7; i++) {
-            dayViews[i] = (TextView) daysRow.getChildAt(i);
+        for(int currentDay = 0; currentDay < 7; currentDay++) {
+            dayViews[currentDay] = (TextView) daysRow.getChildAt(currentDay);
         }
         TableRow checkboxesRow = (TableRow) findViewById(R.id.days_checkboxes);
         dayCheckboxes = new CheckBox[7];
-        for(int i = 0; i < 7; i++) {
-            dayCheckboxes[i] = (CheckBox) checkboxesRow.getChildAt(i);
+        for(int currentDay = 0; currentDay < 7; currentDay++) {
+            dayCheckboxes[currentDay] = (CheckBox) checkboxesRow.getChildAt(currentDay);
         }
 
         startTimeButton = (Button) findViewById(R.id.start_time_button);
@@ -89,35 +86,36 @@ public class EditProfileActivity extends ActivityContainingProfile {
         endTimes = prof.getEnd();
 
         profileNameView.setText(profileName);
-        dayViews[dayIndex].setBackgroundResource(R.drawable.weekday_activated);
-        for(int i = 0; i < 7; i++) {
-            dayCheckboxes[i].setChecked(days[i]);
+        dayViews[selectedDay].setBackgroundResource(R.drawable.weekday_activated);
+        for(int currentDay = 0; currentDay < 7; currentDay++) {
+            dayCheckboxes[currentDay].setChecked(days[currentDay]);
         }
-        startTimeButton.setText(getString(R.string.from_plus_time, startTimes[dayIndex].toString()));
-        endTimeButton.setText(getString(R.string.to_plus_time, endTimes[dayIndex].toString()));
-        if(!days[dayIndex]) {
+        startTimeButton.setText(getString(R.string.from_plus_time, startTimes[selectedDay].toString()));
+        endTimeButton.setText(getString(R.string.to_plus_time, endTimes[selectedDay].toString()));
+        if(!days[selectedDay]) {
             startTimeButton.setVisibility(View.INVISIBLE);
             endTimeButton.setVisibility(View.INVISIBLE);
         }
 
 
         //Implement functionality
-        for(int currView = 0; currView < dayViews.length; currView++) {
-            final int selectDay = currView;
-            dayViews[currView].setOnClickListener(new View.OnClickListener() {
+        for(int currentDay = 0; currentDay < dayViews.length; currentDay++) {
+            final int currDay = currentDay;
+
+            dayViews[currDay].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    dayIndex = selectDay;
+                    selectedDay = currDay;
                     for(int viewIndex = 0; viewIndex < days.length; viewIndex++) {
-                        if(viewIndex == dayIndex) {
+                        if(viewIndex == selectedDay) {
                             dayViews[viewIndex].setBackgroundResource(R.drawable.weekday_activated);
                         } else {
                             dayViews[viewIndex].setBackgroundResource(R.drawable.weekday_deactivated);
                         }
                     }
-                    startTimeButton.setText(getString(R.string.from_plus_time, startTimes[dayIndex].toString()));
-                    endTimeButton.setText(getString(R.string.to_plus_time, endTimes[dayIndex].toString()));
-                    if(days[dayIndex]) {
+                    startTimeButton.setText(getString(R.string.from_plus_time, startTimes[selectedDay].toString()));
+                    endTimeButton.setText(getString(R.string.to_plus_time, endTimes[selectedDay].toString()));
+                    if(days[selectedDay]) {
                         startTimeButton.setVisibility(View.VISIBLE);
                         endTimeButton.setVisibility(View.VISIBLE);
                     } else {
@@ -128,13 +126,13 @@ public class EditProfileActivity extends ActivityContainingProfile {
             });
         }
 
-        for(int i = 0; i < 7; i++) {
-            final int ind = i;
-            dayCheckboxes[ind].setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        for(int currentDay = 0; currentDay < 7; currentDay++) {
+            final int currDay = currentDay;
+            dayCheckboxes[currDay].setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                    days[ind] = isChecked;
-                    if(ind == dayIndex) {
+                    days[currDay] = isChecked;
+                    if(currDay == selectedDay) {
                         if (isChecked) {
                             startTimeButton.setVisibility(View.VISIBLE);
                             endTimeButton.setVisibility(View.VISIBLE);
@@ -191,7 +189,7 @@ public class EditProfileActivity extends ActivityContainingProfile {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putInt("dayIndex", dayIndex);
+        outState.putInt("dayIndex", selectedDay);
         for(int i = 0; i < days.length; i++) {
             outState.putBoolean("day" + i, days[i]);
         }
@@ -209,7 +207,7 @@ public class EditProfileActivity extends ActivityContainingProfile {
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-        dayIndex = savedInstanceState.getInt("dayIndex");
+        selectedDay = savedInstanceState.getInt("dayIndex");
         for(int i = 0; i < days.length; i++) {
             days[i] = savedInstanceState.getBoolean("day" + i);
         }
@@ -224,24 +222,24 @@ public class EditProfileActivity extends ActivityContainingProfile {
 
         for(int i = 0; i < days.length; i++) {
             dayCheckboxes[i].setChecked(days[i]);
-            if(i == dayIndex) {
+            if(i == selectedDay) {
                 dayViews[i].setBackground(getResources().getDrawable(R.drawable.weekday_activated, null));
             } else {
                 dayViews[i].setBackground(getResources().getDrawable(R.drawable.weekday_deactivated, null));
             }
         }
-        startTimeButton.setText(getString(R.string.from_plus_time, startTimes[dayIndex].toString()));
-        endTimeButton.setText(getString(R.string.to_plus_time, endTimes[dayIndex].toString()));
+        startTimeButton.setText(getString(R.string.from_plus_time, startTimes[selectedDay].toString()));
+        endTimeButton.setText(getString(R.string.to_plus_time, endTimes[selectedDay].toString()));
     }
     
 
 
     private void pickTime(boolean isStart) {
         Bundle args = new Bundle();
-        args.putInt(MainActivity.EXTRA_INDEX, dayIndex);
+        args.putInt(MainActivity.EXTRA_INDEX, selectedDay);
         args.putBoolean(MainActivity.EXTRA_IS_START, isStart);
         DialogFragment newFragment = new TimePickerFragment();
         newFragment.setArguments(args);
-        newFragment.show(getFragmentManager(), "end" + dayIndex);
+        newFragment.show(getFragmentManager(), "end" + selectedDay);
     }
 }

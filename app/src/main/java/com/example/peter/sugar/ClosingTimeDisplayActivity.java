@@ -23,7 +23,7 @@ public class ClosingTimeDisplayActivity extends AppCompatActivity {
      */
     final String[] WEEKDAYS = {
             "Monday", "Tuesday", "Wednesday", "Thursday",
-            "Friday", "Staurday", "Sunday"
+            "Friday", "Saturday", "Sunday"
     };
 
     private TimeObject[] closingTimes;

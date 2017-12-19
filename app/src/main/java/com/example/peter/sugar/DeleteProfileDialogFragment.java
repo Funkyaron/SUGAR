@@ -56,7 +56,7 @@ public class DeleteProfileDialogFragment extends DialogFragment
                     new File(getActivity().getFilesDir()+"/"+currProfileName+".xml").delete();
                 }
                 ListProfilesActivity parentActivity = (ListProfilesActivity) getActivity();
-                parentActivity.updateAdapterAfterChanges();
+                parentActivity.updateProfilesList();
             }
         });
         final AlertDialog toReturn = builder.create();

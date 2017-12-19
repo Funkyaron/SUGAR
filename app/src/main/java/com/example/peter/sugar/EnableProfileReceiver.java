@@ -8,7 +8,13 @@ import android.content.Intent;
 import android.util.Log;
 
 /**
- * Created by Funkyaron on 04.04.2017.
+ * This Receiver is called when a Profile should be enabled, that means calls are allowed
+ * for that Profile from now on. The Profile name has to be passed as an Intent category,
+ * because the Broadcast Intents must be different from each other for every Profile according
+ * to filterEquals()-method. In this method, Extras are ignored.
+ *
+ * Does nothing if the passed Profile is not active, so make sure you set allowed = true
+ * every time you deactivate a Profile.
  */
 
 public class EnableProfileReceiver extends BroadcastReceiver {
@@ -51,6 +57,8 @@ public class EnableProfileReceiver extends BroadcastReceiver {
 
         NotificationManager notiMgr = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notiMgr.notify(name.hashCode(), noti);
+        if(notiMgr != null) {
+            notiMgr.notify(name.hashCode(), noti);
+        }
     }
 }

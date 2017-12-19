@@ -3,15 +3,9 @@ package com.example.peter.sugar;
 import android.content.Context;
 import android.media.AudioManager;
 import android.net.Uri;
-import android.os.Vibrator;
-import android.provider.Settings;
 import android.telecom.Call;
 import android.telecom.InCallService;
-import android.telecom.TelecomManager;
 import android.util.Log;
-
-import java.io.File;
-import java.util.ArrayList;
 
 /**
  * Created by Funkyaron on 11.04.2017.
@@ -100,8 +94,4 @@ public class InCallServiceImpl extends InCallService {
         Log.d(MainActivity.LOG_TAG, "Everything's fine -> Call allowed");
         return false;
     }
-
-    /* private boolean shouldBlock(String number) {
-        return true;
-    } */
 }

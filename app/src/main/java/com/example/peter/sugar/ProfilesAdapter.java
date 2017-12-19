@@ -40,14 +40,10 @@ public class ProfilesAdapter extends ArrayAdapter<Profile> {
         result = inflater.inflate(R.layout.profile_list_item, null);
 
         final Profile prof = getItem(position);
-        final int currentWeekDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
-        TimeObject startTime = prof.getStart()[TimeManager.toIndex(currentWeekDay)];
-        TimeObject endTime = prof.getEnd()[TimeManager.toIndex(currentWeekDay)];
         final String name = prof.getName();
 
-        final TextView profileName= (TextView) result.findViewById(R.id.profile_name);
-        final TextView profileStartTime = (TextView) result.findViewById(R.id.profile_start);
-        final TextView profileEndTime = (TextView) result.findViewById(R.id.profile_end);
+        final TextView profileNameView = (TextView) result.findViewById(R.id.profile_name);
+        final TextView allowedView = (TextView) result.findViewById(R.id.profile_start);
         final ImageView profileImage = (ImageView) result.findViewById(R.id.profile_icon);
         if( prof.isActive() ) {
             profileImage.setImageResource(R.mipmap.power_on);
@@ -79,21 +75,19 @@ public class ProfilesAdapter extends ArrayAdapter<Profile> {
                     }
                 }
                 if(prof.isAllowed()) {
-                    profileStartTime.setText(R.string.calls_allowed);
+                    allowedView.setText(R.string.calls_allowed);
                 } else {
-                    profileStartTime.setText(R.string.calls_forbidden);
+                    allowedView.setText(R.string.calls_forbidden);
                 }
             }
         });
 
-        profileName.setText(name);
+        profileNameView.setText(name);
         if(prof.isAllowed()) {
-            profileStartTime.setText(R.string.calls_allowed);
+            allowedView.setText(R.string.calls_allowed);
         } else {
-            profileStartTime.setText(R.string.calls_forbidden);
+            allowedView.setText(R.string.calls_forbidden);
         }
-        /*profileStartTime.setText("Anfang : " + startTime.toString());
-        profileEndTime.setText("Ende : " + endTime.toString());*/
         RelativeLayout clickableView = (RelativeLayout) result.findViewById(R.id.textArea);
         clickableView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
