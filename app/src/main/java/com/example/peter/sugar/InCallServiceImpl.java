@@ -62,8 +62,12 @@ public class InCallServiceImpl extends InCallService {
     }
 
 
-
-    // Self-made ;)
+    /**
+     * Checks the DoNotDisturb-condition and all profiles and determines
+     * if the given number should currently be blocked.
+     * @param number The phone number to be checked.
+     * @return True if the number should be blocked, false if not.
+     */
     private boolean shouldBlock(String number) {
         Log.d(MainActivity.LOG_TAG, "InCallServiceImpl: shouldBlock()");
         if(shouldBlockAbsolutely) {
@@ -72,25 +76,37 @@ public class InCallServiceImpl extends InCallService {
         }
 
         Profile[] allProfiles = Profile.readAllProfiles(this);
+        // This foreach-loop goes through all existing profiles. If the number matches any blocking condition,
+        // the loop will be canceled and true will be returned.
         for(Profile prof : allProfiles) {
             Log.d(MainActivity.LOG_TAG, prof.toString());
+            // Skip this profile, if it allows calls.
             if(!(prof.isAllowed())) {
                 Log.d(MainActivity.LOG_TAG, "Profile does not allow. Checking for numbers");
                 Log.d(MainActivity.LOG_TAG, "Mode: " + prof.getMode());
+                // Go through any possible mode.
                 if(prof.getMode() == Profile.MODE_BLOCK_ALL) {
+                    // Always block.
                     Log.d(MainActivity.LOG_TAG, "Profile should block + MODE_BLOCK_ALL");
                     return true;
                 }
-                else if(prof.getMode() == Profile.MODE_BLOCK_SELECTED && prof.getPhoneNumbers().contains(number)) {
-                    Log.d(MainActivity.LOG_TAG, "Profile should block + MODE_BLOCK_SELECTED");
-                    return true;
+                else if(prof.getMode() == Profile.MODE_BLOCK_SELECTED) {
+                    // Block only if the given number is selected in the profile.
+                    if(prof.getPhoneNumbers().contains(number)) {
+                        Log.d(MainActivity.LOG_TAG, "Profile should block + MODE_BLOCK_SELECTED");
+                        return true;
+                    }
                 }
-                else if(prof.getMode() == Profile.MODE_BLOCK_NOT_SELECTED && !(prof.getPhoneNumbers().contains(number))) {
-                    Log.d(MainActivity.LOG_TAG, "Profile should block + MODE_BLOCK_NOT_SELECTED");
-                    return true;
+                else if(prof.getMode() == Profile.MODE_BLOCK_NOT_SELECTED) {
+                    // Block only if the given number is not selected in the profile.
+                    if(!(prof.getPhoneNumbers().contains(number))) {
+                        Log.d(MainActivity.LOG_TAG, "Profile should block + MODE_BLOCK_NOT_SELECTED");
+                        return true;
+                    }
                 }
             }
         }
+        // If we made it until here, there is no profile that wants to block the given phone number.
         Log.d(MainActivity.LOG_TAG, "Everything's fine -> Call allowed");
         return false;
     }
