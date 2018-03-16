@@ -8,7 +8,7 @@ import android.content.Intent;
 import android.util.Log;
 
 /**
- * This Receiver is called when a Profile should be enabled, that means calls are allowed
+ * This Receiver is called when a Profile should be enabled, that means calls are allowed6
  * for that Profile from now on. The Profile name has to be passed as an Intent category,
  * because the Broadcast Intents must be different from each other for every Profile according
  * to filterEquals()-method. In this method, Extras are ignored.
@@ -36,7 +36,7 @@ public class EnableProfileReceiver extends BroadcastReceiver {
         if(prof == null || !(prof.isActive()))
             return;
 
-        prof.setAllowed(true);
+        prof.setAllowed(false);
         TimeManager mgr = new TimeManager(context);
         mgr.setNextEnable(prof);
         try {
@@ -49,7 +49,7 @@ public class EnableProfileReceiver extends BroadcastReceiver {
 
         builder.setSmallIcon(R.mipmap.sugar)
                 .setContentTitle(name)
-                .setContentText(context.getString(R.string.calls_allowed))
+                .setContentText(context.getString(R.string.calls_forbidden))
                 .setWhen(System.currentTimeMillis())
                 .setPriority(Notification.PRIORITY_LOW);
 

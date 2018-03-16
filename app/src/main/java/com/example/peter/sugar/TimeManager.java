@@ -68,7 +68,7 @@ public class TimeManager {
         PendingIntent pending = PendingIntent.getBroadcast(context, 0,
                 intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        long targetTime = getTargetTime(days, start);
+        long targetTime = getTargetStartTime(days, start);
 
         mAlarmManager.setExact(AlarmManager.RTC_WAKEUP, targetTime, pending);
     }
@@ -108,7 +108,7 @@ public class TimeManager {
         PendingIntent pending = PendingIntent.getBroadcast(context, 0,
                 intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        long targetTime = getTargetTime(days, end);
+        long targetTime = getTargetEndTime(days, profile.getStart(), end);
 
         mAlarmManager.setExact(AlarmManager.RTC_WAKEUP, targetTime, pending);
     }
@@ -186,9 +186,9 @@ public class TimeManager {
         long endTimeInMillis = cal.getTimeInMillis();
 
         // Now we check for the current day and time.
-        if (days[toIndex(currentDay)] == false
-                || currentTime < startTimeInMillis
-                || endTimeInMillis < currentTime)
+        if (days[toIndex(currentDay)] == true
+                && currentTime > startTimeInMillis
+                && endTimeInMillis > currentTime)
         {
             prof.setAllowed(false);
             try {
@@ -269,9 +269,9 @@ public class TimeManager {
             long endTimeInMillis = cal.getTimeInMillis();
 
             // Now we check for the current day and time.
-            if (days[toIndex(currentDay)] == false
-                    || currentTime < startTimeInMillis
-                    || endTimeInMillis < currentTime)
+            if (days[toIndex(currentDay)] == true
+                    && currentTime > startTimeInMillis
+                    && endTimeInMillis > currentTime)
             {
                 disabledProfiles.add(prof);
             } else {
@@ -335,7 +335,7 @@ public class TimeManager {
 
 
 
-    private long getTargetTime(boolean[] days, TimeObject[] times)
+    private long getTargetStartTime(boolean[] days, TimeObject[] times)
     {
         // Figure out when to execute the alarm
 
@@ -382,6 +382,44 @@ public class TimeManager {
 
             targetTime = cal.getTimeInMillis();
         }
+
+        return targetTime;
+    }
+
+    private long getTargetEndTime(boolean[] days, TimeObject[] startTimes, TimeObject[] endTimes) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(System.currentTimeMillis());
+        long currentTime = cal.getTimeInMillis();
+        int currentDay = cal.get(Calendar.DAY_OF_WEEK);
+
+        cal.set(Calendar.HOUR_OF_DAY, endTimes[toIndex(currentDay)].getHour());
+        cal.set(Calendar.MINUTE, endTimes[toIndex(currentDay)].getMinute());
+        long targetTime = cal.getTimeInMillis();
+        int daysToAdd = 0;
+        if (days[toIndex(currentDay)] && (currentTime < targetTime)) {
+            if(endTimes[toIndex(currentDay)].earlierThan(startTimes[toIndex(currentDay)]))  {
+                daysToAdd = 1;
+            }
+        } else {
+            int i = toIndex(currentDay);
+            int j = 0;
+            while (j <= 6) {
+                daysToAdd++;
+                i = (i + 1) % 7;
+                j++;
+                if (days[i])
+                    break;
+            }
+            if(endTimes[toIndex(currentDay)].earlierThan(startTimes[toIndex(currentDay)]))  {
+                daysToAdd += 1;
+            }
+            int targetIndex = (toIndex(currentDay) + daysToAdd) % 7;
+            cal.set(Calendar.HOUR_OF_DAY, endTimes[targetIndex].getHour());
+            cal.set(Calendar.MINUTE, endTimes[targetIndex].getMinute());
+        }
+
+        cal.add(Calendar.DAY_OF_MONTH, daysToAdd);
+        targetTime = cal.getTimeInMillis();
 
         return targetTime;
     }

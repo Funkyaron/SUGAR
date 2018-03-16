@@ -34,7 +34,7 @@
     <string name="error">Ein Fehler ist aufgetreten</string>
     <string name="profile_inactive">Profil inaktiv</string>
     <string name="all">Alle</string>
-    <string name="greetings">Herzlich wilkommen!\nWas möchten Sie tun?</string>
+    <string name="greetings">Herzlich willkommen!\nWas möchten Sie tun?</string>
     <string name="greetings2">Was möchten Sie tun?</string>
     <string name="greetings_edit">Profile anzeigen</string>
     <string name="greetings_disturb">Ungestört arbeiten</string>
@@ -48,7 +48,7 @@
     <string name="remove">Entfernen</string>
     <string name="closing_time_title">Feierabend!</string>
     <string name="closing_time_text">Mach mal Pause</string>
-    <string name="prompt_edit_profile">Wann möchten Sie erreichbar sein?</string>
+    <string name="prompt_edit_profile">Wann möchten Sie nicht erreichbar sein?</string>
     <string name="save_and_close">Speichern und schließen</string>
     <string name="profile_saved">Profil gespeichert</string>
     <string name="profile_not_saved">Profile konnte nicht gespeichert werden</string>
@@ -65,4 +65,5 @@
     <string name="download_profile_description">Profile herunterladen</string>
     <string name="permissions_granted">Berechtigungen genehmigt</string>
     <string name="permissions_not_granted">Berechtigungen nicht genehmigt</string>
+    <string name="non_valid_entry">Ungültige Eingabe</string>
 </resources>

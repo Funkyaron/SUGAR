@@ -24,6 +24,11 @@ public class TimeObject {
         minute = Integer.parseInt(timeObjectDescription[1]);
     }
 
+    public TimeObject(TimeObject to) {
+        hour = to.hour;
+        minute = to.minute;
+    }
+
     public int getHour()
     {
         return hour;
@@ -41,7 +46,15 @@ public class TimeObject {
 
     public void setMinute( int updatedMinute )
     {
-        minute = updatedMinute;
+        if(updatedMinute >= 60) {
+            hour += 1;
+            minute = updatedMinute % 60;
+        } else if(updatedMinute < 0) {
+            hour -= 1;
+            minute = (updatedMinute % 60 + 60) % 60;
+        } else {
+            minute = updatedMinute;
+        }
     }
 
     public void setTime(int hour, int minute) {

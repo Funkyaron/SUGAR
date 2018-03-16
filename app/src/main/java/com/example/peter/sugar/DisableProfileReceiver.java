@@ -36,7 +36,7 @@ public class DisableProfileReceiver extends BroadcastReceiver {
         if(prof == null || !(prof.isActive()))
             return;
 
-        prof.setAllowed(false);
+        prof.setAllowed(true);
         TimeManager mgr = new TimeManager(context);
         mgr.setNextDisable(prof);
         try {
@@ -49,7 +49,7 @@ public class DisableProfileReceiver extends BroadcastReceiver {
 
         builder.setSmallIcon(R.mipmap.sugar)
                 .setContentTitle(name)
-                .setContentText(context.getString(R.string.calls_forbidden))
+                .setContentText(context.getString(R.string.calls_allowed))
                 .setWhen(System.currentTimeMillis())
                 .setPriority(Notification.PRIORITY_LOW);
 

@@ -108,8 +108,8 @@ public class CreateProfileActivity extends ActivityContainingProfile
                             weekdayViews[currentWeekDay].setBackgroundResource(R.drawable.weekday_deactivated);
                         }
                     }
-                    editStartTimeButton.setText(startTimes[selectedWeekDay].toString());
-                    editEndTimeButton.setText(endTimes[selectedWeekDay].toString());
+                    editStartTimeButton.setText(getString(R.string.from_plus_time, startTimes[selectedWeekDay]));
+                    editEndTimeButton.setText(getString(R.string.to_plus_time, endTimes[selectedWeekDay]));
                     if(days[selectedWeekDay]) {
                         editStartTimeButton.setVisibility(View.VISIBLE);
                         editEndTimeButton.setVisibility(View.VISIBLE);

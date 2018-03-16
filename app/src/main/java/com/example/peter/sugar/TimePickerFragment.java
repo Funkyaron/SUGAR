@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -51,22 +52,62 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         Profile prof = parentActivity.getProfile();
         TimeObject modifiedTime = new TimeObject(hourOfDay, minute);
 
+        Log.d(MainActivity.LOG_TAG, "modifiedTime at beginning: " + modifiedTime);
+
         // Check if start time is earlier than end time.
         // Otherwise the selection by the user is not valid and will not take effect.
         boolean isValid = true;
         TimeObject startTime;
         TimeObject endTime;
         if(isStart) {
-            startTime = modifiedTime;
+            startTime = new TimeObject(modifiedTime);
             endTime = prof.getEnd()[index];
         } else {
             startTime = prof.getStart()[index];
-            endTime = modifiedTime;
+            endTime = new TimeObject(modifiedTime);
         }
-        isValid = startTime.earlierThan(endTime);
-        if(!isValid) {
-            return;
+
+        TimeObject nextDayStartTime = new TimeObject(0,0);
+        TimeObject previousDayEndTime = new TimeObject(0,0);
+        TimeObject newNextDayStartTime = new TimeObject(0,0);
+        TimeObject newPreviousDayEndTime = new TimeObject(0,0);
+
+        if(endTime.earlierThan(startTime)) {
+            nextDayStartTime = prof.getStart()[index + 1 % 7];
+            isValid = endTime.earlierThan(nextDayStartTime);
+            if (!isValid) {
+                if (prof.getDays()[index + 1 % 7]) {
+                    Toast.makeText(parentActivity, R.string.non_valid_entry, Toast.LENGTH_LONG).show();
+                    return;
+                } else {
+                    newNextDayStartTime = endTime;
+                    newNextDayStartTime.setMinute(endTime.getMinute() + 5);
+                    prof.setStartForDay(index + 1 % 7, newNextDayStartTime);
+                }
+            }
         }
+        if(prof.getEnd()[index - 1 % 7].earlierThan(prof.getStart()[index - 1 % 7])) {
+            previousDayEndTime = prof.getEnd()[index - 1 % 7];
+            isValid = previousDayEndTime.earlierThan(startTime);
+            if (!isValid) {
+                if (prof.getDays()[index - 1 % 7]) {
+                    Toast.makeText(parentActivity, R.string.non_valid_entry, Toast.LENGTH_LONG).show();
+                    return;
+                } else {
+                    newPreviousDayEndTime = startTime;
+                    newPreviousDayEndTime.setMinute(startTime.getMinute() - 5);
+                    prof.setEndForDay(index - 1 % 7, newPreviousDayEndTime);
+                }
+            }
+        }
+
+        Log.d(MainActivity.LOG_TAG, "modifiedTime: " + modifiedTime);
+        Log.d(MainActivity.LOG_TAG, "startTime: " + startTime);
+        Log.d(MainActivity.LOG_TAG, "endTime: " + endTime);
+        Log.d(MainActivity.LOG_TAG, "nextDayStartTime: " + nextDayStartTime);
+        Log.d(MainActivity.LOG_TAG, "previousDayEndTime: " + previousDayEndTime);
+        Log.d(MainActivity.LOG_TAG, "newNextDayStartTime: " + newNextDayStartTime);
+        Log.d(MainActivity.LOG_TAG, "newPreviousDayEndTime: " + newPreviousDayEndTime);
 
         // Modify the time of the selected day in the corresponding profile.
         if(isStart) {
