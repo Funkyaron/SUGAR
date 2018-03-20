@@ -86,17 +86,17 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
                 }
             }
         }
-        if(prof.getEnd()[index - 1 % 7].earlierThan(prof.getStart()[index - 1 % 7])) {
+        if(prof.getEnd()[((index - 1) % 7 + 7) % 7].earlierThan(prof.getStart()[((index - 1) % 7 + 7) % 7])) {
             previousDayEndTime = prof.getEnd()[index - 1 % 7];
             isValid = previousDayEndTime.earlierThan(startTime);
             if (!isValid) {
-                if (prof.getDays()[index - 1 % 7]) {
+                if (prof.getDays()[((index - 1) % 7 + 7) % 7]) {
                     Toast.makeText(parentActivity, R.string.non_valid_entry, Toast.LENGTH_LONG).show();
                     return;
                 } else {
                     newPreviousDayEndTime = startTime;
                     newPreviousDayEndTime.setMinute(startTime.getMinute() - 5);
-                    prof.setEndForDay(index - 1 % 7, newPreviousDayEndTime);
+                    prof.setEndForDay(((index - 1) % 7 + 7) % 7, newPreviousDayEndTime);
                 }
             }
         }
