@@ -70,6 +70,10 @@ public class TimeManager {
 
         long targetTime = getTargetStartTime(days, start);
 
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(targetTime);
+        Log.d(MainActivity.LOG_TAG, "Next enable: " + cal.toString());
+
         mAlarmManager.setExact(AlarmManager.RTC_WAKEUP, targetTime, pending);
     }
 
@@ -109,6 +113,10 @@ public class TimeManager {
                 intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         long targetTime = getTargetEndTime(days, profile.getStart(), end);
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(targetTime);
+        Log.d(MainActivity.LOG_TAG, "Next disable: " + cal.toString());
 
         mAlarmManager.setExact(AlarmManager.RTC_WAKEUP, targetTime, pending);
     }
@@ -191,7 +199,8 @@ public class TimeManager {
         long previousDayEndTime = cal.getTimeInMillis();
 
         boolean shouldAllow;
-        if(days[previousDayIndex] && endTimes[previousDayIndex].earlierThan(startTimes[previousDayIndex]) && currentTime < previousDayEndTime) {
+        if(days[previousDayIndex] && endTimes[previousDayIndex].earlierThan(startTimes[previousDayIndex]) &&
+                currentTime < previousDayEndTime) {
             shouldAllow = false;
         } else if(endTimes[toIndex(currentDay)].earlierThan(startTimes[toIndex(currentDay)])) {
             if(currentTime < startTimeInMillis) {
@@ -367,44 +376,38 @@ public class TimeManager {
         cal.setTimeInMillis(System.currentTimeMillis());
         long currentTime = cal.getTimeInMillis();
         int currentDay = cal.get(Calendar.DAY_OF_WEEK);
+        int currentDayIndex = toIndex(currentDay);
 
-        // Just in case, we check the start time from "today".
+        cal.set(Calendar.SECOND, 0);
+
+        // First we have to check the start time from "today".
         cal.set(Calendar.HOUR_OF_DAY, times[toIndex(currentDay)].getHour());
         cal.set(Calendar.MINUTE, times[toIndex(currentDay)].getMinute());
         long targetTime = cal.getTimeInMillis();
-        if (days[toIndex(currentDay)] && (currentTime < targetTime))
-        {
-            // Don't change target time.
+        if (days[toIndex(currentDay)] && (currentTime < targetTime)) {
+            return targetTime;
         }
-        else
-        {
 
-            // Now we have to match the next day to apply with the corresponding start time,
-            // so we have to find out the appropriate Array index.
-            // First we find out how many days we have to add to the current day.
+        // Now we have to match the next day to apply with the corresponding start time,
+        // so we have to find out the appropriate Array index.
+        // First we find out how many days we have to add to the current day.
 
-            int daysToAdd = 0;
-            int i = toIndex(currentDay);
-            int j = 0;
-            while (j <= 6) {
-                daysToAdd++;
-                i = (i + 1) % 7;
-                j++;
-                if (days[i])
-                    break;
+        int daysToAdd = 0;
+        do {
+            daysToAdd++;
+            currentDayIndex = (currentDayIndex + 1) % 7;
+            if(daysToAdd > 6) {
+                break;
             }
+        } while(!days[currentDayIndex]);
 
-            // Now we determine the target time by adding the days to the Calendar instance
-            // and extracting the right start time from the TimeObject Array.
+        // Now we determine the target time by adding the days to the Calendar instance
+        // and extracting the right start time from the TimeObject Array.
 
-            cal.add(Calendar.DAY_OF_MONTH, daysToAdd);
-
-            int targetIndex = (toIndex(currentDay) + daysToAdd) % 7;
-            cal.set(Calendar.HOUR_OF_DAY, times[targetIndex].getHour());
-            cal.set(Calendar.MINUTE, times[targetIndex].getMinute());
-
-            targetTime = cal.getTimeInMillis();
-        }
+        cal.set(Calendar.HOUR_OF_DAY, times[currentDayIndex].getHour());
+        cal.set(Calendar.MINUTE, times[currentDayIndex].getMinute());
+        cal.add(Calendar.DAY_OF_MONTH, daysToAdd);
+        targetTime = cal.getTimeInMillis();
 
         return targetTime;
     }
@@ -414,14 +417,11 @@ public class TimeManager {
         cal.setTimeInMillis(System.currentTimeMillis());
         long currentTime = cal.getTimeInMillis();
         int currentDay = cal.get(Calendar.DAY_OF_WEEK);
+        int currentDayIndex = toIndex(currentDay);
 
-        cal.set(Calendar.HOUR_OF_DAY, endTimes[toIndex(currentDay)].getHour());
-        cal.set(Calendar.MINUTE, endTimes[toIndex(currentDay)].getMinute());
-        long targetTime = cal.getTimeInMillis();
-        int daysToAdd = 0;
+        cal.set(Calendar.SECOND, 0);
 
-
-        int previousDayIndex = ((toIndex(currentDay) - 1) % 7 + 7) % 7;
+        int previousDayIndex = ((currentDayIndex - 1) % 7 + 7) % 7;
         if (days[previousDayIndex] && endTimes[previousDayIndex].earlierThan(startTimes[previousDayIndex])) {
             cal.set(Calendar.HOUR, endTimes[previousDayIndex].getHour());
             cal.set(Calendar.MINUTE, endTimes[previousDayIndex].getMinute());
@@ -432,23 +432,35 @@ public class TimeManager {
             }
         }
 
+        cal.set(Calendar.HOUR_OF_DAY, endTimes[currentDayIndex].getHour());
+        cal.set(Calendar.MINUTE, endTimes[currentDayIndex].getMinute());
+        long targetTime = cal.getTimeInMillis();
+        if(days[currentDayIndex]) {
+            if(startTimes[currentDayIndex].earlierThan(endTimes[currentDayIndex]) && currentTime < targetTime) {
+                return targetTime;
+            }
+            if(endTimes[currentDayIndex].earlierThan(startTimes[currentDayIndex])) {
+                cal.add(Calendar.DAY_OF_MONTH, 1);
+                targetTime = cal.getTimeInMillis();
+                return targetTime;
+            }
+        }
 
-        int currentIndex = toIndex(currentDay);
-        while( ! days[currentIndex]) {
+        int daysToAdd = 0;
+        do {
             daysToAdd++;
-            currentIndex = (currentIndex + 1) % 7;
+            currentDayIndex = (currentDayIndex + 1) % 7;
             if(daysToAdd > 6) {
                 break;
             }
-        }
-        if(endTimes[toIndex(currentDay)].earlierThan(startTimes[toIndex(currentDay)]))  {
+        } while(!days[currentDayIndex]);
+
+        if(endTimes[currentDayIndex].earlierThan(startTimes[currentDayIndex]))  {
             daysToAdd += 1;
         }
-        int targetIndex = (toIndex(currentDay) + daysToAdd) % 7;
-        cal.set(Calendar.HOUR_OF_DAY, endTimes[targetIndex].getHour());
-        cal.set(Calendar.MINUTE, endTimes[targetIndex].getMinute());
 
-
+        cal.set(Calendar.HOUR_OF_DAY, endTimes[currentDayIndex].getHour());
+        cal.set(Calendar.MINUTE, endTimes[currentDayIndex].getMinute());
         cal.add(Calendar.DAY_OF_MONTH, daysToAdd);
         targetTime = cal.getTimeInMillis();
 
