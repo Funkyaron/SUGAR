@@ -381,10 +381,10 @@ public class TimeManager {
         cal.set(Calendar.SECOND, 0);
 
         // First we have to check the start time from "today".
-        cal.set(Calendar.HOUR_OF_DAY, times[toIndex(currentDay)].getHour());
-        cal.set(Calendar.MINUTE, times[toIndex(currentDay)].getMinute());
+        cal.set(Calendar.HOUR_OF_DAY, times[currentDayIndex].getHour());
+        cal.set(Calendar.MINUTE, times[currentDayIndex].getMinute());
         long targetTime = cal.getTimeInMillis();
-        if (days[toIndex(currentDay)] && (currentTime < targetTime)) {
+        if (days[currentDayIndex] && (currentTime < targetTime)) {
             return targetTime;
         }
 
