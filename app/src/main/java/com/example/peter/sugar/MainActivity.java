@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity
                 Manifest.permission.WRITE_CONTACTS) != PackageManager.PERMISSION_GRANTED)
         {
             Log.d(MainActivity.LOG_TAG, "ConAct: Permissions not granted, sending request.");
-            ActivityCompat.requestPermissions(this, PERMISSION_CONTACTS, REQUEST_CONTACTS);
+            //ActivityCompat.requestPermissions(this, PERMISSION_CONTACTS, REQUEST_CONTACTS);
         }else {
             Log.d(LOG_TAG, "Permissions granted");
         }

@@ -31,7 +31,7 @@ public class InCallServiceImpl extends InCallService {
         mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
 
         if(shouldBlock(number)) {
-            call.reject(true, getString(R.string.reject_message));
+            call.disconnect();
         } else {
             mAudioManager.setRingerMode(currentRingerMode);
             super.onCallAdded(call);
