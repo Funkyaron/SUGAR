@@ -1,49 +1,15 @@
 package com.example.peter.sugar;
 
 import android.Manifest;
-import android.app.ActionBar;
-import android.app.Activity;
-import android.app.DialogFragment;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.media.AudioManager;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
-import android.os.Handler;
-import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.telecom.TelecomManager;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.Random;
 
 public class MainActivity extends AppCompatActivity
         implements ActivityCompat.OnRequestPermissionsResultCallback {
@@ -93,7 +59,7 @@ public class MainActivity extends AppCompatActivity
 
         // Here we initialize the monitor for contacts database changes (see ContactsMonitorService).
         // TODO: Add an option to enable or disable this feature.
-        final int JOB_ID = 1;
+        /*final int JOB_ID = 1;
         JobScheduler scheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
         JobInfo.Builder builder = new JobInfo.Builder(JOB_ID,
@@ -105,7 +71,7 @@ public class MainActivity extends AppCompatActivity
         if(scheduler != null) {
             scheduler.schedule(info);
             Log.d(MainActivity.LOG_TAG, "All pending jobs: " + scheduler.getAllPendingJobs().toString());
-        }
+        }*/
     }
 
     // Handling runtime permissions
@@ -115,10 +81,8 @@ public class MainActivity extends AppCompatActivity
     {
         Log.d(MainActivity.LOG_TAG, "ConAct: onRequestPermissionsResult()");
         if (requestCode == REQUEST_CONTACTS) {
-            if(verifyPermissions(grantResults))
-                Toast.makeText(this, getString(R.string.permissions_granted), Toast.LENGTH_LONG).show();
-            else
-                Toast.makeText(this, getString(R.string.permissions_not_granted), Toast.LENGTH_LONG).show();
+            if(verifyPermissions(grantResults)) {int a = 1;}
+            else {int b = 2;}
         }
         else
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
